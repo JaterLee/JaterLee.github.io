@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>管理 — Grounded Saves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/admin.css">
+  <script defer src="assets/js/admin.js"></script>
+</head>
+<body>
+
+  <header class="site-header" id="site-header">
+    <div class="header-inner container">
+      <a href="index.html" class="logo" aria-label="返回首页">
+        <svg class="logo-icon" viewBox="0 0 40 40" width="36" height="36" aria-hidden="true">
+          <path d="M20 2c-2 6-6 10-8 16-1 3 0 7 2 9 3 3 9 3 12 0 2-2 3-6 2-9-2-6-6-10-8-16z" fill="#4a7c59"/>
+          <path d="M20 8c-1 3-3 5-4 8-1 2 0 3 1 4l3 2 3-2c1-1 2-2 1-4-1-3-3-5-4-8z" fill="#6b9e7a"/>
+          <rect x="17" y="27" width="6" height="8" rx="2" fill="#6b4f2e"/>
+        </svg>
+        <span class="logo-text">管理后台</span>
+      </a>
+      <nav class="nav-menu" role="navigation">
+        <a href="index.html" class="nav-link">← 返回首页</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="admin-main container" id="main-content">
+    <h1 class="admin-title">🔧 存档管理</h1>
+    <p class="admin-desc">通过 GitHub API 直接发布存档和日志到网站</p>
+
+    <!-- ============ Token Setup ============ -->
+    <section class="admin-card" id="token-section" aria-labelledby="token-heading">
+      <h2 class="admin-card-title" id="token-heading">GitHub Token</h2>
+      <p class="admin-card-desc">
+        需要 GitHub Personal Access Token（<code>repo</code> 权限）。
+        <a href="https://github.com/settings/tokens/new?scopes=repo&description=Grounded+Saves+Admin" target="_blank" rel="noopener" class="admin-link">点击这里创建 →</a>
+      </p>
+      <div class="token-status" id="token-status">
+        <span class="token-indicator" id="token-indicator"></span>
+        <span id="token-label">未配置</span>
+      </div>
+      <div class="token-form">
+        <input type="password" id="token-input" class="admin-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" aria-label="GitHub Personal Access Token">
+        <button class="btn btn-download" id="btn-save-token">保存 Token</button>
+        <button class="btn btn-outline" id="btn-clear-token">清除</button>
+      </div>
+    </section>
+
+    <!-- ============ Add Save ============ -->
+    <section class="admin-card" id="save-section" aria-labelledby="save-heading">
+      <h2 class="admin-card-title" id="save-heading">📦 发布存档</h2>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="save-title" class="form-label">存档标题 <span class="required">*</span></label>
+          <input type="text" id="save-title" class="admin-input" placeholder="例如：橡树堡垒 — 第 87 天">
+        </div>
+        <div class="form-group">
+          <label for="save-version" class="form-label">游戏版本</label>
+          <input type="text" id="save-version" class="admin-input" placeholder="1.4.7" value="1.4.7">
+        </div>
+        <div class="form-group form-group-full">
+          <label for="save-desc" class="form-label">描述</label>
+          <textarea id="save-desc" class="admin-input" rows="3" placeholder="存档的简要描述..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="save-days" class="form-label">存活天数</label>
+          <input type="number" id="save-days" class="admin-input" placeholder="87" min="0">
+        </div>
+        <div class="form-group">
+          <label for="save-tier" class="form-label">装备等级</label>
+          <select id="save-tier" class="admin-input">
+            <option value="Tier 1">Tier 1</option>
+            <option value="Tier 2" selected>Tier 2</option>
+            <option value="Tier 3">Tier 3</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="save-players" class="form-label">玩家（逗号分隔）</label>
+          <input type="text" id="save-players" class="admin-input" placeholder="Jater, Alex, Sam, Mike">
+        </div>
+        <div class="form-group">
+          <label for="save-bases" class="form-label">基地（逗号分隔）</label>
+          <input type="text" id="save-bases" class="admin-input" placeholder="草地主基地, 池塘前哨站">
+        </div>
+        <div class="form-group">
+          <label for="save-biomes" class="form-label">已探索区域（逗号分隔）</label>
+          <input type="text" id="save-biomes" class="admin-input" placeholder="草地, 树篱, 池塘">
+        </div>
+        <div class="form-group">
+          <label for="save-bosses" class="form-label">击败的 Boss（名称x次数, 逗号分隔）</label>
+          <input type="text" id="save-bosses" class="admin-input" placeholder="育母蜘蛛x3, 助理经理x1">
+        </div>
+        <div class="form-group form-group-full">
+          <label for="save-highlights" class="form-label">亮点（每行一个）</label>
+          <textarea id="save-highlights" class="admin-input" rows="4" placeholder="建成蘑菇砖堡垒&#10;获得 Tier 3 锤子&#10;发现池塘实验室全部入口"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="save-tags" class="form-label">标签（逗号分隔）</label>
+          <input type="text" id="save-tags" class="admin-input" placeholder="4人联机, 草地, 中期">
+        </div>
+        <div class="form-group form-group-full">
+          <label class="form-label">存档 ZIP 文件 <span class="required">*</span></label>
+          <div class="drop-zone" id="save-drop-zone">
+            <div class="drop-zone-icon">📁</div>
+            <p class="drop-zone-text">拖拽 ZIP 文件到此处，或点击选择</p>
+            <input type="file" id="save-file-input" accept=".zip" hidden>
+            <p class="drop-zone-file" id="save-file-name"></p>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-download btn-lg" id="btn-publish-save" disabled>
+        🚀 发布存档
+      </button>
+      <span class="btn-hint" id="save-hint"></span>
+    </section>
+
+    <!-- ============ Add Changelog ============ -->
+    <section class="admin-card" id="changelog-section" aria-labelledby="changelog-admin-heading">
+      <h2 class="admin-card-title" id="changelog-admin-heading">📝 发布日志</h2>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="changelog-type" class="form-label">类型</label>
+          <select id="changelog-type" class="admin-input">
+            <option value="milestone">🏆 里程碑</option>
+            <option value="build">🏠 建筑</option>
+            <option value="save">💾 存档</option>
+            <option value="exploration">🗺️ 探索</option>
+            <option value="note">📝 笔记</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="changelog-title" class="form-label">标题 <span class="required">*</span></label>
+          <input type="text" id="changelog-title" class="admin-input" placeholder="击败了育母蜘蛛！">
+        </div>
+        <div class="form-group form-group-full">
+          <label for="changelog-desc" class="form-label">描述</label>
+          <textarea id="changelog-desc" class="admin-input" rows="3" placeholder="详细描述..."></textarea>
+        </div>
+      </div>
+
+      <button class="btn btn-download btn-lg" id="btn-publish-changelog">
+        🚀 发布日志
+      </button>
+    </section>
+
+    <!-- ============ Operation Log ============ -->
+    <section class="admin-card" id="log-section" aria-labelledby="log-heading">
+      <h2 class="admin-card-title" id="log-heading">📋 操作日志</h2>
+      <div class="log-container" id="log-container">
+        <p class="log-empty">暂无操作记录</p>
+      </div>
+      <button class="btn btn-outline" id="btn-clear-log">清空日志</button>
+    </section>
+  </main>
+
+</body>
+</html>
