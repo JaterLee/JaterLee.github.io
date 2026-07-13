@@ -1,0 +1,78 @@
+{
+  "last_updated": "2026-07-14",
+  "total_saves": 3,
+  "saves": [
+    {
+      "id": "save-logout-2026-07-14",
+      "title": "最新存档 — 草地探险",
+      "description": "最新的退出存档（2026-07-14）。4 人联机进度，探索后院草地，建立基地中。游戏版本 1.4.7。",
+      "filename": "save-logout.zip",
+      "file_size_bytes": 693998,
+      "date_added": "2026-07-14",
+      "game_version": "1.4.7",
+      "thumbnail": "assets/img/thumb-logout.jpg",
+      "stats": {
+        "days_survived": 28,
+        "players": ["Jater", "Alex", "Sam", "Mike"],
+        "tier_reached": "Tier 2",
+        "bases": ["草地主基地"],
+        "biomes_explored": ["草地"],
+        "bosses_defeated": []
+      },
+      "highlights": [
+        "4 人联机合作",
+        "最新退出存档状态",
+        "游戏版本 1.4.7.4815"
+      ],
+      "tags": ["最新", "4人联机", "草地"]
+    },
+    {
+      "id": "save-day28-2026-07-05",
+      "title": "第 28 天 — 后院初见规模",
+      "description": "存活 28 天的里程碑存档。4 人合作在草地建立了稳固的基地，装备稳步提升中。适合想要跳过前期磨炼的朋友下载体验。",
+      "filename": "save-day28.zip",
+      "file_size_bytes": 706616,
+      "date_added": "2026-07-05",
+      "game_version": "1.4.7",
+      "thumbnail": "assets/img/thumb-day28.jpg",
+      "stats": {
+        "days_survived": 28,
+        "players": ["Jater", "Alex", "Sam", "Mike"],
+        "tier_reached": "Tier 2",
+        "bases": ["草地主基地"],
+        "biomes_explored": ["草地"],
+        "bosses_defeated": []
+      },
+      "highlights": [
+        "28 天游戏进度",
+        "草地基地初具规模",
+        "4 人分工明确：建造、采集、战斗、探索"
+      ],
+      "tags": ["中期", "4人联机", "草地", "里程碑"]
+    },
+    {
+      "id": "save-day13-2026-07-05",
+      "title": "第 13 天 — 早期探索",
+      "description": "存活 13 天的早期存档。基础工具和经验已解锁，正在建立第一个正经基地。适合新朋友加入的起点。",
+      "filename": "save-day13.zip",
+      "file_size_bytes": 694195,
+      "date_added": "2026-07-05",
+      "game_version": "1.4.7",
+      "thumbnail": "assets/img/thumb-day13.jpg",
+      "stats": {
+        "days_survived": 13,
+        "players": ["Jater", "Alex", "Sam", "Mike"],
+        "tier_reached": "Tier 1",
+        "bases": ["初始营地"],
+        "biomes_explored": ["草地"],
+        "bosses_defeated": []
+      },
+      "highlights": [
+        "13 天早期进度",
+        "基础工具已制作",
+        "正在选址建立主基地"
+      ],
+      "tags": ["早期", "4人联机", "草地", "入门"]
+    }
+  ]
+}
