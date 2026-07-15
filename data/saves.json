@@ -1,16 +1,16 @@
 {
-  "last_updated": "2026-07-14",
+  "last_updated": "2026-07-16",
   "total_saves": 3,
   "saves": [
     {
-      "id": "save-logout-2026-07-14",
+      "id": "save-logout-2026-07-16",
       "title": "最新存档 — 草地探险",
-      "description": "最新的退出存档（2026-07-14）。4 人联机进度，探索后院草地，建立基地中。游戏版本 1.4.7。",
+      "description": "最新的退出存档（2026-07-16）。4 人联机进度，探索后院草地，建立基地中。游戏版本 1.4.7。",
       "filename": "save-logout.zip",
       "file_size_bytes": 693998,
-      "date_added": "2026-07-14",
+      "date_added": "2026-07-16",
       "game_version": "1.4.7",
-      "thumbnail": "assets/img/thumb-logout.jpg",
+      "thumbnail": "images/screenshots/thumb/grounded-20260716-003959.webp",
       "stats": {
         "days_survived": 28,
         "players": ["Jater", "Alex", "Sam", "Mike"],
