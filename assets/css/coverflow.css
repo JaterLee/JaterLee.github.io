@@ -1,0 +1,330 @@
+/* ============================================================
+   Coverflow Screenshot Banner
+   3D 轮播展示 Grounded 截图
+   ============================================================ */
+
+.coverflow-section {
+  background: linear-gradient(160deg, #1a3a26 0%, #2d5a3d 50%, #1f3d29 100%);
+  padding: var(--space-12) 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.coverflow-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(212,163,115,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(0,0,0,0.3) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.coverflow-header {
+  text-align: center;
+  margin-bottom: var(--space-8);
+  position: relative;
+  z-index: 1;
+}
+
+.coverflow-header .section-title {
+  color: var(--color-text-inverse);
+}
+
+.coverflow-header .section-desc {
+  color: rgba(245,240,232,0.6);
+}
+
+/* ---------- Stage ---------- */
+.coverflow-stage {
+  position: relative;
+  height: 380px;
+  perspective: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+/* ---------- Cards ---------- */
+.coverflow-card {
+  position: absolute;
+  width: 560px;
+  max-width: 72vw;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  transition: transform 0.55s cubic-bezier(0.23, 1, 0.32, 1),
+              opacity 0.55s cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 0.55s cubic-bezier(0.23, 1, 0.32, 1);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.coverflow-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Position offsets — applied via JS data attributes + CSS */
+.coverflow-card[data-pos="-2"] {
+  transform: translateX(-62%) scale(0.7) rotateY(28deg) translateZ(-260px);
+  opacity: 0.45;
+  z-index: 1;
+  filter: brightness(0.6);
+}
+
+.coverflow-card[data-pos="-1"] {
+  transform: translateX(-32%) scale(0.85) rotateY(14deg) translateZ(-100px);
+  opacity: 0.75;
+  z-index: 2;
+  filter: brightness(0.8);
+}
+
+.coverflow-card[data-pos="0"] {
+  transform: translateX(0) scale(1) rotateY(0) translateZ(0);
+  opacity: 1;
+  z-index: 5;
+  box-shadow: 0 12px 60px rgba(0,0,0,0.6);
+  filter: brightness(1);
+}
+
+.coverflow-card[data-pos="1"] {
+  transform: translateX(32%) scale(0.85) rotateY(-14deg) translateZ(-100px);
+  opacity: 0.75;
+  z-index: 2;
+  filter: brightness(0.8);
+}
+
+.coverflow-card[data-pos="2"] {
+  transform: translateX(62%) scale(0.7) rotateY(-28deg) translateZ(-260px);
+  opacity: 0.45;
+  z-index: 1;
+  filter: brightness(0.6);
+}
+
+/* Hidden cards */
+.coverflow-card[data-pos="-3"],
+.coverflow-card[data-pos="3"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Card label */
+.coverflow-card-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-6) var(--space-4) var(--space-3);
+  background: linear-gradient(transparent, rgba(0,0,0,0.75));
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: opacity 0.3s ease;
+}
+
+.coverflow-card[data-pos="0"] .coverflow-card-label {
+  font-size: 0.9375rem;
+}
+
+.coverflow-card:not([data-pos="0"]) .coverflow-card-label {
+  opacity: 0;
+}
+
+.coverflow-card:hover .coverflow-card-label {
+  opacity: 1;
+}
+
+/* ---------- Arrows ---------- */
+.coverflow-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: rgba(255,255,255,0.75);
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+}
+
+.coverflow-arrow:hover {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+
+.coverflow-arrow:active {
+  transform: translateY(-50%) scale(0.93);
+}
+
+.coverflow-arrow-prev { left: calc(50% - 360px); }
+.coverflow-arrow-next { right: calc(50% - 360px); }
+
+/* ---------- Dots ---------- */
+.coverflow-dots {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+  margin-top: var(--space-6);
+  position: relative;
+  z-index: 1;
+}
+
+.coverflow-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.coverflow-dot:hover {
+  background: rgba(255,255,255,0.45);
+}
+
+.coverflow-dot.active {
+  background: var(--amber-300);
+  transform: scale(1.35);
+}
+
+/* ---------- Gallery link ---------- */
+.coverflow-gallery-link {
+  text-align: center;
+  margin-top: var(--space-6);
+  position: relative;
+  z-index: 1;
+}
+
+.coverflow-gallery-link a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: rgba(255,255,255,0.6);
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: var(--space-2) var(--space-5);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-full);
+  transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.coverflow-gallery-link a:hover {
+  color: #fff;
+  border-color: rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.06);
+}
+
+/* ---------- Empty state ---------- */
+.coverflow-empty {
+  text-align: center;
+  color: rgba(255,255,255,0.35);
+  padding: var(--space-12) 0;
+  position: relative;
+  z-index: 1;
+}
+
+.coverflow-empty-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-3);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1023px) {
+  .coverflow-stage {
+    height: 300px;
+  }
+
+  .coverflow-card {
+    width: 480px;
+    max-width: 64vw;
+  }
+
+  .coverflow-card[data-pos="-2"] {
+    transform: translateX(-52%) scale(0.72) rotateY(22deg) translateZ(-200px);
+  }
+  .coverflow-card[data-pos="-1"] {
+    transform: translateX(-28%) scale(0.85) rotateY(11deg) translateZ(-80px);
+  }
+  .coverflow-card[data-pos="1"] {
+    transform: translateX(28%) scale(0.85) rotateY(-11deg) translateZ(-80px);
+  }
+  .coverflow-card[data-pos="2"] {
+    transform: translateX(52%) scale(0.72) rotateY(-22deg) translateZ(-200px);
+  }
+
+  .coverflow-arrow-prev { left: calc(50% - 290px); }
+  .coverflow-arrow-next { right: calc(50% - 290px); }
+}
+
+@media (max-width: 639px) {
+  .coverflow-section {
+    padding: var(--space-8) 0;
+  }
+
+  .coverflow-stage {
+    height: 240px;
+  }
+
+  .coverflow-card {
+    width: 340px;
+    max-width: 58vw;
+  }
+
+  /* Mobile: only show 3 cards (-1, 0, +1) */
+  .coverflow-card[data-pos="-2"] {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .coverflow-card[data-pos="-1"] {
+    transform: translateX(-38%) scale(0.78) rotateY(18deg) translateZ(-120px);
+    opacity: 0.6;
+  }
+  .coverflow-card[data-pos="1"] {
+    transform: translateX(38%) scale(0.78) rotateY(-18deg) translateZ(-120px);
+    opacity: 0.6;
+  }
+  .coverflow-card[data-pos="2"] {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .coverflow-arrow {
+    width: 38px;
+    height: 38px;
+  }
+  .coverflow-arrow svg {
+    width: 20px;
+    height: 20px;
+  }
+  .coverflow-arrow-prev { left: var(--space-2); }
+  .coverflow-arrow-next { right: var(--space-2); }
+
+  .coverflow-header {
+    margin-bottom: var(--space-4);
+  }
+
+  .coverflow-card-label {
+    opacity: 1;
+    font-size: 0.75rem;
+    padding: var(--space-4) var(--space-3) var(--space-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coverflow-card {
+    transition: none;
+  }
+}
