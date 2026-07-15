@@ -1,0 +1,9 @@
+{
+  "name": "grounded-screenshots-sync",
+  "private": true,
+  "type": "module",
+  "description": "批量同步 Grounded 截图到网站",
+  "dependencies": {
+    "sharp": "^0.33.0"
+  }
+}

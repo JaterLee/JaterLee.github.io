@@ -8,6 +8,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/admin.css">
+  <script defer src="assets/js/image-util.js"></script>
   <script defer src="assets/js/admin.js"></script>
 </head>
 <body>
@@ -24,6 +25,7 @@
       </a>
       <nav class="nav-menu" role="navigation">
         <a href="index.html" class="nav-link">← 返回首页</a>
+        <a href="gallery.html" class="nav-link">📸 画廊</a>
       </nav>
     </div>
   </header>
@@ -148,6 +150,37 @@
       <button class="btn btn-download btn-lg" id="btn-publish-changelog">
         🚀 发布日志
       </button>
+    </section>
+
+    <!-- ============ Upload Screenshots ============ -->
+    <section class="admin-card" id="screenshot-section" aria-labelledby="screenshot-heading">
+      <h2 class="admin-card-title" id="screenshot-heading">📸 上传截图</h2>
+      <p class="admin-card-desc">
+        上传 Grounded 游戏截图。浏览器端自动压缩为 WebP（最大 1920px，~250KB/张）。
+        大量截图建议使用本地批量同步脚本。
+      </p>
+
+      <div class="form-grid">
+        <div class="form-group form-group-full">
+          <label class="form-label">截图文件 <span class="required">*</span></label>
+          <div class="drop-zone" id="screenshot-drop-zone">
+            <div class="drop-zone-icon">🖼️</div>
+            <p class="drop-zone-text">拖拽截图到此处，或点击选择（可多选 PNG/JPG）</p>
+            <input type="file" id="screenshot-file-input" accept="image/png,image/jpeg,image/webp" multiple hidden>
+          </div>
+          <div class="screenshot-previews" id="screenshot-previews"></div>
+          <div class="compression-info" id="compression-info"></div>
+        </div>
+        <div class="form-group form-group-full">
+          <label for="screenshot-tags" class="form-label">标签（逗号分隔，应用于所有选中截图）</label>
+          <input type="text" id="screenshot-tags" class="admin-input" placeholder="草地, 基地, 战斗">
+        </div>
+      </div>
+
+      <button class="btn btn-download btn-lg" id="btn-upload-screenshots" disabled>
+        🚀 上传截图（0 张）
+      </button>
+      <span class="btn-hint" id="screenshot-hint"></span>
     </section>
 
     <!-- ============ Operation Log ============ -->

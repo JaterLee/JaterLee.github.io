@@ -34,6 +34,15 @@
     // Changelog form
     btnPublishChangelog: $('#btn-publish-changelog'),
 
+    // Screenshot form
+    screenshotDropZone: $('#screenshot-drop-zone'),
+    screenshotFileInput: $('#screenshot-file-input'),
+    screenshotPreviews: $('#screenshot-previews'),
+    screenshotTags: $('#screenshot-tags'),
+    btnUploadScreenshots: $('#btn-upload-screenshots'),
+    screenshotHint: $('#screenshot-hint'),
+    compressionInfo: $('#compression-info'),
+
     // Log
     logContainer: $('#log-container'),
     btnClearLog: $('#btn-clear-log'),
@@ -437,6 +446,233 @@
     } finally {
       dom.btnPublishChangelog.disabled = false;
       dom.btnPublishChangelog.textContent = '🚀 发布日志';
+    }
+  });
+
+  /* ==========================================================
+     Screenshot Upload State & Handlers
+     ========================================================== */
+  let selectedScreenshots = [];
+
+  function handleScreenshotFiles(fileList) {
+    const valid = Array.from(fileList).filter((f) => f.type.startsWith('image/'));
+    if (!valid.length) {
+      addLog('未检测到有效的图片文件', 'error');
+      return;
+    }
+    selectedScreenshots = valid;
+    renderScreenshotPreviews();
+    updateScreenshotButton();
+    const estTotalKB = valid.length * 280; // 完整图 ~250KB + 缩略图 ~15KB
+    dom.compressionInfo.textContent =
+      '预计总上传大小 ~' + formatSize(estTotalKB * 1024) + '（' + valid.length + ' 张）';
+  }
+
+  function renderScreenshotPreviews() {
+    dom.screenshotPreviews.innerHTML = selectedScreenshots
+      .map(
+        (f, i) =>
+          `<div class="screenshot-preview">
+            <img src="${URL.createObjectURL(f)}" alt="预览 ${i + 1}" class="screenshot-preview-img">
+            <span class="screenshot-preview-name" title="${escapeAttr(f.name)}">${escapeAttr(f.name)}</span>
+            <span class="screenshot-preview-size">${formatSize(f.size)}</span>
+          </div>`
+      )
+      .join('');
+  }
+
+  function updateScreenshotButton() {
+    const valid = selectedScreenshots.length > 0;
+    dom.btnUploadScreenshots.disabled = !valid;
+    dom.btnUploadScreenshots.textContent = valid
+      ? '🚀 上传截图（' + selectedScreenshots.length + ' 张）'
+      : '🚀 上传截图（0 张）';
+    dom.screenshotHint.textContent = valid ? '' : '请至少选择一张截图';
+  }
+
+  function escapeAttr(str) {
+    return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  /**
+   * 从 Grounded 截图文件名生成 ID
+   * Grounded_2026.07.15-23.49.20.png → grounded-20260715-234920
+   */
+  function generateScreenshotId(filename) {
+    var match = filename.match(/Grounded_(\d{4})\.(\d{2})\.(\d{2})-(\d{2})\.(\d{2})\.(\d{2})/);
+    if (match) {
+      return 'grounded-' + match[1] + match[2] + match[3] + '-' + match[4] + match[5] + match[6];
+    }
+    // Fallback: 用文件名（去扩展名）生成
+    var clean = filename.replace(/\.(png|jpe?g|webp)$/i, '').replace(/[^\w一-鿿]+/g, '-').slice(0, 40);
+    return 'img-' + todayStr().replace(/-/g, '') + '-' + clean;
+  }
+
+  /**
+   * 从文件名解析拍摄日期
+   * Grounded_2026.07.15-23.49.20.png → 2026-07-15T23:49:20
+   */
+  function parseDateTaken(filename) {
+    var match = filename.match(/(\d{4})\.(\d{2})\.(\d{2})-(\d{2})\.(\d{2})\.(\d{2})/);
+    if (match) {
+      return match[1] + '-' + match[2] + '-' + match[3] + 'T' + match[4] + ':' + match[5] + ':' + match[6];
+    }
+    return new Date().toISOString().replace(/\.\d{3}Z$/, '');
+  }
+
+  // Click to select screenshots
+  dom.screenshotDropZone.addEventListener('click', function () {
+    dom.screenshotFileInput.click();
+  });
+
+  // File input change
+  dom.screenshotFileInput.addEventListener('change', function () {
+    if (dom.screenshotFileInput.files.length) {
+      handleScreenshotFiles(dom.screenshotFileInput.files);
+    }
+  });
+
+  // Drag & drop screenshots
+  dom.screenshotDropZone.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    dom.screenshotDropZone.classList.add('dragover');
+  });
+  dom.screenshotDropZone.addEventListener('dragleave', function () {
+    dom.screenshotDropZone.classList.remove('dragover');
+  });
+  dom.screenshotDropZone.addEventListener('drop', function (e) {
+    e.preventDefault();
+    dom.screenshotDropZone.classList.remove('dragover');
+    if (e.dataTransfer.files.length) {
+      handleScreenshotFiles(e.dataTransfer.files);
+    }
+  });
+
+  /* ==========================================================
+     Upload Screenshots
+     ========================================================== */
+  dom.btnUploadScreenshots.addEventListener('click', async function () {
+    var token = getToken();
+    if (!token) {
+      addLog('请先设置 GitHub Token', 'error');
+      return;
+    }
+    if (!selectedScreenshots.length) {
+      addLog('请选择截图文件', 'error');
+      return;
+    }
+    if (!window.ImageUtil || !window.ImageUtil.compressImage) {
+      addLog('图片压缩模块未加载，请刷新页面后重试', 'error');
+      return;
+    }
+
+    dom.btnUploadScreenshots.disabled = true;
+    dom.btnUploadScreenshots.textContent = '⏳ 压缩上传中...';
+    var successCount = 0;
+    var tags = dom.screenshotTags.value
+      .split(',')
+      .map(function (s) { return s.trim(); })
+      .filter(Boolean);
+
+    try {
+      // 1. 读取当前 images.json
+      addLog('读取 images.json...', 'info');
+      var imagesData, imagesSha;
+      try {
+        var imgRes = await githubGet('data/images.json');
+        imagesData = JSON.parse(decodeURIComponent(escape(atob(imgRes.content))));
+        imagesSha = imgRes.sha;
+      } catch (err) {
+        // 文件不存在，从空开始
+        imagesData = { last_updated: todayStr(), total: 0, images: [] };
+        imagesSha = undefined;
+      }
+
+      var existingIds = {};
+      (imagesData.images || []).forEach(function (img) {
+        existingIds[img.id] = true;
+      });
+
+      // 2. 逐个处理
+      for (var i = 0; i < selectedScreenshots.length; i++) {
+        var file = selectedScreenshots[i];
+        try {
+          var id = generateScreenshotId(file.name);
+          if (existingIds[id]) {
+            addLog('跳过已存在: ' + file.name, 'info');
+            continue;
+          }
+
+          addLog('压缩: ' + file.name + ' (' + formatSize(file.size) + ')', 'info');
+
+          // 压缩
+          var result = await window.ImageUtil.compressImage(file, {
+            fullMax: 1920,
+            fullQuality: 0.85,
+            thumbWidth: 400,
+            thumbQuality: 0.82,
+          });
+
+          addLog(
+            '压缩完成: 完整图 ' + formatSize(result.fullBlob.size) + ', 缩略图 ' + formatSize(result.thumbBlob.size),
+            'info'
+          );
+
+          // 上传完整图
+          var fullPath = 'images/screenshots/full/' + id + '.webp';
+          addLog('上传: ' + fullPath, 'info');
+          await githubPut(fullPath, result.fullBase64, 'Add screenshot: ' + id, undefined);
+
+          // 上传缩略图
+          var thumbPath = 'images/screenshots/thumb/' + id + '.webp';
+          addLog('上传缩略图: ' + thumbPath, 'info');
+          await githubPut(thumbPath, result.thumbBase64, 'Add screenshot thumb: ' + id, undefined);
+
+          // 添加到清单
+          var dateTaken = parseDateTaken(file.name);
+          imagesData.images.push({
+            id: id,
+            filename: file.name.replace(/\.(png|jpe?g|webp)$/i, ''),
+            date_taken: dateTaken,
+            file_size_original: file.size,
+            file_size_webp: result.fullBlob.size,
+            width: result.width,
+            height: result.height,
+            tags: tags,
+            caption: '',
+          });
+
+          existingIds[id] = true;
+          successCount++;
+          addLog('✅ ' + file.name + ' 上传成功', 'success');
+        } catch (err) {
+          addLog('❌ ' + file.name + ' 失败: ' + err.message, 'error');
+        }
+      }
+
+      // 3. 更新 images.json
+      if (successCount > 0) {
+        imagesData.last_updated = todayStr();
+        imagesData.total = imagesData.images.length;
+        var jsonStr = JSON.stringify(imagesData, null, 2);
+        var jsonBase64 = base64FromString(jsonStr);
+        addLog('更新 images.json (' + imagesData.total + ' 张)...', 'info');
+        await githubPut('data/images.json', jsonBase64, 'Add ' + successCount + ' screenshot(s)', imagesSha);
+        addLog('✅ 成功上传 ' + successCount + ' 张截图！<a href="gallery.html">去画廊查看 →</a>', 'success');
+      } else {
+        addLog('没有新截图需要上传', 'info');
+      }
+
+      // 清理
+      selectedScreenshots = [];
+      dom.screenshotFileInput.value = '';
+      dom.screenshotPreviews.innerHTML = '';
+      dom.compressionInfo.textContent = '';
+      dom.screenshotTags.value = '';
+    } catch (err) {
+      addLog('❌ 上传失败: ' + err.message, 'error');
+    } finally {
+      updateScreenshotButton();
     }
   });
 

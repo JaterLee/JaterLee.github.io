@@ -8,5 +8,13 @@ Thumbs.db
 *.swp
 *.swo
 
-# Node (if ever used)
+# Node
 node_modules/
+
+# Sync script
+scripts/.env
+scripts/node_modules/
+
+# Original screenshots (only WebP goes to repo)
+*.png
+!assets/img/*.png

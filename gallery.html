@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Grounded 游戏截图 — 后院冒险的每一个精彩瞬间">
+  <title>截图画廊 — Grounded Saves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/gallery.css">
+  <script defer src="assets/js/gallery.js"></script>
+</head>
+<body>
+
+  <!-- Skip to content -->
+  <a href="#main-content" class="skip-link">跳转到主内容</a>
+
+  <!-- Header / Navigation -->
+  <header class="site-header" id="site-header">
+    <div class="header-inner container">
+      <a href="index.html" class="logo" aria-label="Grounded Saves 首页">
+        <svg class="logo-icon" viewBox="0 0 40 40" width="36" height="36" aria-hidden="true">
+          <path d="M20 2c-2 6-6 10-8 16-1 3 0 7 2 9 3 3 9 3 12 0 2-2 3-6 2-9-2-6-6-10-8-16z" fill="#4a7c59"/>
+          <path d="M20 8c-1 3-3 5-4 8-1 2 0 3 1 4l3 2 3-2c1-1 2-2 1-4-1-3-3-5-4-8z" fill="#6b9e7a"/>
+          <rect x="17" y="27" width="6" height="8" rx="2" fill="#6b4f2e"/>
+        </svg>
+        <span class="logo-text">截图画廊</span>
+      </a>
+
+      <nav class="nav-menu" role="navigation" aria-label="主导航">
+        <a href="index.html" class="nav-link">← 返回首页</a>
+        <a href="index.html#saves" class="nav-link">存档</a>
+        <a href="index.html#changelog" class="nav-link">日志</a>
+        <a href="gallery.html" class="nav-link active">📸 画廊</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main-content" class="gallery-main container">
+
+    <!-- Stats Banner -->
+    <section class="gallery-hero" aria-label="画廊概览">
+      <h1 class="gallery-title">📸 后院瞬间</h1>
+      <p class="gallery-subtitle">Grounded 冒险中的每一个精彩画面</p>
+      <div class="gallery-stats" id="gallery-stats">
+        <div class="gallery-stat">
+          <span class="gallery-stat-number" id="stat-total">--</span>
+          <span class="gallery-stat-label">总截图</span>
+        </div>
+        <div class="gallery-stat">
+          <span class="gallery-stat-number" id="stat-range">--</span>
+          <span class="gallery-stat-label">拍摄跨度</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery Grid -->
+    <section class="gallery-section" aria-labelledby="gallery-heading">
+      <h2 class="sr-only" id="gallery-heading">截图列表</h2>
+
+      <!-- Loading -->
+      <div class="gallery-loading" id="gallery-loading">
+        <div class="spinner"></div>
+        <p>加载中...</p>
+      </div>
+
+      <!-- Error State -->
+      <div class="error-state hidden" id="gallery-error" role="alert">
+        <p>无法加载截图数据，请稍后再试。</p>
+        <button class="btn btn-retry" id="btn-retry-gallery">重新加载</button>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state hidden" id="gallery-empty">
+        <div class="empty-icon" aria-hidden="true">📸</div>
+        <p>还没有截图</p>
+        <p class="empty-hint">在游戏中按 P 键拍照，截图会自动保存到 Pictures/Grounded 文件夹</p>
+      </div>
+
+      <!-- Image Grid -->
+      <div class="gallery-grid" id="gallery-grid" role="list" aria-label="截图列表">
+        <!-- JS populated -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox hidden" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="图片查看器">
+    <div class="lightbox-bg" id="lightbox-bg"></div>
+    <button class="lightbox-close" id="lightbox-close" aria-label="关闭">
+      <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <button class="lightbox-prev" id="lightbox-prev" aria-label="上一张">
+      <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="lightbox-next" id="lightbox-next" aria-label="下一张">
+      <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <div class="lightbox-content" id="lightbox-content">
+      <img src="" alt="" id="lightbox-img">
+    </div>
+    <div class="lightbox-info" id="lightbox-info">
+      <span id="lightbox-date"></span>
+      <span id="lightbox-resolution"></span>
+      <span id="lightbox-counter"></span>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <p class="footer-text">🌿 由 Grounded 爱好者用爱构建</p>
+      <p class="footer-text footer-disclaimer">Grounded 是 Obsidian Entertainment 的商标。本站点与 Obsidian Entertainment 无关。</p>
+    </div>
+  </footer>
+
+</body>
+</html>

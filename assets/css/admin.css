@@ -260,6 +260,54 @@ select.admin-input {
   to { transform: rotate(360deg); }
 }
 
+/* ---------- Screenshot Upload ---------- */
+.screenshot-previews {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.screenshot-preview {
+  background: var(--brown-50);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  text-align: center;
+  font-size: 0.75rem;
+}
+
+.screenshot-preview-img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-1);
+  background: var(--color-bg-card);
+}
+
+.screenshot-preview-name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text);
+  font-weight: 500;
+  margin-bottom: 1px;
+}
+
+.screenshot-preview-size {
+  display: block;
+  color: var(--brown-400);
+  font-size: 0.6875rem;
+}
+
+.compression-info {
+  margin-top: var(--space-3);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 639px) {
   .form-grid {
