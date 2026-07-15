@@ -109,7 +109,7 @@
              aria-label="截图：${formatDate(img.date_taken)}">
           <img
             class="gallery-card-img"
-            src="images/screenshots/thumb/${img.filename}.webp"
+            src="images/screenshots/thumb/${img.id}.webp"
             alt="Grounded 截图 — ${formatDate(img.date_taken)}"
             loading="lazy"
           >
@@ -170,7 +170,7 @@
     // Brief fade by removing and re-adding
     dom.lightboxImg.style.opacity = '0';
     setTimeout(() => {
-      dom.lightboxImg.src = `images/screenshots/full/${img.filename}.webp`;
+      dom.lightboxImg.src = `images/screenshots/full/${img.id}.webp`;
       dom.lightboxImg.alt = `Grounded 截图 — ${formatDate(img.date_taken)}`;
       dom.lightboxImg.style.opacity = '1';
     }, 80);
