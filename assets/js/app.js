@@ -12,8 +12,6 @@
     saves: [],
     changelog: [],
     currentChangelogFilter: 'all',
-    searchTerm: '',
-    versionFilter: 'all',
     activeSaveId: null,
   };
 
@@ -27,12 +25,9 @@
     savesGrid: $('#saves-grid'),
     savesError: $('#saves-error'),
     savesEmpty: $('#saves-empty'),
-    savesNoResults: $('#saves-no-results'),
     changelogTimeline: $('#changelog-timeline'),
     changelogError: $('#changelog-error'),
     changelogEmpty: $('#changelog-empty'),
-    searchInput: $('#search-input'),
-    versionFilter: $('#version-filter'),
     modalOverlay: $('#modal-overlay'),
     modalTitle: $('#modal-title'),
     modalBody: $('#modal-body'),
@@ -63,14 +58,6 @@
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   }
 
-  function debounce(fn, ms) {
-    let timer;
-    return function (...args) {
-      clearTimeout(timer);
-      timer = setTimeout(() => fn.apply(this, args), ms);
-    };
-  }
-
   function hideAll(els) {
     Object.values(els).forEach((el) => el && el.classList.add('hidden'));
   }
@@ -89,7 +76,6 @@
       STATE.saves = results[0].value.saves || [];
       renderSaves();
       renderStats();
-      populateVersionFilter();
       if (results[0].value.last_updated) {
         dom.footerDate.textContent = formatDate(results[0].value.last_updated);
       }
@@ -123,67 +109,18 @@
   /* ==========================================================
      Saves Rendering
      ========================================================== */
-  function getFilteredSaves() {
-    let saves = STATE.saves;
-
-    // Search
-    if (STATE.searchTerm) {
-      const q = STATE.searchTerm.toLowerCase();
-      saves = saves.filter((s) => {
-        const searchable = [
-          s.title, s.description,
-          ...(s.tags || []),
-          ...(s.stats?.players || []),
-          ...(s.stats?.bases || []),
-        ].join(' ').toLowerCase();
-        return searchable.includes(q);
-      });
-    }
-
-    // Version filter
-    if (STATE.versionFilter !== 'all') {
-      saves = saves.filter((s) => s.game_version === STATE.versionFilter);
-    }
-
-    return saves;
-  }
-
-  function populateVersionFilter() {
-    const versions = [...new Set(STATE.saves.map((s) => s.game_version).filter(Boolean))].sort().reverse();
-    const select = dom.versionFilter;
-    // Keep the "all" option, remove others
-    while (select.options.length > 1) select.remove(1);
-    versions.forEach((v) => {
-      const opt = document.createElement('option');
-      opt.value = v;
-      opt.textContent = 'v' + v;
-      select.appendChild(opt);
-    });
-  }
-
   function renderSaves() {
-    const filtered = getFilteredSaves();
-
     // Empty states
     if (!STATE.saves.length) {
       dom.savesGrid.classList.add('hidden');
       dom.savesEmpty.classList.remove('hidden');
-      dom.savesNoResults.classList.add('hidden');
-      return;
-    }
-
-    if (!filtered.length) {
-      dom.savesGrid.classList.add('hidden');
-      dom.savesEmpty.classList.add('hidden');
-      dom.savesNoResults.classList.remove('hidden');
       return;
     }
 
     dom.savesGrid.classList.remove('hidden');
     dom.savesEmpty.classList.add('hidden');
-    dom.savesNoResults.classList.add('hidden');
 
-    dom.savesGrid.innerHTML = filtered.map((save) => {
+    dom.savesGrid.innerHTML = STATE.saves.map((save) => {
       const stats = save.stats || {};
       const playerList = (stats.players || []).slice(0, 2).join(', ');
       const extraPlayers = (stats.players || []).length > 2 ? ` +${stats.players.length - 2}` : '';
@@ -403,29 +340,6 @@
      Event Handlers
      ========================================================== */
 
-  // Search
-  const handleSearch = debounce(function () {
-    STATE.searchTerm = dom.searchInput.value.trim();
-    renderSaves();
-  }, 150);
-
-  dom.searchInput.addEventListener('input', handleSearch);
-
-  // Version filter
-  dom.versionFilter.addEventListener('change', function () {
-    STATE.versionFilter = this.value;
-    renderSaves();
-  });
-
-  // Reset search
-  $('#btn-reset-search')?.addEventListener('click', function () {
-    dom.searchInput.value = '';
-    dom.versionFilter.value = 'all';
-    STATE.searchTerm = '';
-    STATE.versionFilter = 'all';
-    renderSaves();
-  });
-
   // Retry buttons
   $('#btn-retry-saves')?.addEventListener('click', async function () {
     try {
@@ -435,7 +349,6 @@
       dom.savesError.classList.add('hidden');
       renderSaves();
       renderStats();
-      populateVersionFilter();
     } catch {
       // still error
     }

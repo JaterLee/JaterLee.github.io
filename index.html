@@ -88,20 +88,6 @@
         <h2 class="section-title" id="saves-heading">存档文件</h2>
         <p class="section-desc">点击下载朋友的存档，或者将你的存档分享给大家</p>
 
-        <!-- Search & Filter -->
-        <div class="saves-toolbar" role="search" aria-label="搜索存档">
-          <div class="search-box">
-            <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <input type="text" id="search-input" class="search-input" placeholder="搜索存档..." aria-label="搜索存档">
-          </div>
-          <div class="filter-group">
-            <label for="version-filter" class="sr-only">按版本筛选</label>
-            <select id="version-filter" class="filter-select" aria-label="按游戏版本筛选">
-              <option value="all">所有版本</option>
-            </select>
-          </div>
-        </div>
-
         <!-- Saves Grid -->
         <div class="saves-grid" id="saves-grid" role="list" aria-label="存档列表">
           <!-- JS populated -->
@@ -120,11 +106,6 @@
           <p class="empty-hint">把存档 zip 文件放到 saves 目录，然后在 data/saves.json 中添加记录</p>
         </div>
 
-        <!-- No Results State -->
-        <div class="empty-state hidden" id="saves-no-results">
-          <p>没有匹配的存档</p>
-          <button class="btn btn-reset" id="btn-reset-search">清除筛选条件</button>
-        </div>
       </div>
     </section>
 
