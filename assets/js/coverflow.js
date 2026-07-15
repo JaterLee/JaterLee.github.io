@@ -102,6 +102,25 @@
         <div class="coverflow-empty-icon">📸</div>
         <p>还没有截图，去游戏中拍照吧</p>
       </div>
+      <div class="coverflow-lightbox hidden" id="coverflow-lightbox" aria-hidden="true">
+        <div class="coverflow-lb-bg" id="coverflow-lb-bg"></div>
+        <button class="coverflow-lb-close" id="coverflow-lb-close" aria-label="关闭">
+          <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <button class="coverflow-lb-arrow coverflow-lb-prev" id="coverflow-lb-prev" aria-label="上一张">
+          <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="coverflow-lb-arrow coverflow-lb-next" id="coverflow-lb-next" aria-label="下一张">
+          <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <div class="coverflow-lb-content">
+          <img src="" alt="" id="coverflow-lb-img">
+        </div>
+        <div class="coverflow-lb-info">
+          <span id="coverflow-lb-date"></span>
+          <span id="coverflow-lb-counter"></span>
+        </div>
+      </div>
     `;
 
     stage = $('#coverflow-stage');
@@ -206,6 +225,57 @@
   }
 
   /* ==========================================================
+     Lightbox
+     ========================================================== */
+  function openLightbox() {
+    const lb = $('#coverflow-lightbox');
+    if (!lb) return;
+    stopAutoTimer();
+    updateLightboxImage();
+    lb.classList.remove('hidden');
+    lb.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+    $('#coverflow-lb-close').focus();
+  }
+
+  function closeLightbox() {
+    const lb = $('#coverflow-lightbox');
+    if (!lb) return;
+    lb.classList.add('hidden');
+    lb.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+    startAutoTimer();
+  }
+
+  function updateLightboxImage() {
+    const img = STATE.images[STATE.centerIndex];
+    if (!img) return;
+    const lbImg = $('#coverflow-lb-img');
+    if (lbImg) {
+      lbImg.style.opacity = '0';
+      setTimeout(function () {
+        lbImg.src = 'images/screenshots/full/' + img.id + '.webp';
+        lbImg.alt = 'Grounded 截图';
+        lbImg.style.opacity = '1';
+      }, 80);
+    }
+    const lbDate = $('#coverflow-lb-date');
+    if (lbDate) lbDate.textContent = formatDateShort(img.date_taken);
+    const lbCounter = $('#coverflow-lb-counter');
+    if (lbCounter) lbCounter.textContent = (STATE.centerIndex + 1) + ' / ' + STATE.images.length;
+  }
+
+  function lightboxPrev() {
+    showPrev();
+    updateLightboxImage();
+  }
+
+  function lightboxNext() {
+    showNext();
+    updateLightboxImage();
+  }
+
+  /* ==========================================================
      Event Bindings
      ========================================================== */
   function bindEvents() {
@@ -213,15 +283,21 @@
     prevBtn.addEventListener('click', showPrev);
     nextBtn.addEventListener('click', showNext);
 
-    // Click on side cards to navigate to them
+    // Lightbox buttons
+    $('#coverflow-lb-close').addEventListener('click', closeLightbox);
+    $('#coverflow-lb-bg').addEventListener('click', closeLightbox);
+    $('#coverflow-lb-prev').addEventListener('click', lightboxPrev);
+    $('#coverflow-lb-next').addEventListener('click', lightboxNext);
+
+    // Click on cards
     stage.addEventListener('click', function (e) {
       const card = e.target.closest('.coverflow-card');
       if (!card) return;
       const idx = parseInt(card.dataset.index);
       const pos = parseInt(card.dataset.pos);
       if (pos === 0) {
-        // Click center card → open gallery
-        window.location.href = 'gallery.html';
+        // Click center card → open lightbox
+        openLightbox();
       } else {
         // Click side card → bring to center
         navigateTo(idx);
@@ -238,7 +314,24 @@
 
     // Keyboard
     document.addEventListener('keydown', function (e) {
-      // Only if coverflow is in viewport
+      const lb = $('#coverflow-lightbox');
+      const lbOpen = lb && !lb.classList.contains('hidden');
+
+      if (lbOpen) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          closeLightbox();
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          lightboxPrev();
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          lightboxNext();
+        }
+        return;
+      }
+
+      // Coverflow navigation (only when in viewport)
       const section = $('#coverflow-section');
       if (!section) return;
       const rect = section.getBoundingClientRect();
@@ -253,7 +346,7 @@
       }
     });
 
-    // Touch swipe
+    // Touch swipe on coverflow stage
     let touchStartX = 0;
     stage.addEventListener('touchstart', function (e) {
       touchStartX = e.touches[0].clientX;
@@ -267,6 +360,21 @@
         else showNext();
       }
       startAutoTimer();
+    });
+
+    // Touch swipe in lightbox
+    let lbTouchStartX = 0;
+    const lbEl = $('#coverflow-lightbox');
+    lbEl.addEventListener('touchstart', function (e) {
+      lbTouchStartX = e.touches[0].clientX;
+    });
+
+    lbEl.addEventListener('touchend', function (e) {
+      const dx = e.changedTouches[0].clientX - lbTouchStartX;
+      if (Math.abs(dx) > 50) {
+        if (dx > 0) lightboxPrev();
+        else lightboxNext();
+      }
     });
 
     // Pause on hover
