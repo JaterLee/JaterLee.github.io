@@ -3,11 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Grounded 存档分享 — 朋友之间的后院冒险记录">
-  <title>Grounded Saves — 后院存档分享</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+  <meta name="description" content="Jater 的游戏记录 — 存档分享、冒险日志、读书笔记">
+  <title>Jater 的游戏记录</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+  <!-- Google Font: Noto Serif SC for Dynasty Warriors Chinese calligraphy -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700;900&display=swap" rel="stylesheet">
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/dw-theme.css">
   <link rel="stylesheet" href="assets/css/coverflow.css">
+  <link rel="stylesheet" href="assets/css/module-grounded.css">
+  <link rel="stylesheet" href="assets/css/module-ghost.css">
+  <link rel="stylesheet" href="assets/css/module-history.css">
+  <!-- Scripts (deferred) -->
+  <script defer src="assets/js/dw-navigation.js"></script>
   <script defer src="assets/js/app.js"></script>
   <script defer src="assets/js/coverflow.js"></script>
 </head>
@@ -19,13 +30,13 @@
   <!-- Header / Navigation -->
   <header class="site-header" id="site-header">
     <div class="header-inner container">
-      <a href="#" class="logo" aria-label="Grounded Saves 首页">
+      <a href="#" class="logo" aria-label="Jater 的游戏记录 首页">
         <svg class="logo-icon" viewBox="0 0 40 40" width="36" height="36" aria-hidden="true">
-          <path d="M20 2c-2 6-6 10-8 16-1 3 0 7 2 9 3 3 9 3 12 0 2-2 3-6 2-9-2-6-6-10-8-16z" fill="#4a7c59"/>
-          <path d="M20 8c-1 3-3 5-4 8-1 2 0 3 1 4l3 2 3-2c1-1 2-2 1-4-1-3-3-5-4-8z" fill="#6b9e7a"/>
-          <rect x="17" y="27" width="6" height="8" rx="2" fill="#6b4f2e"/>
+          <path d="M20 2c-2 6-6 10-8 16-1 3 0 7 2 9 3 3 9 3 12 0 2-2 3-6 2-9-2-6-6-10-8-16z" fill="#dbb42c"/>
+          <circle cx="20" cy="16" r="5" fill="#f0d080"/>
+          <rect x="17" y="27" width="6" height="8" rx="2" fill="#8a7322"/>
         </svg>
-        <span class="logo-text">Grounded Saves</span>
+        <span class="logo-text">Jater 的游戏记录</span>
       </a>
 
       <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="打开菜单">
@@ -35,8 +46,6 @@
       </button>
 
       <nav class="nav-menu" id="nav-menu" role="navigation" aria-label="主导航">
-        <a href="#saves" class="nav-link" data-section="saves">存档</a>
-        <a href="#changelog" class="nav-link" data-section="changelog">日志</a>
         <a href="gallery.html" class="nav-link">📸 画廊</a>
         <a href="admin.html" class="nav-link" title="管理后台">🔧</a>
         <a href="https://github.com/JaterLee/JaterLee.github.io" class="nav-link nav-link-gh" target="_blank" rel="noopener" aria-label="GitHub 仓库">
@@ -47,106 +56,223 @@
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main id="main-content">
+  <!-- Main Content: DW Two-Panel Layout -->
+  <main id="main-content" class="dw-main">
 
-    <!-- Hero Section -->
-    <section class="hero" id="hero" aria-label="首页横幅">
-      <div class="hero-overlay"></div>
-      <div class="hero-grass" aria-hidden="true"></div>
-      <div class="hero-content container">
-        <h1 class="hero-title">后院冒险</h1>
-        <p class="hero-subtitle">与朋友分享你的 Grounded 存档，记录每一次精彩的冒险旅程</p>
-        <div class="hero-stats" id="hero-stats">
-          <div class="hero-stat">
-            <span class="hero-stat-number" id="stat-saves">--</span>
-            <span class="hero-stat-label">存档文件</span>
-          </div>
-          <div class="hero-stat">
-            <span class="hero-stat-number" id="stat-days">--</span>
-            <span class="hero-stat-label">总存活天数</span>
-          </div>
-          <div class="hero-stat">
-            <span class="hero-stat-number" id="stat-updates">--</span>
-            <span class="hero-stat-label">冒险记录</span>
+    <!-- ═══════════════ LEFT PANEL: Character Selection ═══════════════ -->
+    <aside class="dw-left-panel" aria-label="模块选择">
+      <div class="dw-panel-header">
+        <h2 class="dw-panel-title">后院</h2>
+        <p class="dw-panel-subtitle">Jater's Journal</p>
+        <div class="dw-panel-divider" aria-hidden="true"></div>
+      </div>
+
+      <!-- Disc Wheel Stage -->
+      <div class="dw-circular-stage" id="dw-circular-stage">
+        <div class="dw-disc" id="dw-disc">
+          <div class="dw-disc-bg" aria-hidden="true"></div>
+          <div class="dw-disc-inner-ring" aria-hidden="true"></div>
+          <div class="dw-disc-ring" id="dw-disc-ring" role="tablist" aria-label="模块选择">
+            <!-- JS populated — cards orbit on disc -->
           </div>
         </div>
       </div>
-      <div class="scroll-indicator" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="32" height="32"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 9l6 6 6-6"/></svg>
+
+      <div class="dw-panel-footer" aria-hidden="true">
+        <p class="dw-panel-footer-text">🌿 Jater's Game Journal</p>
       </div>
-    </section>
+    </aside>
 
-    <!-- Coverflow Screenshot Banner -->
-    <section class="coverflow-section" id="coverflow-section" aria-label="截图轮播">
-      <!-- JS populated -->
-    </section>
+    <!-- ═══════════════ RIGHT PANEL: Module Content ═══════════════ -->
+    <section class="dw-right-panel" id="dw-right-panel">
 
-    <!-- Saves Section -->
-    <section class="saves-section section" id="saves" aria-labelledby="saves-heading">
-      <div class="container">
-        <h2 class="section-title" id="saves-heading">存档文件</h2>
-        <p class="section-desc">点击下载朋友的存档，或者将你的存档分享给大家</p>
+      <!-- ───── MODULE: Grounded (禁闭求生) ───── -->
+      <div id="module-grounded" class="module-content active" role="tabpanel" aria-label="禁闭求生">
+
+        <!-- Module Header with Stats -->
+        <div class="module-header grounded-header">
+          <div class="module-header-icon" aria-hidden="true">🕷️</div>
+          <div class="module-header-info">
+            <h2 class="module-header-title">玩禁闭求生</h2>
+            <p class="module-header-desc">与朋友在后院冒险的记录</p>
+          </div>
+          <div class="module-stats" id="grounded-stats">
+            <div class="module-stat">
+              <span class="module-stat-number" id="stat-saves">--</span>
+              <span class="module-stat-label">存档</span>
+            </div>
+            <div class="module-stat">
+              <span class="module-stat-number" id="stat-days">--</span>
+              <span class="module-stat-label">存活天数</span>
+            </div>
+            <div class="module-stat">
+              <span class="module-stat-number" id="stat-updates">--</span>
+              <span class="module-stat-label">记录</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coverflow Screenshot Carousel -->
+        <section class="coverflow-section" id="coverflow-section" aria-label="截图轮播">
+          <!-- JS populated by coverflow.js -->
+        </section>
 
         <!-- Saves Grid -->
-        <div class="saves-grid" id="saves-grid" role="list" aria-label="存档列表">
-          <!-- JS populated -->
-        </div>
+        <section class="saves-section section" id="saves" aria-labelledby="saves-heading">
+          <div class="container">
+            <h2 class="section-title" id="saves-heading">存档文件</h2>
+            <p class="section-desc">点击下载朋友的存档，或者将你的存档分享给大家</p>
 
-        <!-- Error State -->
-        <div class="error-state hidden" id="saves-error" role="alert">
-          <p>无法加载存档数据，请稍后再试。</p>
-          <button class="btn btn-retry" id="btn-retry-saves">重新加载</button>
-        </div>
+            <div class="saves-grid" id="saves-grid" role="list" aria-label="存档列表">
+              <!-- JS populated by app.js -->
+            </div>
 
-        <!-- Empty State -->
-        <div class="empty-state hidden" id="saves-empty">
-          <div class="empty-icon" aria-hidden="true">📂</div>
-          <p>还没有上传存档</p>
-          <p class="empty-hint">把存档 zip 文件放到 saves 目录，然后在 data/saves.json 中添加记录</p>
-        </div>
+            <div class="error-state hidden" id="saves-error" role="alert">
+              <p>无法加载存档数据，请稍后再试。</p>
+              <button class="btn btn-retry" id="btn-retry-saves">重新加载</button>
+            </div>
 
+            <div class="empty-state hidden" id="saves-empty">
+              <div class="empty-icon" aria-hidden="true">📂</div>
+              <p>还没有上传存档</p>
+              <p class="empty-hint">把存档 zip 文件放到 saves 目录，然后在 data/saves.json 中添加记录</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Changelog Timeline -->
+        <section class="changelog-section section" id="changelog" aria-labelledby="changelog-heading">
+          <div class="container">
+            <h2 class="section-title" id="changelog-heading">冒险日志</h2>
+            <p class="section-desc">记录每一次重要的游戏进展和变化</p>
+
+            <div class="changelog-filters" role="tablist" aria-label="按类型筛选日志">
+              <button class="changelog-filter-btn active" data-filter="all" role="tab" aria-selected="true">全部</button>
+              <button class="changelog-filter-btn" data-filter="milestone" role="tab" aria-selected="false">🏆 里程碑</button>
+              <button class="changelog-filter-btn" data-filter="build" role="tab" aria-selected="false">🏠 建筑</button>
+              <button class="changelog-filter-btn" data-filter="save" role="tab" aria-selected="false">💾 存档</button>
+              <button class="changelog-filter-btn" data-filter="exploration" role="tab" aria-selected="false">🗺️ 探索</button>
+            </div>
+
+            <div class="timeline" id="changelog-timeline" role="list" aria-label="冒险日志时间线">
+              <!-- JS populated by app.js -->
+            </div>
+
+            <div class="error-state hidden" id="changelog-error" role="alert">
+              <p>无法加载日志数据，请稍后再试。</p>
+              <button class="btn btn-retry" id="btn-retry-changelog">重新加载</button>
+            </div>
+
+            <div class="empty-state hidden" id="changelog-empty">
+              <div class="empty-icon" aria-hidden="true">📝</div>
+              <p>还没有冒险记录</p>
+              <p class="empty-hint">在 data/changelog.json 中添加第一条记录吧</p>
+            </div>
+          </div>
+        </section>
       </div>
-    </section>
 
-    <!-- Changelog Section -->
-    <section class="changelog-section section" id="changelog" aria-labelledby="changelog-heading">
-      <div class="container">
-        <h2 class="section-title" id="changelog-heading">冒险日志</h2>
-        <p class="section-desc">记录每一次重要的游戏进展和变化</p>
+      <!-- ───── MODULE: Ghost of Tsushima (对马岛之魂) ───── -->
+      <div id="module-ghost" class="module-content" role="tabpanel" aria-label="对马岛之魂">
 
-        <!-- Filter Buttons -->
-        <div class="changelog-filters" role="tablist" aria-label="按类型筛选日志">
-          <button class="changelog-filter-btn active" data-filter="all" role="tab" aria-selected="true">全部</button>
-          <button class="changelog-filter-btn" data-filter="milestone" role="tab" aria-selected="false">🏆 里程碑</button>
-          <button class="changelog-filter-btn" data-filter="build" role="tab" aria-selected="false">🏠 建筑</button>
-          <button class="changelog-filter-btn" data-filter="save" role="tab" aria-selected="false">💾 存档</button>
-          <button class="changelog-filter-btn" data-filter="exploration" role="tab" aria-selected="false">🗺️ 探索</button>
+        <div class="module-header ghost-header">
+          <div class="module-header-icon" aria-hidden="true">🗡️</div>
+          <div class="module-header-info">
+            <h2 class="module-header-title">玩对马岛之魂</h2>
+            <p class="module-header-desc">武士之路的旅程记录</p>
+          </div>
+          <div class="module-stats" id="ghost-stats">
+            <div class="module-stat">
+              <span class="module-stat-number">--</span>
+              <span class="module-stat-label">游戏进度</span>
+            </div>
+            <div class="module-stat">
+              <span class="module-stat-number">--</span>
+              <span class="module-stat-label">游玩时长</span>
+            </div>
+          </div>
         </div>
 
-        <!-- Timeline -->
-        <div class="timeline" id="changelog-timeline" role="list" aria-label="冒险日志时间线">
-          <!-- JS populated -->
+        <div class="ghost-placeholder">
+          <div class="ghost-placeholder-icon" aria-hidden="true">🗡️</div>
+          <p class="ghost-placeholder-text">对马岛之魂的冒险记录正在整理中。<br>后续将在这里展示游戏进度、剧情笔记和精彩截图。</p>
         </div>
 
-        <!-- Error State -->
-        <div class="error-state hidden" id="changelog-error" role="alert">
-          <p>无法加载日志数据，请稍后再试。</p>
-          <button class="btn btn-retry" id="btn-retry-changelog">重新加载</button>
-        </div>
-
-        <!-- Empty State -->
-        <div class="empty-state hidden" id="changelog-empty">
-          <div class="empty-icon" aria-hidden="true">📝</div>
-          <p>还没有冒险记录</p>
-          <p class="empty-hint">在 data/changelog.json 中添加第一条记录吧</p>
+        <!-- Sample session cards (preview) -->
+        <div class="module-preview-cards">
+          <div class="module-preview-card ghost-session-card">
+            <div class="ghost-session-card-title">对马岛序章</div>
+            <div class="ghost-session-card-date">2026-07-16</div>
+            <div class="ghost-session-card-desc">志村大人被蒙古军俘虏，境井仁成为最后希望。完成序章剧情，学会基础战斗技巧。</div>
+            <div class="ghost-session-card-milestones">
+              <span class="ghost-milestone-tag">完成序章</span>
+              <span class="ghost-milestone-tag">武士刀连击</span>
+              <span class="ghost-milestone-tag">弓箭</span>
+            </div>
+          </div>
+          <div class="module-preview-card ghost-session-card">
+            <div class="ghost-session-card-title">初探对马岛</div>
+            <div class="ghost-session-card-date">即将到来...</div>
+            <div class="ghost-session-card-desc">探索开放世界，解放被蒙古军占领的村庄，收集资源升级装备。</div>
+          </div>
         </div>
       </div>
-    </section>
 
+      <!-- ───── MODULE: Five Dynasties History (五代十国史) ───── -->
+      <div id="module-history" class="module-content" role="tabpanel" aria-label="五代十国史">
+
+        <div class="module-header history-header">
+          <div class="module-header-icon" aria-hidden="true">📜</div>
+          <div class="module-header-info">
+            <h2 class="module-header-title">看五代十国史</h2>
+            <p class="module-header-desc">读史笔记与感悟</p>
+          </div>
+          <div class="module-stats" id="history-stats">
+            <div class="module-stat">
+              <span class="module-stat-number">--</span>
+              <span class="module-stat-label">已读章节</span>
+            </div>
+            <div class="module-stat">
+              <span class="module-stat-number">--</span>
+              <span class="module-stat-label">笔记</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="history-placeholder">
+          <div class="history-placeholder-icon" aria-hidden="true">📜</div>
+          <p class="history-placeholder-text">五代十国的读书笔记正在整理中。<br>后续将在这里记录章节摘要、历史人物和阅读感悟。</p>
+        </div>
+
+        <!-- Sample chapter cards (preview) -->
+        <div class="module-preview-cards">
+          <div class="module-preview-card history-chapter-card">
+            <div class="history-chapter-header">
+              <span class="history-chapter-number">一</span>
+              <span class="history-chapter-title">朱温篡唐 — 后梁的建立</span>
+              <span class="history-chapter-date">07-15</span>
+            </div>
+            <div class="history-chapter-summary">朱温原是黄巢部将，后降唐赐名全忠。最终篡唐建立后梁，开启五代十国乱世。</div>
+            <div class="history-events">
+              <span class="history-event-tag">白马之祸 (904)</span>
+              <span class="history-event-tag">朱温称帝 (907)</span>
+            </div>
+          </div>
+          <div class="module-preview-card history-chapter-card">
+            <div class="history-chapter-header">
+              <span class="history-chapter-number">二</span>
+              <span class="history-chapter-title">李存勖灭梁 — 后唐的建立</span>
+              <span class="history-chapter-date">即将到来...</span>
+            </div>
+            <div class="history-chapter-summary">李克用之子李存勖继承父志，最终攻灭后梁，建立后唐，一度收复燕云十六州。</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
   </main>
 
-  <!-- Save Detail Modal -->
+  <!-- Save Detail Modal (global, used by Grounded module) -->
   <div class="modal-overlay hidden" id="modal-overlay" aria-hidden="true">
     <div class="modal" id="save-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div class="modal-header">
@@ -175,8 +301,8 @@
   <!-- Footer -->
   <footer class="site-footer" role="contentinfo">
     <div class="container">
-      <p class="footer-text">🌿 由 Grounded 爱好者用爱构建</p>
-      <p class="footer-text footer-disclaimer">Grounded 是 Obsidian Entertainment 的商标。本站点与 Obsidian Entertainment 无关。</p>
+      <p class="footer-text">🌿 由游戏爱好者用爱构建</p>
+      <p class="footer-text footer-disclaimer">Grounded 是 Obsidian Entertainment 的商标。Ghost of Tsushima 是 Sony Interactive Entertainment 的商标。</p>
       <p class="footer-text footer-date">最后更新：<span id="footer-date">--</span></p>
     </div>
   </footer>

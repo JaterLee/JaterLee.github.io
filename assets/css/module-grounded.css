@@ -1,0 +1,283 @@
+/* ============================================================
+   Module: Grounded (禁闭求生)
+   Dark theme overrides for Grounded content in DW layout
+   ============================================================ */
+
+/* ── Section backgrounds → transparent on dark DW bg ── */
+.saves-section,
+.changelog-section {
+  background: transparent;
+}
+
+/* ── Section typography overrides ── */
+.section-title {
+  font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;
+  color: var(--dw-text-gold);
+}
+
+.section-desc {
+  color: var(--dw-text-muted);
+}
+
+/* ── Save Cards on dark background ── */
+.save-card {
+  background: var(--dw-bg-card);
+  border: 1px solid rgba(219, 180, 44, 0.12);
+  color: var(--dw-text);
+  box-shadow: none;
+}
+
+.save-card:hover {
+  border-color: rgba(219, 180, 44, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.save-card-body {
+  color: var(--dw-text);
+}
+
+.save-card-title {
+  color: var(--dw-text);
+}
+
+.save-card-meta {
+  color: var(--dw-text-muted);
+}
+
+.save-card-badge {
+  background: rgba(74, 124, 89, 0.2);
+  color: #8fbf9f;
+}
+
+.save-card-badge.version {
+  background: rgba(219, 180, 44, 0.15);
+  color: var(--dw-gold-300);
+}
+
+.save-card-stats {
+  color: var(--dw-text-muted);
+}
+
+.save-card-players {
+  color: var(--dw-text-muted);
+}
+
+/* Save card actions */
+.save-card-actions {
+  border-top-color: rgba(219, 180, 44, 0.1);
+}
+
+.btn-detail {
+  background: rgba(219, 180, 44, 0.12);
+  color: var(--dw-gold-300);
+}
+
+.btn-detail:hover {
+  background: rgba(219, 180, 44, 0.2);
+}
+
+.btn-dl {
+  background: var(--green-700);
+  color: var(--dw-text);
+}
+
+.btn-dl:hover {
+  background: var(--green-500);
+}
+
+/* ── Changelog Timeline on dark background ── */
+.changelog-section {
+  background: var(--dw-bg-primary);
+}
+
+.timeline::before {
+  background: var(--dw-gold-900);
+}
+
+.timeline-entry {
+  /* Keep existing layout, override colors */
+}
+
+.timeline-dot {
+  border-color: var(--dw-bg-primary);
+}
+
+.timeline-date {
+  color: var(--dw-text-muted);
+}
+
+.timeline-badge {
+  /* Keep type-specific colors, they already work on dark bg */
+}
+
+.timeline-badge.type-note {
+  background: rgba(219, 180, 44, 0.12);
+  color: var(--dw-gold-300);
+}
+
+.timeline-title {
+  color: var(--dw-text);
+}
+
+.timeline-desc {
+  color: var(--dw-text-muted);
+}
+
+/* ── Changelog Filter Buttons on dark background ── */
+.changelog-filter-btn {
+  background: var(--dw-bg-card);
+  color: var(--dw-text-muted);
+  border-color: rgba(219, 180, 44, 0.15);
+}
+
+.changelog-filter-btn:hover {
+  border-color: var(--dw-gold-700);
+  background: var(--dw-bg-card-hover);
+  color: var(--dw-text);
+}
+
+.changelog-filter-btn.active {
+  background: var(--dw-gold-700);
+  color: #1a1814;
+  border-color: var(--dw-gold-500);
+  font-weight: 600;
+}
+
+/* ── Coverflow section on dark background ── */
+.coverflow-section {
+  background: linear-gradient(160deg, #0d0d0d 0%, #1a1814 40%, #0d0d0d 100%);
+}
+
+.coverflow-section::after {
+  background: radial-gradient(ellipse at 30% 50%, rgba(219,180,44,0.06) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 50%, rgba(74,124,89,0.06) 0%, transparent 50%);
+}
+
+/* ── Modal on dark theme ── */
+.modal {
+  background: var(--dw-bg-card);
+  color: var(--dw-text);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  border-bottom-color: rgba(219, 180, 44, 0.15);
+}
+
+.modal-title {
+  color: var(--dw-text-gold);
+}
+
+.modal-close {
+  color: var(--dw-text-muted);
+}
+
+.modal-close:hover {
+  background: rgba(219, 180, 44, 0.1);
+  color: var(--dw-text);
+}
+
+.modal-stat {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: var(--radius-sm);
+}
+
+.modal-stat-label {
+  color: var(--dw-text-muted);
+}
+
+.modal-stat-value {
+  color: var(--dw-text);
+}
+
+.modal-section-title {
+  color: var(--dw-gold-300);
+}
+
+.modal-desc {
+  color: var(--dw-text-muted);
+}
+
+.modal-tag {
+  background: rgba(74, 124, 89, 0.15);
+  color: #8fbf9f;
+}
+
+.modal-biome {
+  background: rgba(219, 180, 44, 0.12);
+  color: var(--dw-gold-300);
+}
+
+.modal-boss {
+  background: rgba(192, 57, 43, 0.12);
+  color: #e8a0a0;
+}
+
+.modal-highlights {
+  color: var(--dw-text);
+}
+
+.modal-highlights li::marker {
+  color: var(--green-500);
+}
+
+.modal-footer {
+  border-top-color: rgba(219, 180, 44, 0.1);
+}
+
+/* ── Scroll to Top button on dark bg ── */
+.scroll-top {
+  background: var(--dw-bg-card);
+  color: var(--dw-text-muted);
+  border-color: rgba(219, 180, 44, 0.2);
+}
+
+.scroll-top:hover {
+  background: var(--dw-bg-card-hover);
+  color: var(--dw-gold-300);
+  border-color: var(--dw-gold-500);
+}
+
+/* ── Error / Empty states on dark bg ── */
+.error-state {
+  color: var(--dw-text-muted);
+}
+
+.empty-state {
+  color: var(--dw-text-muted);
+}
+
+.btn-retry {
+  background: var(--dw-bg-card);
+  color: var(--dw-text-gold);
+  border: 1px solid var(--dw-gold-700);
+}
+
+.btn-retry:hover {
+  background: var(--dw-bg-card-hover);
+  border-color: var(--dw-gold-500);
+}
+
+/* ── Header dark theme adaptation ── */
+.site-header {
+  background: rgba(13, 13, 13, 0.94);
+  border-bottom: 1px solid rgba(219, 180, 44, 0.12);
+}
+
+.site-header .nav-link {
+  color: rgba(232, 220, 200, 0.8);
+}
+
+.site-header .nav-link:hover,
+.site-header .nav-link.active {
+  color: var(--dw-text);
+  background: rgba(219, 180, 44, 0.1);
+}
+
+/* ── Footer on dark bg ── */
+.site-footer {
+  background: var(--dw-bg-secondary);
+  border-top: 1px solid rgba(219, 180, 44, 0.1);
+  color: var(--dw-text-muted);
+}

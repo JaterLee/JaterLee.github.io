@@ -1,0 +1,157 @@
+/* ============================================================
+   Module: Ghost of Tsushima (对马岛之魂)
+   Japanese samurai aesthetic: dark + red accents
+   ============================================================ */
+
+/* ── Module Header Accent ── */
+.module-header.ghost-header {
+  background: linear-gradient(135deg, rgba(26, 8, 8, 0.6) 0%, rgba(45, 16, 16, 0.4) 100%);
+}
+
+.module-header.ghost-header .module-header-title {
+  color: #e8b4b4;
+}
+
+.module-header.ghost-header .module-stat-number {
+  color: #e74c3c;
+}
+
+/* ── Ghost Content Area ── */
+.ghost-content {
+  padding: var(--space-6) var(--space-8);
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+/* ── Placeholder for initial framework ── */
+.ghost-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-16) var(--space-8);
+}
+
+.ghost-placeholder-icon {
+  font-size: 5rem;
+  margin-bottom: var(--space-6);
+  opacity: 0.5;
+  filter: grayscale(0.2);
+}
+
+.ghost-placeholder-text {
+  color: var(--dw-text-muted);
+  font-size: 1rem;
+  max-width: 24rem;
+  line-height: 1.7;
+  margin-bottom: var(--space-8);
+}
+
+/* ── Session Cards (for future content) ── */
+.ghost-session-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-8);
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+.ghost-session-card {
+  background: linear-gradient(135deg, #1f1212 0%, #2a1a1a 100%);
+  border: 1px solid rgba(192, 57, 43, 0.2);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.ghost-session-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #c0392b, #8b1a1a);
+  border-radius: 3px 0 0 3px;
+}
+
+.ghost-session-card:hover {
+  border-color: rgba(192, 57, 43, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.ghost-session-card-title {
+  font-family: 'Noto Serif SC', Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #e8b4b4;
+  margin-bottom: var(--space-2);
+}
+
+.ghost-session-card-date {
+  font-size: 0.75rem;
+  color: var(--dw-text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.ghost-session-card-desc {
+  font-size: 0.875rem;
+  color: var(--dw-text-muted);
+  line-height: 1.6;
+}
+
+.ghost-session-card-milestones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.ghost-milestone-tag {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  background: rgba(192, 57, 43, 0.15);
+  color: #e8a0a0;
+  border-radius: var(--radius-full);
+}
+
+/* ── Techniques Grid (for future content) ── */
+.ghost-techniques-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-8);
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+.ghost-technique-card {
+  background: var(--dw-bg-card);
+  border: 1px solid rgba(192, 57, 43, 0.15);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  text-align: center;
+}
+
+.ghost-technique-card.unlocked {
+  border-color: rgba(192, 57, 43, 0.4);
+  background: linear-gradient(135deg, #1f1212 0%, #2a1a1a 100%);
+}
+
+.ghost-technique-name {
+  font-size: 0.85rem;
+  color: var(--dw-text);
+  font-weight: 600;
+}
+
+.ghost-technique-category {
+  font-size: 0.65rem;
+  color: var(--dw-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}

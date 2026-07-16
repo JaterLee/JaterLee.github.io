@@ -392,42 +392,33 @@
     });
   });
 
-  // Scroll to top
-  dom.scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  // Scroll to top — watches the right panel scroll position
+  dom.scrollTop.addEventListener('click', function () {
+    var rightPanel = $('#dw-right-panel');
+    if (rightPanel) {
+      rightPanel.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
 
-  let heroObserver = new IntersectionObserver(
-    (entries) => {
-      dom.scrollTop.classList.toggle('hidden', entries[0].isIntersecting);
-    },
-    { threshold: 0.1 }
-  );
-  heroObserver.observe($('#hero'));
-
-  // Navigation active link
-  const sections = $$('section[id]');
-  let navObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const link = $(`.nav-link[data-section="${entry.target.id}"]`);
-          $$('.nav-link').forEach((l) => l.classList.remove('active'));
-          if (link) link.classList.add('active');
-        }
-      });
-    },
-    { rootMargin: '-50% 0px -50% 0px' }
-  );
-  sections.forEach((s) => navObserver.observe(s));
+  // Show/hide scroll-to-top based on right panel scroll
+  var rightPanel = $('#dw-right-panel');
+  if (rightPanel && dom.scrollTop) {
+    rightPanel.addEventListener('scroll', function () {
+      dom.scrollTop.classList.toggle('hidden', rightPanel.scrollTop < 400);
+    });
+  }
 
   // Mobile nav toggle
   dom.navToggle.addEventListener('click', function () {
-    const expanded = this.getAttribute('aria-expanded') === 'true';
+    var expanded = this.getAttribute('aria-expanded') === 'true';
     this.setAttribute('aria-expanded', !expanded);
     dom.navMenu.classList.toggle('open');
   });
 
-  // Close nav on link click (mobile)
-  $$('.nav-link[data-section]').forEach((link) => {
+  // Close nav on any nav link click (mobile)
+  $$('.nav-link').forEach(function (link) {
     link.addEventListener('click', function () {
       dom.navToggle.setAttribute('aria-expanded', 'false');
       dom.navMenu.classList.remove('open');

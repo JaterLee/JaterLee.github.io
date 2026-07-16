@@ -1,0 +1,29 @@
+{
+  "last_updated": "2026-07-17",
+  "modules": [
+    {
+      "id": "grounded",
+      "name": "玩禁闭求生",
+      "subtitle": "Grounded",
+      "icon": "🕷️",
+      "primary_color": "#4a7c59",
+      "theme": "nature"
+    },
+    {
+      "id": "ghost",
+      "name": "玩对马岛之魂",
+      "subtitle": "Ghost of Tsushima",
+      "icon": "🗡️",
+      "primary_color": "#c0392b",
+      "theme": "japanese"
+    },
+    {
+      "id": "history",
+      "name": "看五代十国史",
+      "subtitle": "Five Dynasties",
+      "icon": "📜",
+      "primary_color": "#dbb42c",
+      "theme": "chinese"
+    }
+  ]
+}

@@ -78,6 +78,27 @@
   /* Transitions */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
+
+  /* ── Dynasty Warriors Theme Colors ── */
+  --dw-bg-primary: #0d0d0d;
+  --dw-bg-secondary: #1a1814;
+  --dw-bg-card: #2a2520;
+  --dw-bg-card-hover: #353028;
+  --dw-gold-300: #f0d080;
+  --dw-gold-500: #dbb42c;
+  --dw-gold-700: #b8952e;
+  --dw-gold-900: #8a7322;
+  --dw-text: #e8dcc8;
+  --dw-text-muted: #9a8e7a;
+  --dw-text-gold: var(--dw-gold-300);
+  --dw-border: var(--dw-gold-700);
+  --dw-glow: 0 0 20px rgba(219, 180, 44, 0.35), 0 0 40px rgba(219, 180, 44, 0.15);
+  --dw-left-width: clamp(260px, 30vw, 380px);
+
+  /* Module Accent Colors */
+  --module-grounded: var(--green-500);
+  --module-ghost: #c0392b;
+  --module-history: #dbb42c;
 }
 
 /* ---------- Reset ---------- */
