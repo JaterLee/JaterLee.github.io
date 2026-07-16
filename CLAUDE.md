@@ -94,3 +94,44 @@ The admin page and sync scripts use the GitHub Contents API to commit files dire
 - **Screenshot IDs**: Parsed from Grounded filename pattern `Grounded_YYYY.MM.DD-HH.MM.SS.png` → `grounded-YYYYMMDD-HHMMSS`
 - **Coverflow carousel**: 3D CSS perspective transforms on `index.html`, positioned between hero and saves sections. Center card opens full-screen lightbox.
 - **No frameworks**: Vanilla everything for zero build overhead on GitHub Pages.
+
+### DW Theme Architecture (2026-07-17)
+
+The homepage was redesigned with a Dynasty Warriors (真三国无双) character-selection aesthetic: a dual-panel layout where the left panel holds a rotating disc-wheel for module selection, and the right panel shows module content.
+
+**Layout**: Two-panel flex — `.dw-main` is a flex container that fills the viewport below the header. `.dw-left-panel` (fixed width `--dw-left-width`) + `.dw-right-panel` (flex: 1, scrollable).
+
+**Disc Wheel Navigation** (`assets/js/dw-navigation.js` + `assets/css/dw-theme.css`):
+- Cards are positioned on a visible circular disc using `transform: rotate(angle) translateY(-radius)`
+- The disc ring (`#dw-disc-ring`) rotates via `transform: rotate(deg)` to bring the active card to the 12-o'clock position
+- Disc rotation uses `cubic-bezier(0.25, 0.1, 0.25, 1)` for smooth easing
+- Active card (class `.dw-card-front`) gets full opacity + color glow. Side cards (`.dw-card-side`) fade to 25% opacity with grayscale as their angular distance from top increases
+- Interaction: click a card on the disc, mouse wheel on the disc area, or keyboard ← → to rotate
+- On mobile (<640px), the disc flattens to a horizontal scrollable tab row
+
+**Design evolution lessons from this session**:
+1. Start with the simplest layout first (linear list), then iterate
+2. 3D `rotateY` (left-right ring) looked wrong for vertical selection — `rotateX` (up-down tilt) or flat `rotate` (disc spin) is more intuitive for selecting items
+3. A visible disc backdrop (`.dw-disc-bg` circle + golden borders) makes the interaction feel grounded — users understand cards are orbiting a physical wheel
+4. Transparent fading (`opacity` based on angular distance) is cleaner than 3D perspective transforms for this use case
+
+**Module System**:
+- Three modules: Grounded (禁闭求生), Ghost of Tsushima (对马岛之魂), Five Dynasties History (五代十国史)
+- Module registry in `data/modules.json`
+- Module content in `<div class="module-content">` containers, toggled via `.active` class
+- Custom event `dw:modulechange` dispatched on switch — allows each module to lazy-load its data on first activation
+- Each module has its own CSS file: `module-grounded.css`, `module-ghost.css`, `module-history.css`
+- Module-specific accent colors: Grounded (green `#4a7c59`), Ghost (red `#c0392b`), History (gold `#dbb42c`)
+- Ghost and History modules are framework-only for now — placeholder content with sample cards, ready for future data
+
+**CSS Architecture**:
+- `style.css`: Base reset, typography, header, footer, modal + all CSS custom properties (including DW `--dw-*` tokens)
+- `dw-theme.css`: DW layout system (two-panel, disc wheel, cards, transitions, responsive)
+- `module-*.css`: Per-module dark-theme overrides and module-specific component styles
+- Module CSS uses scoped selectors (e.g. `.module-header.ghost-header`, `.ghost-content`)
+
+**Integration with existing code**:
+- `app.js` (Grounded data) was minimally modified: removed hero IntersectionObserver, updated scroll-to-top to watch right panel
+- `coverflow.js` unchanged — `#coverflow-section` still exists inside the Grounded module container
+- `gallery.html`, `admin.html` completely unaffected
+- All existing Grounded DOM IDs preserved (`#saves-grid`, `#changelog-timeline`, etc.)
