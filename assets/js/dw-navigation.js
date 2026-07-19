@@ -1,7 +1,10 @@
 /**
  * dw-navigation.js
- * Dynasty Warriors 无双风格 — 圆盘轮播模块导航
- * 卡片在可见圆盘上环绕，活跃卡在顶部居中，其余透明渐隐
+ * Dynasty Warriors 无双风格 — 弧形堆叠卡片模块导航
+ * 卡片沿纵向弧线排列，选中项向左鼓出最大，
+ * 越远越回收（更靠右、更小、旋转角度更大），
+ * 形成一条向左凸出的弧线。
+ * 支持滚轮 / 键盘 / 触摸滑动 / 点击切换。
  */
 (function () {
   'use strict';
@@ -10,24 +13,38 @@
   var $$ = function (sel) { return document.querySelectorAll(sel); };
 
   /* ==========================================================
+     Arc Trajectory Parameters
+     Adjusted for ~280px left panel, 200px card width
+     ========================================================== */
+  var ARC = {
+    ySpacing:    85,    // vertical spacing between cards (px)
+    bulgeX:      55,    // active card max left bulge (px)
+    retractStep: 18,    // retract per step back toward center (px)
+    rotateStep:  6,     // rotation degrees per step
+    maxVisible:  4,     // hide cards beyond this distance
+    activeScale: 1.08,  // active card scale (slightly larger than 1)
+    minScale:    0.7,   // minimum scale
+    scaleStep:   0.14,  // scale reduction per step
+    minOpacity:  0.15,  // minimum opacity
+    opacityStep: 0.42,  // opacity reduction per step
+  };
+
+  /* ==========================================================
      State
      ========================================================== */
   var STATE = {
     modules: [],
     activeModule: 'grounded',
+    activeIndex: 0,
     initialized: {},
-    /** Disc ring rotation in degrees */
-    discRotation: 0,
-    /** Base angle assigned to each module on the disc (degrees) */
-    cardAngles: {},
-    /** Disc radius in px */
-    discRadius: 85,
   };
 
   /* ==========================================================
      DOM Refs
      ========================================================== */
   var discRing = null;
+  var stage = null;
+  var cards = [];
 
   /* ==========================================================
      Module Config
@@ -50,172 +67,113 @@
       console.warn('Failed to load modules.json, fallback:', err.message);
       STATE.modules = getFallbackModules();
     }
-    assignAngles();
+    // Resolve active index
+    var idx = STATE.modules.findIndex(function (m) { return m.id === STATE.activeModule; });
+    STATE.activeIndex = idx >= 0 ? idx : 0;
+    STATE.activeModule = STATE.modules[STATE.activeIndex].id;
     renderAll();
+    render();
   }
 
   /* ==========================================================
-     Angle Assignment — evenly spaced around the disc
+     Shortest delta (cyclic wrapping)
      ========================================================== */
-  function assignAngles() {
-    var count = STATE.modules.length;
-    if (count === 0) return;
-
-    // Cards evenly spaced around full 360° circle
-    var step = 360 / count;
-
-    STATE.modules.forEach(function (mod, i) {
-      // Card 0 at top (0°), others clockwise
-      STATE.cardAngles[mod.id] = i * step;
-    });
+  function shortestDelta(i, cur, n) {
+    var d = i - cur;
+    if (d > n / 2) d -= n;
+    if (d < -n / 2) d += n;
+    return d;
   }
 
   /* ==========================================================
-     Disc Rotation
-     ========================================================== */
-  function getTargetDiscRotation() {
-    // Rotate disc so active card is at top (0° position)
-    var activeAngle = STATE.cardAngles[STATE.activeModule] || 0;
-    return -activeAngle;
-  }
-
-  function applyDiscRotation(animate) {
-    if (!discRing) return;
-    var target = getTargetDiscRotation();
-    STATE.discRotation = target;
-
-    if (animate === false) {
-      discRing.style.transition = 'none';
-    } else {
-      discRing.style.transition = 'transform 0.7s cubic-bezier(0.25, 0.1, 0.25, 1)';
-    }
-
-    discRing.style.transform = 'rotate(' + target + 'deg)';
-
-    if (animate === false) {
-      // Force reflow then restore transition
-      discRing.offsetHeight;
-      discRing.style.transition = 'transform 0.7s cubic-bezier(0.25, 0.1, 0.25, 1)';
-    }
-
-    // Update card opacities based on distance from top
-    updateCardOpacities();
-  }
-
-  /* ==========================================================
-     Card Opacity — fade based on angular distance from top
-     ========================================================== */
-  function updateCardOpacities() {
-    if (!discRing) return;
-    var cards = discRing.querySelectorAll('.dw-character-card');
-
-    cards.forEach(function (card) {
-      var modId = card.getAttribute('data-module');
-      var baseAngle = STATE.cardAngles[modId] || 0;
-      // Effective angle after disc rotation (where 0 = top)
-      var effectiveAngle = ((baseAngle + STATE.discRotation) % 360 + 360) % 360;
-      // Normalize to [-180, 180]
-      if (effectiveAngle > 180) effectiveAngle -= 360;
-      var distFromTop = Math.abs(effectiveAngle);
-
-      // Opacity: fully opaque at top, fades to ~0.25 at farthest
-      var opacity = 1 - (distFromTop / 180) * 0.75;
-      opacity = Math.max(0.25, Math.min(1, opacity));
-
-      card.style.opacity = opacity;
-
-      // Scale: slightly smaller further from top
-      var scale = 1 - (distFromTop / 180) * 0.2;
-      scale = Math.max(0.8, Math.min(1, scale));
-
-      // Apply scale to portrait
-      var portrait = card.querySelector('.dw-character-portrait');
-      if (portrait) {
-        portrait.style.transform = 'scale(' + scale + ')';
-      }
-    });
-  }
-
-  /* ==========================================================
-     Render All
+     Render All Cards (once)
      ========================================================== */
   function renderAll() {
     discRing = $('#dw-disc-ring');
     if (!discRing) return;
 
-    var radius = STATE.discRadius;
-
-    // ── Render Cards ──
     discRing.innerHTML = '';
+    cards = [];
 
-    STATE.modules.forEach(function (mod) {
-      var angle = STATE.cardAngles[mod.id] || 0;
-      var isActive = mod.id === STATE.activeModule;
+    STATE.modules.forEach(function (mod, i) {
+      var el = document.createElement('button');
+      el.className = 'dw-stack-card';
+      el.setAttribute('role', 'tab');
+      el.setAttribute('data-module', mod.id);
+      el.setAttribute('aria-label', mod.name);
+      el.setAttribute('data-index', i);
 
-      var card = document.createElement('button');
-      card.className = 'dw-character-card';
-      card.setAttribute('role', 'tab');
-      card.setAttribute('aria-selected', isActive ? 'true' : 'false');
-      card.setAttribute('data-module', mod.id);
-      card.setAttribute('data-angle', angle);
-      card.setAttribute('tabindex', isActive ? '0' : '-1');
-      card.setAttribute('aria-label', mod.name);
-
-      // Position: rotate to angle, then push out to disc edge
-      card.style.transform = 'rotate(' + angle + 'deg) translateY(-' + radius + 'px)';
-
-      card.innerHTML =
-        '<div class="dw-character-portrait">' + mod.icon + '</div>' +
-        '<div class="dw-character-info">' +
-        '<div class="dw-character-name">' + mod.name + '</div>' +
-        '<div class="dw-character-subtitle">' + mod.subtitle + '</div>' +
+      el.innerHTML =
+        '<div class="dw-stack-card-inner">' +
+          '<span class="dw-stack-card-icon">' + mod.icon + '</span>' +
+          '<div class="dw-stack-card-text">' +
+            '<span class="dw-stack-card-name">' + mod.name + '</span>' +
+            '<span class="dw-stack-card-subtitle">' + mod.subtitle + '</span>' +
+          '</div>' +
         '</div>';
 
-      card.addEventListener('click', function () {
-        var modId = card.getAttribute('data-module');
+      el.addEventListener('click', function () {
+        var modId = el.getAttribute('data-module');
         if (modId && modId !== STATE.activeModule) {
-          selectModule(modId);
+          goToModule(modId);
         }
       });
 
-      discRing.appendChild(card);
+      discRing.appendChild(el);
+      cards.push(el);
     });
 
-    // ── Initial states ──
-    updateCardStates();
-    applyDiscRotation(false);
+    // Trigger initial activation (no animation)
     activateModule(STATE.activeModule);
   }
 
   /* ==========================================================
-     Update Card Visual States (front vs side)
+     Render — apply arc positions to all cards
      ========================================================== */
-  function updateCardStates() {
-    if (!discRing) return;
-    var cards = discRing.querySelectorAll('.dw-character-card');
+  function render() {
+    var N = STATE.modules.length;
+    var cur = STATE.activeIndex;
 
-    cards.forEach(function (card) {
-      var modId = card.getAttribute('data-module');
-      var isActive = modId === STATE.activeModule;
+    cards.forEach(function (el, i) {
+      var delta = shortestDelta(i, cur, N);
+      var absD = Math.abs(delta);
 
-      card.setAttribute('aria-selected', isActive ? 'true' : 'false');
-      card.setAttribute('tabindex', isActive ? '0' : '-1');
+      var y = delta * ARC.ySpacing;
+      var retract = Math.min(absD, ARC.maxVisible) * ARC.retractStep;
+      var x = -(ARC.bulgeX - retract);
+      var rotate = delta * ARC.rotateStep;
+      var scale = Math.max(ARC.minScale, ARC.activeScale - absD * ARC.scaleStep);
+      var opacity = absD > ARC.maxVisible ? 0 : Math.max(ARC.minOpacity, 1 - absD * ARC.opacityStep);
+      var zIndex = 100 - absD;
+      var blur = absD === 0 ? 0 : Math.min(absD * 0.5, 2);
+      var brightness = 1 - absD * 0.1;
 
+      el.style.transform =
+        'translate(-50%, -50%) translate3d(' + x + 'px, ' + y + 'px, 0) rotate(' + rotate + 'deg) scale(' + scale + ')';
+      el.style.opacity = opacity;
+      el.style.zIndex = zIndex;
+      el.style.filter = absD === 0
+        ? 'blur(0px) brightness(1)'
+        : 'blur(' + blur + 'px) brightness(' + brightness + ')';
+      el.style.pointerEvents = absD > ARC.maxVisible ? 'none' : 'auto';
+
+      var isActive = absD === 0;
       if (isActive) {
-        card.classList.add('dw-card-front');
-        card.classList.remove('dw-card-side');
-        card.style.opacity = '1';
-        card.style.pointerEvents = 'auto';
+        el.classList.add('dw-card-front');
+        el.classList.remove('dw-card-side');
+        el.setAttribute('aria-selected', 'true');
+        el.setAttribute('tabindex', '0');
       } else {
-        card.classList.remove('dw-card-front');
-        card.classList.add('dw-card-side');
+        el.classList.remove('dw-card-front');
+        el.classList.add('dw-card-side');
+        el.setAttribute('aria-selected', 'false');
+        el.setAttribute('tabindex', '-1');
       }
     });
-
   }
 
   /* ==========================================================
-     Module Activation
+     Module Activation (right panel)
      ========================================================== */
   function activateModule(moduleId) {
     $$('.module-content').forEach(function (el) {
@@ -240,59 +198,90 @@
     }
   }
 
-  function selectModule(moduleId) {
+  /* ==========================================================
+     Go to module by ID
+     ========================================================== */
+  function goToModule(moduleId) {
     if (moduleId === STATE.activeModule) return;
+    var idx = STATE.modules.findIndex(function (m) { return m.id === moduleId; });
+    if (idx < 0) return;
     STATE.activeModule = moduleId;
-
-    applyDiscRotation(true);
-    updateCardStates();
+    STATE.activeIndex = idx;
+    render();
     activateModule(moduleId);
   }
 
-  /* ==========================================================
-     Navigation
-     ========================================================== */
+  function goTo(index) {
+    var N = STATE.modules.length;
+    var idx = ((index % N) + N) % N;
+    STATE.activeModule = STATE.modules[idx].id;
+    STATE.activeIndex = idx;
+    render();
+    activateModule(STATE.activeModule);
+  }
+
   function navigateNext() {
-    var ids = STATE.modules.map(function (m) { return m.id; });
-    var idx = ids.indexOf(STATE.activeModule);
-    selectModule(ids[(idx + 1) % ids.length]);
+    goTo(STATE.activeIndex + 1);
   }
 
   function navigatePrev() {
-    var ids = STATE.modules.map(function (m) { return m.id; });
-    var idx = ids.indexOf(STATE.activeModule);
-    selectModule(ids[(idx - 1 + ids.length) % ids.length]);
+    goTo(STATE.activeIndex - 1);
   }
 
   /* ==========================================================
-     Keyboard
+     Keyboard — ↑ / ← = prev, ↓ / → = next
      ========================================================== */
   function handleKeyboard(e) {
-    var focused = document.activeElement;
-    if (!focused || !focused.classList.contains('dw-character-card')) return;
-
-    var ids = STATE.modules.map(function (m) { return m.id; });
-    var idx = ids.indexOf(STATE.activeModule);
-    var newIdx = -1;
+    // Only handle if stage is visible (left panel is open)
+    if (!stage || stage.offsetParent === null) return;
 
     switch (e.key) {
-      case 'ArrowRight':
       case 'ArrowDown':
+      case 'ArrowRight':
         e.preventDefault();
-        newIdx = (idx + 1) % ids.length;
+        navigateNext();
         break;
-      case 'ArrowLeft':
       case 'ArrowUp':
+      case 'ArrowLeft':
         e.preventDefault();
-        newIdx = (idx - 1 + ids.length) % ids.length;
+        navigatePrev();
         break;
     }
+  }
 
-    if (newIdx >= 0 && newIdx !== idx) {
-      selectModule(ids[newIdx]);
-      var activeCard = discRing ? discRing.querySelector('.dw-card-front') : null;
-      if (activeCard) activeCard.focus();
+  /* ==========================================================
+     Touch Swipe
+     ========================================================== */
+  var touchStartY = 0;
+
+  function handleTouchStart(e) {
+    touchStartY = e.touches[0].clientY;
+  }
+
+  function handleTouchEnd(e) {
+    if (touchStartY === 0) return;
+    var dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dy) > 40) {
+      if (dy < 0) navigateNext();   // swipe up → next
+      else navigatePrev();          // swipe down → prev
     }
+    touchStartY = 0;
+  }
+
+  /* ==========================================================
+     Wheel — throttled
+     ========================================================== */
+  var wheelLock = false;
+  var WHEEL_COOLDOWN = 420;
+
+  function handleWheel(e) {
+    if (wheelLock) return;
+    if (Math.abs(e.deltaY) < 10) return;
+    e.preventDefault();
+    wheelLock = true;
+    if (e.deltaY > 0) navigateNext();
+    else navigatePrev();
+    setTimeout(function () { wheelLock = false; }, WHEEL_COOLDOWN);
   }
 
   /* ==========================================================
@@ -301,16 +290,11 @@
   function bindEvents() {
     document.addEventListener('keydown', handleKeyboard);
 
-    // Wheel on disc area
-    if (discRing) {
-      discRing.addEventListener('wheel', function (e) {
-        e.preventDefault();
-        if (e.deltaY > 0 || e.deltaX > 0) {
-          navigateNext();
-        } else {
-          navigatePrev();
-        }
-      }, { passive: false });
+    stage = $('#dw-circular-stage');
+    if (stage) {
+      stage.addEventListener('wheel', handleWheel, { passive: false });
+      stage.addEventListener('touchstart', handleTouchStart, { passive: true });
+      stage.addEventListener('touchend', handleTouchEnd, { passive: true });
     }
   }
 
@@ -321,7 +305,7 @@
     var hash = window.location.hash.replace('#', '');
     var validIds = STATE.modules.map(function (m) { return m.id; });
     if (hash && validIds.includes(hash) && hash !== STATE.activeModule) {
-      selectModule(hash);
+      goToModule(hash);
     }
   }
 

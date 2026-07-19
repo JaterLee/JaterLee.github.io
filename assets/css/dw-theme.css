@@ -48,10 +48,12 @@
 
 .dw-panel-title {
   font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 900;
   color: var(--dw-gold-500);
-  letter-spacing: 0.15em;
+  letter-spacing: 0.2em;
   margin: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 0 2px rgba(219, 180, 44, 0.2);
 }
 
 .dw-panel-subtitle {
@@ -70,87 +72,71 @@
   margin-inline: auto;
 }
 
-/* ── Disc Wheel Stage ── */
+/* ── Stack Selection Stage ── */
 .dw-circular-stage {
   flex: 1;
   position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: var(--space-6) 0;
+  min-height: 380px;
+  perspective: 1400px;
+  /* Aged paper texture (pure CSS) */
+  background-color: #1a160e;
+  background-image:
+    /* Vertical paper fibers */
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 3px,
+      rgba(200, 180, 140, 0.008) 3px,
+      rgba(200, 180, 140, 0.008) 4px
+    ),
+    /* Horizontal paper fibers */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 5px,
+      rgba(200, 180, 140, 0.005) 5px,
+      rgba(200, 180, 140, 0.005) 6px
+    ),
+    /* Age spots */
+    radial-gradient(ellipse at 25% 20%, rgba(160, 130, 80, 0.12) 0%, transparent 45%),
+    radial-gradient(ellipse at 72% 68%, rgba(140, 110, 60, 0.09) 0%, transparent 38%),
+    radial-gradient(ellipse at 55% 85%, rgba(160, 140, 90, 0.06) 0%, transparent 32%),
+    /* Warm tone overlay */
+    linear-gradient(180deg, rgba(180, 150, 100, 0.07) 0%, transparent 28%, rgba(120, 90, 50, 0.05) 100%),
+    /* Vignette (dark edges) */
+    radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(0, 0, 0, 0.5) 100%);
 }
 
-/* The visible disc (wheel) */
+/* Stack card positioning context */
 .dw-disc {
-  position: relative;
-  width: 240px;
-  height: 240px;
-  flex-shrink: 0;
-}
-
-/* Outer decorative rings */
-.dw-disc::before {
-  content: '';
-  position: absolute;
-  inset: -20px;
-  border-radius: 50%;
-  border: 2px solid rgba(219, 180, 44, 0.12);
-  pointer-events: none;
-}
-
-.dw-disc::after {
-  content: '';
-  position: absolute;
-  inset: -10px;
-  border-radius: 50%;
-  border: 1px dashed rgba(219, 180, 44, 0.08);
-  pointer-events: none;
-}
-
-/* Disc background */
-.dw-disc-bg {
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(30, 28, 20, 0.9) 0%, rgba(20, 18, 12, 0.95) 60%, rgba(10, 10, 8, 0.98) 100%);
-  border: 2px solid var(--dw-gold-900);
-  box-shadow:
-    0 0 0 4px rgba(219, 180, 44, 0.05),
-    0 0 30px rgba(0, 0, 0, 0.4),
-    inset 0 0 60px rgba(219, 180, 44, 0.03);
 }
 
-/* Inner ring decoration */
+/* Disc decorative elements — hidden */
+.dw-disc::before,
+.dw-disc::after,
+.dw-disc-bg,
 .dw-disc-inner-ring {
-  position: absolute;
-  inset: 30px;
-  border-radius: 50%;
-  border: 1px solid rgba(219, 180, 44, 0.1);
-  pointer-events: none;
+  display: none;
 }
 
-/* The rotating element that holds cards */
+/* Card container — fills the stage */
 .dw-disc-ring {
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  transform-origin: center center;
-  transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-/* ── Individual Character Card on disc ── */
-.dw-character-card {
+/* ── Stack Card Wrapper ── */
+.dw-stack-card {
   position: absolute;
-  /* Anchor at disc center, then offset */
   top: 50%;
   left: 50%;
-  width: 90px;
-  height: 110px;
-  margin: -55px 0 0 -45px;
-  /* Origin at disc center for rotation */
-  transform-origin: 50% 50%;
+  transform: translate(-50%, -50%);
   /* Reset button styles */
   cursor: pointer;
   border: none;
@@ -159,140 +145,132 @@
   font: inherit;
   padding: 0;
   -webkit-tap-highlight-color: transparent;
+  outline: none;
+  /* GPU-friendly transitions */
+  transition:
+    transform 0.55s cubic-bezier(0.22, 0.85, 0.32, 1),
+    opacity 0.55s cubic-bezier(0.22, 0.85, 0.32, 1),
+    filter 0.55s cubic-bezier(0.22, 0.85, 0.32, 1),
+    z-index 0s step-end;
+  will-change: transform, opacity, filter;
+}
+
+/* ── Stack Card Inner (visible card body) ── */
+.dw-stack-card-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 175px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(20, 18, 12, 0.55);
+  border: 1.5px solid rgba(219, 180, 44, 0.15);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition:
+    background-color 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.dw-stack-card-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.dw-stack-card-text {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: var(--space-1);
-  outline: none;
-  /* Transition for opacity changes */
-  transition: opacity 0.5s ease, filter 0.5s ease;
-  /* Cards are on the disc surface, rotated + translated outward */
+  gap: 1px;
+  min-width: 0;
 }
 
-/* ── Circular Portrait on disc ── */
-.dw-character-portrait {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.2rem;
-  position: relative;
-  flex-shrink: 0;
-  border: 2.5px solid var(--dw-gold-700);
-  background: radial-gradient(circle at 40% 35%, var(--dw-bg-card-hover) 0%, var(--dw-bg-card) 100%);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
-  transition: all 0.5s ease;
-}
-
-/* Module-specific portrait backgrounds */
-.dw-character-card[data-module="grounded"] .dw-character-portrait {
-  background: radial-gradient(circle at 40% 35%, #2d5a3d 0%, #1a2e1e 100%);
-  border-color: rgba(74, 124, 89, 0.6);
-}
-.dw-character-card[data-module="ghost"] .dw-character-portrait {
-  background: radial-gradient(circle at 40% 35%, #5c1a1a 0%, #2d0e0e 100%);
-  border-color: rgba(192, 57, 43, 0.6);
-}
-.dw-character-card[data-module="history"] .dw-character-portrait {
-  background: radial-gradient(circle at 40% 35%, #3d3018 0%, #1e1808 100%);
-  border-color: rgba(219, 180, 44, 0.6);
-}
-
-/* Card name */
-.dw-character-info {
-  text-align: center;
-  transition: opacity 0.5s ease;
-}
-
-.dw-character-name {
+.dw-stack-card-name {
   font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  color: var(--dw-text);
   letter-spacing: 0.05em;
   line-height: 1.2;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  color: rgba(232, 220, 200, 0.5);
+  transition: color 0.4s ease;
+  white-space: nowrap;
 }
 
-.dw-character-subtitle {
+.dw-stack-card-subtitle {
   font-size: 0.6rem;
-  color: var(--dw-text-muted);
-  letter-spacing: 0.05em;
+  color: rgba(232, 220, 200, 0.3);
+  letter-spacing: 0.08em;
+  transition: color 0.4s ease;
 }
 
-/* ── Active Card (at top of disc) ── */
-.dw-character-card.dw-card-front {
+/* ── Active Card (front of stack, full opacity) ── */
+.dw-stack-card.dw-card-front {
   z-index: 10;
-  opacity: 1;
-  filter: none;
   pointer-events: auto;
 }
 
-.dw-character-card.dw-card-front .dw-character-portrait {
-  width: 90px;
-  height: 90px;
-  font-size: 2.6rem;
-  border-width: 3px;
-  border-color: var(--dw-gold-500);
+.dw-stack-card.dw-card-front .dw-stack-card-inner {
+  background: #8b6914;
+  border-color: #dbb42c;
   box-shadow:
-    0 0 0 6px rgba(219, 180, 44, 0.12),
-    0 0 25px rgba(219, 180, 44, 0.3),
-    0 6px 20px rgba(0, 0, 0, 0.5);
+    0 0 0 8px rgba(219, 180, 44, 0.1),
+    0 0 30px rgba(219, 180, 44, 0.3),
+    0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
-.dw-character-card.dw-card-front .dw-character-name {
-  color: var(--dw-gold-300);
-  font-size: 0.85rem;
+.dw-stack-card.dw-card-front .dw-stack-card-name {
+  color: #fff;
 }
 
-/* Module-specific active glow */
-.dw-character-card[data-module="grounded"].dw-card-front .dw-character-portrait {
+.dw-stack-card.dw-card-front .dw-stack-card-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Module-specific active fill colors */
+.dw-stack-card[data-module="grounded"].dw-card-front .dw-stack-card-inner {
+  background: #2d5a3d;
   border-color: #6b9e7a;
-  box-shadow: 0 0 0 6px rgba(74, 124, 89, 0.15), 0 0 25px rgba(74, 124, 89, 0.3), 0 6px 20px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 0 0 8px rgba(74, 124, 89, 0.12),
+    0 0 30px rgba(74, 124, 89, 0.3),
+    0 8px 25px rgba(0, 0, 0, 0.4);
 }
-.dw-character-card[data-module="ghost"].dw-card-front .dw-character-portrait {
+.dw-stack-card[data-module="ghost"].dw-card-front .dw-stack-card-inner {
+  background: #5c1a1a;
   border-color: #e74c3c;
-  box-shadow: 0 0 0 6px rgba(192, 57, 43, 0.15), 0 0 25px rgba(192, 57, 43, 0.3), 0 6px 20px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 0 0 8px rgba(192, 57, 43, 0.12),
+    0 0 30px rgba(192, 57, 43, 0.3),
+    0 8px 25px rgba(0, 0, 0, 0.4);
 }
-.dw-character-card[data-module="history"].dw-card-front .dw-character-portrait {
-  border-color: var(--dw-gold-500);
-  box-shadow: 0 0 0 6px rgba(219, 180, 44, 0.15), 0 0 25px rgba(219, 180, 44, 0.3), 0 6px 20px rgba(0, 0, 0, 0.5);
+.dw-stack-card[data-module="history"].dw-card-front .dw-stack-card-inner {
+  background: #3d3018;
+  border-color: #dbb42c;
+  box-shadow:
+    0 0 0 8px rgba(219, 180, 44, 0.12),
+    0 0 30px rgba(219, 180, 44, 0.3),
+    0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
-/* ── Side Cards (faded on disc) ── */
-.dw-character-card.dw-card-side {
+/* ── Side Cards (behind, smaller, reduced opacity) ── */
+.dw-stack-card.dw-card-side {
   pointer-events: auto;
   cursor: pointer;
-  opacity: 0.35;
-  filter: grayscale(0.3) brightness(0.6);
 }
 
-.dw-character-card.dw-card-side .dw-character-portrait {
-  border-color: rgba(219, 180, 44, 0.2);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+/* Side card hover — brighten slightly */
+.dw-stack-card.dw-card-side:hover .dw-stack-card-inner {
+  border-color: rgba(219, 180, 44, 0.45);
+  background: rgba(28, 24, 14, 0.65);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
 }
-
-.dw-character-card.dw-card-side .dw-character-name {
-  opacity: 0.5;
-}
-
-.dw-character-card.dw-card-side .dw-character-subtitle {
-  opacity: 0.3;
-}
-
-/* Side card hover — slight brighten */
-.dw-character-card.dw-card-side:hover {
-  opacity: 0.6;
-  filter: grayscale(0.1) brightness(0.8);
-}
-.dw-character-card.dw-card-side:hover .dw-character-portrait {
-  border-color: var(--dw-gold-500);
+.dw-stack-card.dw-card-side:hover .dw-stack-card-name {
+  color: rgba(232, 220, 200, 0.75);
 }
 
 /* ── Focus-visible ── */
-.dw-character-card:focus-visible .dw-character-portrait {
+.dw-stack-card:focus-visible .dw-stack-card-inner {
   outline: 3px solid var(--dw-gold-500);
   outline-offset: 4px;
 }
@@ -515,10 +493,10 @@
   .module-content {
     animation: none;
   }
-  .dw-disc-ring {
+  .dw-stack-card {
     transition: none;
   }
-  .dw-character-portrait {
+  .dw-stack-card-inner {
     transition: none;
   }
 }
@@ -529,36 +507,26 @@
     --dw-left-width: 230px;
   }
 
-  .dw-disc {
-    width: 200px;
-    height: 200px;
+  .dw-circular-stage {
+    min-height: 280px;
   }
 
-  .dw-disc::before { inset: -16px; }
-  .dw-disc::after { inset: -8px; }
-
-  .dw-disc-inner-ring { inset: 24px; }
-
-  .dw-character-card {
-    width: 75px;
-    height: 95px;
-    margin: -47px 0 0 -37px;
+  .dw-stack-card-inner {
+    width: 150px;
+    padding: 10px 14px;
+    gap: 8px;
   }
 
-  .dw-character-portrait {
-    width: 65px;
-    height: 65px;
-    font-size: 1.8rem;
+  .dw-stack-card-icon {
+    font-size: 1.3rem;
   }
 
-  .dw-character-card.dw-card-front .dw-character-portrait {
-    width: 75px;
-    height: 75px;
-    font-size: 2.2rem;
+  .dw-stack-card-name {
+    font-size: 0.75rem;
   }
 
-  .dw-character-name {
-    font-size: 0.65rem;
+  .dw-stack-card-subtitle {
+    font-size: 0.55rem;
   }
 
   .module-header {
@@ -615,68 +583,59 @@
     display: none;
   }
 
-  /* Mobile: flatten disc to horizontal row */
+  /* Mobile: flatten stack to horizontal scrollable row */
   .dw-circular-stage {
     flex: none;
-    padding: 0;
+    padding: var(--space-3) 0;
     overflow: visible;
+    min-height: 0;
+    background: transparent;
+    position: static;
   }
 
   .dw-disc {
+    position: static;
     width: auto;
     height: auto;
   }
 
-  .dw-disc::before,
-  .dw-disc::after,
-  .dw-disc-bg,
-  .dw-disc-inner-ring {
-    display: none;
-  }
-
   .dw-disc-ring {
     position: static;
-    border-radius: 0;
-    transform: none !important;
     display: flex;
     flex-direction: row;
     gap: var(--space-3);
-    padding: var(--space-2) var(--space-4);
+    padding: 0 var(--space-4);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x proximity;
   }
 
-  .dw-character-card {
+  .dw-stack-card {
     position: static;
-    width: 100px;
-    height: auto;
-    margin: 0;
     flex-shrink: 0;
     scroll-snap-align: center;
     transform: none !important;
     opacity: 1 !important;
     filter: none !important;
+    pointer-events: auto !important;
+    top: auto;
+    left: auto;
   }
 
-  .dw-character-portrait {
-    width: 64px;
-    height: 64px;
-    font-size: 1.8rem;
-    border-width: 2px;
+  .dw-stack-card-inner {
+    width: 140px;
+    padding: 10px 14px;
   }
 
-  .dw-character-card.dw-card-front .dw-character-portrait {
-    width: 72px;
-    height: 72px;
-    font-size: 2rem;
+  .dw-stack-card-icon {
+    font-size: 1.2rem;
   }
 
-  .dw-character-name {
+  .dw-stack-card-name {
     font-size: 0.7rem;
   }
 
-  .dw-character-subtitle {
+  .dw-stack-card-subtitle {
     display: none;
   }
 
