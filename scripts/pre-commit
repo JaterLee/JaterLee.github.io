@@ -1,0 +1,33 @@
+#!/bin/bash
+# pre-commit — 提交前自动同步所有模块的截图
+#
+# 安装: cp scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+# 或: ln -s ../../scripts/pre-commit .git/hooks/pre-commit
+
+echo ""
+echo "📸 检查各模块截图..."
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Resolve repo root (works regardless of where the hook is installed)
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || echo '')"
+if [ -z "$REPO_ROOT" ]; then
+    echo "⚠️  无法定位仓库根目录，跳过截图同步"
+    exit 0
+fi
+
+cd "$REPO_ROOT"
+
+# Run sync-all.js
+node scripts/sync-all.js 2>&1
+SYNC_EXIT=$?
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+if [ $SYNC_EXIT -eq 0 ]; then
+    echo "✅ 截图同步检查完成"
+else
+    echo "⚠️  截图同步有警告（不影响提交）"
+fi
+echo ""
+
+# Never block commit due to sync issues
+exit 0

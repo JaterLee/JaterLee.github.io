@@ -12,6 +12,23 @@
   var formatDate = window.Jater.formatDate;
   var formatDateShort = window.Jater.formatDateShort;
   var formatTime = window.Jater.formatTime;
+  var getModuleConfig = (window.JaterMod && window.JaterMod.getModuleConfig)
+    ? function (id) { return window.JaterMod.getModuleConfig(id); }
+    : function () { return null; };
+
+  /* ==========================================================
+     Config (from modules.json, with fallback)
+     ========================================================== */
+  var MODULE_ID = 'ghost';
+  var FALLBACK_SC = {
+    data_file: 'data/ghost-images.json',
+    image_path: 'images/screenshots/ghost',
+  };
+
+  function getSC() {
+    var cfg = getModuleConfig(MODULE_ID);
+    return (cfg && cfg.screenshots) ? cfg.screenshots : FALLBACK_SC;
+  }
 
   /* ==========================================================
      State
@@ -32,7 +49,8 @@
      ========================================================== */
   async function loadImages() {
     try {
-      var resp = await fetch('data/ghost-images.json');
+      var sc = getSC();
+      var resp = await fetch(sc.data_file);
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       var data = await resp.json();
       STATE.images = (data.images || []).sort(function (a, b) {
@@ -40,7 +58,7 @@
       });
       render();
     } catch (err) {
-      console.error('Ghost module: failed to load ghost-images.json', err.message);
+      console.error('Ghost module: failed to load screenshots data', err.message);
       if (dom.galleryLoading) dom.galleryLoading.classList.add('hidden');
       if (dom.galleryError) dom.galleryError.classList.remove('hidden');
     }
@@ -86,11 +104,13 @@
     renderStats();
 
     dom.galleryGrid.innerHTML = STATE.images.map(function (img, index) {
+      var sc = getSC();
+      var thumbBase = sc.image_path + '/thumb/';
       return '<div class="ghost-gallery-card" role="listitem" tabindex="0"' +
         ' data-index="' + index + '"' +
         ' aria-label="对马岛截图：' + formatDate(img.date_taken) + '">' +
         '<img class="ghost-gallery-card-img"' +
-        ' src="images/screenshots/ghost/thumb/' + img.id + '.webp"' +
+        ' src="' + thumbBase + img.id + '.webp"' +
         ' alt="对马岛之魂截图 — ' + formatDate(img.date_taken) + '"' +
         ' loading="lazy">' +
         '<div class="ghost-gallery-card-overlay">' +
@@ -138,8 +158,9 @@
       update: function (idx) {
         var img = STATE.images[idx];
         if (!img) return {};
+        var sc = getSC();
         return {
-          src: 'images/screenshots/ghost/full/' + img.id + '.webp',
+          src: sc.image_path + '/full/' + img.id + '.webp',
           alt: '对马岛之魂截图 — ' + formatDate(img.date_taken),
           date: formatDate(img.date_taken),
           time: formatTime(img.date_taken),

@@ -14,6 +14,7 @@ node_modules/
 # Sync script
 scripts/.env
 scripts/node_modules/
+scripts/screenshot-config.json
 
 # Original screenshots (only WebP goes to repo)
 *.png

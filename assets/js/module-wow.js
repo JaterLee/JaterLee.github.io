@@ -12,6 +12,23 @@
   var formatDate = window.Jater.formatDate;
   var formatDateShort = window.Jater.formatDateShort;
   var formatTime = window.Jater.formatTime;
+  var getModuleConfig = (window.JaterMod && window.JaterMod.getModuleConfig)
+    ? function (id) { return window.JaterMod.getModuleConfig(id); }
+    : function () { return null; };
+
+  /* ==========================================================
+     Config (from modules.json, with fallback)
+     ========================================================== */
+  var MODULE_ID = 'wow';
+  var FALLBACK_SC = {
+    data_file: 'data/wow-images.json',
+    image_path: 'images/screenshots/wow',
+  };
+
+  function getSC() {
+    var cfg = getModuleConfig(MODULE_ID);
+    return (cfg && cfg.screenshots) ? cfg.screenshots : FALLBACK_SC;
+  }
 
   /* ==========================================================
      State
@@ -32,7 +49,8 @@
      ========================================================== */
   async function loadImages() {
     try {
-      var resp = await fetch('data/wow-images.json');
+      var sc = getSC();
+      var resp = await fetch(sc.data_file);
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       var data = await resp.json();
       STATE.images = (data.images || []).sort(function (a, b) {
@@ -40,7 +58,7 @@
       });
       render();
     } catch (err) {
-      console.warn('WoW module: failed to load wow-images.json', err.message);
+      console.warn('WoW module: failed to load screenshots data', err.message);
       if (dom.galleryLoading) dom.galleryLoading.classList.add('hidden');
       if (dom.galleryEmpty) dom.galleryEmpty.classList.remove('hidden');
     }
@@ -86,11 +104,13 @@
     renderStats();
 
     dom.galleryGrid.innerHTML = STATE.images.map(function (img, index) {
+      var sc = getSC();
+      var thumbBase = sc.image_path + '/thumb/';
       return '<div class="wow-gallery-card" role="listitem" tabindex="0"' +
         ' data-index="' + index + '"' +
         ' aria-label="魔兽世界截图：' + formatDate(img.date_taken) + '">' +
         '<img class="wow-gallery-card-img"' +
-        ' src="images/screenshots/wow/thumb/' + img.id + '.webp"' +
+        ' src="' + thumbBase + img.id + '.webp"' +
         ' alt="魔兽世界截图 — ' + formatDate(img.date_taken) + '"' +
         ' loading="lazy">' +
         '<div class="wow-gallery-card-overlay">' +
@@ -138,8 +158,9 @@
       update: function (idx) {
         var img = STATE.images[idx];
         if (!img) return {};
+        var sc = getSC();
         return {
-          src: 'images/screenshots/wow/full/' + img.id + '.webp',
+          src: sc.image_path + '/full/' + img.id + '.webp',
           alt: '魔兽世界截图 — ' + formatDate(img.date_taken),
           date: formatDate(img.date_taken),
           time: formatTime(img.date_taken),

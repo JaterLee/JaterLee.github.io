@@ -15,7 +15,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  getToken, githubGet, githubPut, syncScreenshots, parseScreenshotFilename,
+  getToken, githubGet, githubPut, syncScreenshots,
+  loadModuleScreenshotConfigs, loadLocalSourceDirs,
 } from './sync-lib.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -80,12 +81,23 @@ async function main() {
 
   // ========== Step 1: Sync Screenshots ==========
   console.log('\n📸 [1/3] 同步截图...\n');
-  const syncResult = await syncScreenshots({ log: console.log });
+
+  const MODULE_ID = 'grounded';
+  const moduleConfigs = loadModuleScreenshotConfigs();
+  const modCfg = moduleConfigs.find((m) => m.moduleId === MODULE_ID);
+  if (!modCfg) {
+    console.error(`❌ 模块 "${MODULE_ID}" 未在 modules.json 中配置 screenshots`);
+    process.exit(1);
+  }
+  const localDirs = loadLocalSourceDirs();
+  const localDir = localDirs[MODULE_ID];
+
+  const syncResult = await syncScreenshots(MODULE_ID, modCfg.sc, localDir, { log: console.log });
   console.log('');
 
   let coverThumbPath = null;
   if (syncResult.latestId) {
-    coverThumbPath = `images/screenshots/thumb/${syncResult.latestId}.webp`;
+    coverThumbPath = `${modCfg.sc.image_path}/thumb/${syncResult.latestId}.webp`;
     console.log(`🖼️  封面截图: ${syncResult.latestFile || syncResult.latestId}`);
   } else {
     console.log('⚠️  没有找到截图，将不设置封面');

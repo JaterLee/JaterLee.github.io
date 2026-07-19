@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-07-17",
+  "last_updated": "2026-07-19",
   "modules": [
     {
       "id": "grounded",
@@ -7,7 +7,13 @@
       "subtitle": "Grounded",
       "icon": "🕷️",
       "primary_color": "#4a7c59",
-      "theme": "nature"
+      "theme": "nature",
+      "screenshots": {
+        "data_file": "data/images.json",
+        "image_path": "images/screenshots",
+        "filename_pattern": "Grounded_(\\d{4})\\.(\\d{2})\\.(\\d{2})-(\\d{2})\\.(\\d{2})\\.(\\d{2})",
+        "id_prefix": "grounded"
+      }
     },
     {
       "id": "ghost",
@@ -15,7 +21,13 @@
       "subtitle": "Ghost of Tsushima",
       "icon": "🗡️",
       "primary_color": "#c0392b",
-      "theme": "japanese"
+      "theme": "japanese",
+      "screenshots": {
+        "data_file": "data/ghost-images.json",
+        "image_path": "images/screenshots/ghost",
+        "filename_pattern": "Ghost of Tsushima_(\\d{4})\\.(\\d{2})\\.(\\d{2})-(\\d{2})\\.(\\d{2})\\.(\\d{2})",
+        "id_prefix": "ghost"
+      }
     },
     {
       "id": "history",
@@ -31,7 +43,15 @@
       "subtitle": "World of Warcraft",
       "icon": "⚔️",
       "primary_color": "#0078ff",
-      "theme": "warcraft"
+      "theme": "warcraft",
+      "screenshots": {
+        "data_file": "data/wow-images.json",
+        "image_path": "images/screenshots/wow",
+        "filename_pattern": "WoWScrnShot_(\\d{2})(\\d{2})(\\d{2})_(\\d{2})(\\d{2})(\\d{2})",
+        "id_prefix": "wow",
+        "date_group_map": [3, 1, 2, 4, 5, 6],
+        "year_is_short": true
+      }
     }
   ]
 }

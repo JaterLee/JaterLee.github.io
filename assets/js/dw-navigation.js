@@ -68,6 +68,10 @@
       console.warn('Failed to load modules.json, fallback:', err.message);
       STATE.modules = getFallbackModules();
     }
+    // Inject configs into module registry so modules can read their settings
+    if (window.JaterMod && window.JaterMod.setModuleConfigs) {
+      window.JaterMod.setModuleConfigs(STATE.modules);
+    }
     // Resolve active index
     var idx = STATE.modules.findIndex(function (m) { return m.id === STATE.activeModule; });
     STATE.activeIndex = idx >= 0 ? idx : 0;

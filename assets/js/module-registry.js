@@ -120,6 +120,24 @@
   };
 
   /* ==========================================================
+     setModuleConfigs / getModuleConfig
+     dw-navigation.js 加载 modules.json 后注入配置，
+     各模块通过 getModuleConfig(id) 读取自己的配置。
+     ========================================================== */
+  var moduleConfigs = {};
+
+  Mod.setModuleConfigs = function (mods) {
+    moduleConfigs = {};
+    (mods || []).forEach(function (m) {
+      moduleConfigs[m.id] = m;
+    });
+  };
+
+  Mod.getModuleConfig = function (id) {
+    return moduleConfigs[id] || null;
+  };
+
+  /* ==========================================================
      暴露到全局
      ========================================================== */
   window.JaterMod = Mod;
