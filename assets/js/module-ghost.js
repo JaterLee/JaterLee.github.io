@@ -1,9 +1,9 @@
 /**
  * module-ghost.js
  * Ghost of Tsushima (对马岛之魂) Module
- * 截图画廊 + 灯箱，通过 JaterMod 注册，首次激活时懒加载。
+ * 使用共享 Coverflow 组件展示截图，通过 JaterMod 注册，首次激活时懒加载。
  *
- * 依赖：core.js (Jater), ui-kit.js (JaterUI), module-registry.js (JaterMod)
+ * 依赖：core.js (Jater), ui-kit.js (JaterUI), coverflow.js (JaterCoverflow), module-registry.js (JaterMod)
  */
 (function () {
   'use strict';
@@ -11,7 +11,6 @@
   var $ = window.Jater.$;
   var formatDate = window.Jater.formatDate;
   var formatDateShort = window.Jater.formatDateShort;
-  var formatTime = window.Jater.formatTime;
   var getModuleConfig = (window.JaterMod && window.JaterMod.getModuleConfig)
     ? function (id) { return window.JaterMod.getModuleConfig(id); }
     : function () { return null; };
@@ -39,10 +38,9 @@
   };
 
   /* ==========================================================
-     DOM Refs + Lightbox
+     Coverflow instance
      ========================================================== */
-  var dom = {};
-  var lightbox = null;
+  var coverflow = null;
 
   /* ==========================================================
      Data Loading
@@ -56,11 +54,12 @@
       STATE.images = (data.images || []).sort(function (a, b) {
         return new Date(b.date_taken) - new Date(a.date_taken);
       });
-      render();
+      renderStats();
+      initCoverflow();
     } catch (err) {
       console.error('Ghost module: failed to load screenshots data', err.message);
-      if (dom.galleryLoading) dom.galleryLoading.classList.add('hidden');
-      if (dom.galleryError) dom.galleryError.classList.remove('hidden');
+      // Coverflow will handle the empty state via its own empty element
+      initCoverflow();
     }
   }
 
@@ -68,13 +67,16 @@
      Stats
      ========================================================== */
   function renderStats() {
-    if (!STATE.images.length) return;
-
     var statImages = $('#stat-ghost-images');
     if (statImages) statImages.textContent = STATE.images.length + ' 张';
 
     var statRange = $('#stat-ghost-range');
     if (!statRange) return;
+
+    if (!STATE.images.length) {
+      statRange.textContent = '--';
+      return;
+    }
 
     var dates = STATE.images
       .map(function (img) { return img.date_taken; })
@@ -88,117 +90,23 @@
   }
 
   /* ==========================================================
-     Gallery Grid Rendering
+     Coverflow Initialization
      ========================================================== */
-  function render() {
-    if (dom.galleryLoading) dom.galleryLoading.classList.add('hidden');
+  function initCoverflow() {
+    if (!window.JaterCoverflow || !window.JaterCoverflow.create) return;
 
-    if (!STATE.images.length) {
-      if (dom.galleryEmpty) dom.galleryEmpty.classList.remove('hidden');
-      return;
-    }
+    var sc = getSC();
 
-    if (dom.galleryEmpty) dom.galleryEmpty.classList.add('hidden');
-    if (dom.galleryGrid) dom.galleryGrid.classList.remove('hidden');
-
-    renderStats();
-
-    dom.galleryGrid.innerHTML = STATE.images.map(function (img, index) {
-      var sc = getSC();
-      var thumbBase = sc.image_path + '/thumb/';
-      return '<div class="ghost-gallery-card" role="listitem" tabindex="0"' +
-        ' data-index="' + index + '"' +
-        ' aria-label="对马岛截图：' + formatDate(img.date_taken) + '">' +
-        '<img class="ghost-gallery-card-img"' +
-        ' src="' + thumbBase + img.id + '.webp"' +
-        ' alt="对马岛之魂截图 — ' + formatDate(img.date_taken) + '"' +
-        ' loading="lazy">' +
-        '<div class="ghost-gallery-card-overlay">' +
-        '<span class="ghost-gallery-card-date">' + formatDateShort(img.date_taken) + '</span>' +
-        '<span class="ghost-gallery-card-time">' + formatTime(img.date_taken) + '</span>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-
-    // Bind click and keyboard events on cards
-    dom.galleryGrid.querySelectorAll('.ghost-gallery-card').forEach(function (card) {
-      card.addEventListener('click', function () {
-        var idx = parseInt(card.dataset.index);
-        if (lightbox) lightbox.open(idx);
-      });
-      card.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          var idx = parseInt(card.dataset.index);
-          if (lightbox) lightbox.open(idx);
-        }
-      });
+    coverflow = window.JaterCoverflow.create({
+      container: '#coverflow-section-ghost',
+      images: STATE.images,
+      thumbPath: sc.image_path + '/thumb/',
+      fullPath: sc.image_path + '/full/',
+      title: '📸 冒险瞬间',
+      description: '对马岛武士之路的精彩画面',
+      altPrefix: '对马岛之魂截图',
+      moduleClass: 'ghost-coverflow',
     });
-  }
-
-  /* ==========================================================
-     Create shared lightbox via JaterUI
-     ========================================================== */
-  function createLightbox() {
-    if (!window.JaterUI || !window.JaterUI.createLightbox) return;
-
-    lightbox = window.JaterUI.createLightbox({
-      container: '#ghost-lightbox',
-      img: '#ghost-lightbox-img',
-      close: '.ghost-lightbox-close',
-      bg: '.ghost-lightbox-bg',
-      prev: '.ghost-lightbox-prev',
-      next: '.ghost-lightbox-next',
-      texts: {
-        date: '#ghost-lightbox-date',
-        time: '#ghost-lightbox-time',
-        resolution: '#ghost-lightbox-resolution',
-        counter: '#ghost-lightbox-counter',
-      },
-      update: function (idx) {
-        var img = STATE.images[idx];
-        if (!img) return {};
-        var sc = getSC();
-        return {
-          src: sc.image_path + '/full/' + img.id + '.webp',
-          alt: '对马岛之魂截图 — ' + formatDate(img.date_taken),
-          date: formatDate(img.date_taken),
-          time: formatTime(img.date_taken),
-          resolution: (img.width || '?') + ' × ' + (img.height || '?'),
-          counter: (idx + 1) + ' / ' + STATE.images.length,
-        };
-      },
-      onPrev: function (idx) {
-        if (STATE.images.length === 0) return idx;
-        return (idx - 1 + STATE.images.length) % STATE.images.length;
-      },
-      onNext: function (idx) {
-        if (STATE.images.length === 0) return idx;
-        return (idx + 1) % STATE.images.length;
-      },
-      onClose: function (idx) {
-        // Return focus to the gallery card that was open
-        if (idx >= 0 && dom.galleryGrid) {
-          var card = dom.galleryGrid.querySelector('[data-index="' + idx + '"]');
-          if (card) card.focus();
-        }
-      },
-    });
-  }
-
-  /* ==========================================================
-     Event Bindings (module-specific, not handled by lightbox)
-     ========================================================== */
-  function bindEvents() {
-    // Retry button
-    var btnRetry = $('#btn-retry-ghost');
-    if (btnRetry) {
-      btnRetry.addEventListener('click', async function () {
-        if (dom.galleryError) dom.galleryError.classList.add('hidden');
-        if (dom.galleryLoading) dom.galleryLoading.classList.remove('hidden');
-        await loadImages();
-      });
-    }
   }
 
   /* ==========================================================
@@ -207,17 +115,7 @@
   function init() {
     if (STATE.loaded) return;
 
-    // Collect DOM refs
-    dom = {
-      galleryGrid: $('#ghost-gallery-grid'),
-      galleryLoading: $('#ghost-gallery-loading'),
-      galleryError: $('#ghost-gallery-error'),
-      galleryEmpty: $('#ghost-gallery-empty'),
-    };
-
     STATE.loaded = true;
-    createLightbox();
-    bindEvents();
     loadImages();
   }
 

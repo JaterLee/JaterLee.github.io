@@ -156,19 +156,9 @@
   margin-top: 2px;
 }
 
-/* ============================================================
-   Ghost Screenshot Gallery
-   Grid + Card + Lightbox + States
-   ============================================================ */
+/* (Gallery grid, card, & lightbox styles removed — now using shared Coverflow component) */
 
-/* ── Gallery Container ── */
-.ghost-gallery-container {
-  padding: var(--space-6) var(--space-8);
-  max-width: 64rem;
-  margin: 0 auto;
-}
-
-/* ── Loading State ── */
+/* ── Shared State Styles (also used by History module) ── */
 .ghost-gallery-loading {
   display: flex;
   flex-direction: column;
@@ -183,8 +173,6 @@
   display: none;
 }
 
-/* ── Error / Empty States ── */
-.ghost-gallery-error,
 .ghost-gallery-empty {
   display: flex;
   flex-direction: column;
@@ -196,12 +184,10 @@
   gap: var(--space-3);
 }
 
-.ghost-gallery-error.hidden,
 .ghost-gallery-empty.hidden {
   display: none;
 }
 
-.ghost-gallery-error .empty-icon,
 .ghost-gallery-empty .empty-icon {
   font-size: 3rem;
   margin-bottom: var(--space-3);
@@ -212,275 +198,4 @@
   font-size: 0.8rem;
   color: var(--dw-text-muted);
   opacity: 0.6;
-}
-
-/* ── Gallery Grid ── */
-.ghost-gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
-  gap: var(--space-4);
-}
-
-.ghost-gallery-grid.hidden {
-  display: none;
-}
-
-/* ── Gallery Card ── */
-.ghost-gallery-card {
-  position: relative;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  cursor: pointer;
-  background: var(--dw-bg-card);
-  border: 1px solid rgba(192, 57, 43, 0.15);
-  transition: all 0.3s ease;
-  aspect-ratio: 16 / 10;
-}
-
-.ghost-gallery-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(192, 57, 43, 0.5);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(192, 57, 43, 0.1);
-}
-
-.ghost-gallery-card:focus-visible {
-  outline: 3px solid #e74c3c;
-  outline-offset: 2px;
-}
-
-.ghost-gallery-card-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.ghost-gallery-card:hover .ghost-gallery-card-img {
-  transform: scale(1.05);
-}
-
-/* ── Card Overlay ── */
-.ghost-gallery-card-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: var(--space-3) var(--space-4);
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.ghost-gallery-card:hover .ghost-gallery-card-overlay,
-.ghost-gallery-card:focus-within .ghost-gallery-card-overlay {
-  opacity: 1;
-}
-
-.ghost-gallery-card-date {
-  font-size: 0.8rem;
-  color: #e8b4b4;
-  font-weight: 500;
-}
-
-.ghost-gallery-card-time {
-  font-size: 0.7rem;
-  color: rgba(232, 180, 180, 0.7);
-}
-
-/* ── Ghost Lightbox ── */
-.ghost-lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.94);
-  animation: ghost-lb-fade-in 0.25s ease;
-}
-
-.ghost-lightbox.hidden {
-  display: none;
-}
-
-@keyframes ghost-lb-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.ghost-lightbox-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-}
-
-.ghost-lightbox-close {
-  position: absolute;
-  top: var(--space-4);
-  right: var(--space-4);
-  z-index: 10;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #fff;
-  transition: all 0.2s ease;
-}
-
-.ghost-lightbox-close:hover {
-  background: rgba(192, 57, 43, 0.3);
-  border-color: rgba(192, 57, 43, 0.5);
-}
-
-.ghost-lightbox-prev,
-.ghost-lightbox-next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #fff;
-  transition: all 0.2s ease;
-}
-
-.ghost-lightbox-prev {
-  left: var(--space-4);
-}
-
-.ghost-lightbox-next {
-  right: var(--space-4);
-}
-
-.ghost-lightbox-prev:hover,
-.ghost-lightbox-next:hover {
-  background: rgba(192, 57, 43, 0.3);
-  border-color: rgba(192, 57, 43, 0.5);
-}
-
-.ghost-lightbox-content {
-  position: relative;
-  z-index: 2;
-  max-width: 90vw;
-  max-height: 85vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ghost-lightbox-content img {
-  max-width: 90vw;
-  max-height: 85vh;
-  object-fit: contain;
-  border-radius: var(--radius-sm);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-  transition: opacity 0.2s ease;
-}
-
-.ghost-lightbox-info {
-  position: absolute;
-  bottom: var(--space-4);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  display: flex;
-  gap: var(--space-5);
-  align-items: center;
-  background: rgba(0, 0, 0, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-full);
-  padding: var(--space-2) var(--space-5);
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-}
-
-.ghost-lightbox-info span {
-  white-space: nowrap;
-}
-
-/* ── Responsive: Tablet ── */
-@media (max-width: 1023px) {
-  .ghost-gallery-container {
-    padding: var(--space-4);
-  }
-
-  .ghost-gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
-    gap: var(--space-3);
-  }
-
-  .ghost-lightbox-prev,
-  .ghost-lightbox-next {
-    width: 40px;
-    height: 40px;
-  }
-
-  .ghost-lightbox-info {
-    gap: var(--space-3);
-    padding: var(--space-2) var(--space-4);
-    font-size: 0.75rem;
-  }
-}
-
-/* ── Responsive: Mobile ── */
-@media (max-width: 639px) {
-  .ghost-gallery-container {
-    padding: var(--space-3);
-  }
-
-  .ghost-gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(min(160px, 100%), 1fr));
-    gap: var(--space-2);
-  }
-
-  .ghost-gallery-card-overlay {
-    opacity: 1;
-    padding: var(--space-2) var(--space-3);
-  }
-
-  .ghost-gallery-card-date {
-    font-size: 0.7rem;
-  }
-
-  .ghost-gallery-card-time {
-    font-size: 0.65rem;
-  }
-
-  .ghost-lightbox-prev,
-  .ghost-lightbox-next {
-    width: 36px;
-    height: 36px;
-  }
-
-  .ghost-lightbox-prev {
-    left: var(--space-2);
-  }
-
-  .ghost-lightbox-next {
-    right: var(--space-2);
-  }
-
-  .ghost-lightbox-info {
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--space-3);
-    font-size: 0.7rem;
-    bottom: var(--space-2);
-  }
 }

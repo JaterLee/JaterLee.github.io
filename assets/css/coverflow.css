@@ -10,6 +10,15 @@
   position: relative;
 }
 
+/* Module background variants */
+.coverflow-section.ghost-coverflow {
+  background: linear-gradient(160deg, #1a0a0a 0%, #3d1a1a 50%, #2a1010 100%);
+}
+
+.coverflow-section.wow-coverflow {
+  background: linear-gradient(160deg, #0a1226 0%, #162448 50%, #101a30 100%);
+}
+
 .coverflow-section::before {
   content: '';
   position: absolute;
@@ -198,6 +207,36 @@
 .coverflow-dot.active {
   background: var(--amber-300);
   transform: scale(1.35);
+}
+
+/* Compact dot counter (for large image sets >20) */
+.coverflow-dot-nav {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.6);
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.coverflow-dot-nav:hover {
+  background: rgba(255,255,255,0.25);
+  color: #fff;
+}
+
+.coverflow-dot-counter {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  min-width: 4em;
+  text-align: center;
+  user-select: none;
 }
 
 /* ---------- Gallery link ---------- */

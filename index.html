@@ -200,46 +200,10 @@
           </div>
         </div>
 
-        <!-- Screenshot Gallery -->
-        <div class="ghost-gallery-container">
-          <div class="ghost-gallery-loading" id="ghost-gallery-loading">
-            <div class="spinner"></div>
-            <p>加载中...</p>
-          </div>
-          <div class="ghost-gallery-error hidden" id="ghost-gallery-error" role="alert">
-            <p>无法加载截图数据，请稍后再试。</p>
-            <button class="btn btn-retry" id="btn-retry-ghost">重新加载</button>
-          </div>
-          <div class="ghost-gallery-empty hidden" id="ghost-gallery-empty">
-            <div class="empty-icon" aria-hidden="true">🗡️</div>
-            <p>还没有对马岛截图</p>
-            <p class="empty-hint">运行 sync-ghost-images.js 来同步截图</p>
-          </div>
-          <div class="ghost-gallery-grid" id="ghost-gallery-grid"></div>
-        </div>
-
-        <!-- Ghost Lightbox -->
-        <div class="ghost-lightbox hidden" id="ghost-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="对马岛截图查看器">
-          <div class="ghost-lightbox-bg"></div>
-          <button class="ghost-lightbox-close" aria-label="关闭">
-            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M18 6L6 18M6 6l12 12"/></svg>
-          </button>
-          <button class="ghost-lightbox-prev" aria-label="上一张">
-            <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M15 18l-6-6 6-6"/></svg>
-          </button>
-          <button class="ghost-lightbox-next" aria-label="下一张">
-            <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M9 18l6-6-6-6"/></svg>
-          </button>
-          <div class="ghost-lightbox-content">
-            <img src="" alt="" id="ghost-lightbox-img">
-          </div>
-          <div class="ghost-lightbox-info">
-            <span id="ghost-lightbox-date"></span>
-            <span id="ghost-lightbox-time"></span>
-            <span id="ghost-lightbox-resolution"></span>
-            <span id="ghost-lightbox-counter"></span>
-          </div>
-        </div>
+        <!-- Coverflow Screenshot Carousel -->
+        <section class="coverflow-section ghost-coverflow" id="coverflow-section-ghost" aria-label="对马岛截图轮播">
+          <!-- JS populated by coverflow.js -->
+        </section>
       </div>
 
       <!-- ───── MODULE: Five Dynasties History (五代十国史) ───── -->
@@ -299,45 +263,10 @@
           </div>
         </div>
 
-        <!-- Screenshot Gallery -->
-        <div class="wow-gallery-container">
-          <div class="wow-gallery-loading" id="wow-gallery-loading">
-            <div class="spinner"></div>
-            <p>加载中...</p>
-          </div>
-          <div class="wow-gallery-error hidden" id="wow-gallery-error" role="alert">
-            <p>无法加载截图数据，请稍后再试。</p>
-          </div>
-          <div class="wow-gallery-empty hidden" id="wow-gallery-empty">
-            <div class="empty-icon" aria-hidden="true">⚔️</div>
-            <p>还没有魔兽世界截图</p>
-            <p class="empty-hint">运行同步脚本来添加截图</p>
-          </div>
-          <div class="wow-gallery-grid" id="wow-gallery-grid"></div>
-        </div>
-
-        <!-- WoW Lightbox -->
-        <div class="wow-lightbox hidden" id="wow-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="魔兽世界截图查看器">
-          <div class="wow-lightbox-bg"></div>
-          <button class="wow-lightbox-close" aria-label="关闭">
-            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M18 6L6 18M6 6l12 12"/></svg>
-          </button>
-          <button class="wow-lightbox-prev" aria-label="上一张">
-            <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M15 18l-6-6 6-6"/></svg>
-          </button>
-          <button class="wow-lightbox-next" aria-label="下一张">
-            <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M9 18l6-6-6-6"/></svg>
-          </button>
-          <div class="wow-lightbox-content">
-            <img src="" alt="" id="wow-lightbox-img">
-          </div>
-          <div class="wow-lightbox-info">
-            <span id="wow-lightbox-date"></span>
-            <span id="wow-lightbox-time"></span>
-            <span id="wow-lightbox-resolution"></span>
-            <span id="wow-lightbox-counter"></span>
-          </div>
-        </div>
+        <!-- Coverflow Screenshot Carousel -->
+        <section class="coverflow-section wow-coverflow" id="coverflow-section-wow" aria-label="魔兽世界截图轮播">
+          <!-- JS populated by coverflow.js -->
+        </section>
       </div>
 
     </section>
