@@ -28,18 +28,10 @@
     {
       "id": "wow",
       "name": "玩魔兽世界",
-      "subtitle": "Five Dynasties",
-      "icon": "📜",
-      "primary_color": "#dbb42c",
-      "theme": "chinese"
-    },
-        {
-      "id": "test",
-      "name": "玩魔兽世界",
-      "subtitle": "Five Dynasties",
-      "icon": "📜",
-      "primary_color": "#dbb42c",
-      "theme": "chinese"
+      "subtitle": "World of Warcraft",
+      "icon": "⚔️",
+      "primary_color": "#0078ff",
+      "theme": "warcraft"
     }
   ]
 }

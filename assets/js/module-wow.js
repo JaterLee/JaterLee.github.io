@@ -1,6 +1,6 @@
 /**
- * module-ghost.js
- * Ghost of Tsushima (对马岛之魂) Module
+ * module-wow.js
+ * World of Warcraft (魔兽世界) Module
  * 截图画廊 + 灯箱，通过 JaterMod 注册，首次激活时懒加载。
  *
  * 依赖：core.js (Jater), ui-kit.js (JaterUI), module-registry.js (JaterMod)
@@ -32,7 +32,7 @@
      ========================================================== */
   async function loadImages() {
     try {
-      var resp = await fetch('data/ghost-images.json');
+      var resp = await fetch('data/wow-images.json');
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       var data = await resp.json();
       STATE.images = (data.images || []).sort(function (a, b) {
@@ -40,9 +40,9 @@
       });
       render();
     } catch (err) {
-      console.error('Ghost module: failed to load ghost-images.json', err.message);
+      console.warn('WoW module: failed to load wow-images.json', err.message);
       if (dom.galleryLoading) dom.galleryLoading.classList.add('hidden');
-      if (dom.galleryError) dom.galleryError.classList.remove('hidden');
+      if (dom.galleryEmpty) dom.galleryEmpty.classList.remove('hidden');
     }
   }
 
@@ -52,10 +52,10 @@
   function renderStats() {
     if (!STATE.images.length) return;
 
-    var statImages = $('#stat-ghost-images');
+    var statImages = $('#stat-wow-images');
     if (statImages) statImages.textContent = STATE.images.length + ' 张';
 
-    var statRange = $('#stat-ghost-range');
+    var statRange = $('#stat-wow-range');
     if (!statRange) return;
 
     var dates = STATE.images
@@ -86,22 +86,22 @@
     renderStats();
 
     dom.galleryGrid.innerHTML = STATE.images.map(function (img, index) {
-      return '<div class="ghost-gallery-card" role="listitem" tabindex="0"' +
+      return '<div class="wow-gallery-card" role="listitem" tabindex="0"' +
         ' data-index="' + index + '"' +
-        ' aria-label="对马岛截图：' + formatDate(img.date_taken) + '">' +
-        '<img class="ghost-gallery-card-img"' +
-        ' src="images/screenshots/ghost/thumb/' + img.id + '.webp"' +
-        ' alt="对马岛之魂截图 — ' + formatDate(img.date_taken) + '"' +
+        ' aria-label="魔兽世界截图：' + formatDate(img.date_taken) + '">' +
+        '<img class="wow-gallery-card-img"' +
+        ' src="images/screenshots/wow/thumb/' + img.id + '.webp"' +
+        ' alt="魔兽世界截图 — ' + formatDate(img.date_taken) + '"' +
         ' loading="lazy">' +
-        '<div class="ghost-gallery-card-overlay">' +
-        '<span class="ghost-gallery-card-date">' + formatDateShort(img.date_taken) + '</span>' +
-        '<span class="ghost-gallery-card-time">' + formatTime(img.date_taken) + '</span>' +
+        '<div class="wow-gallery-card-overlay">' +
+        '<span class="wow-gallery-card-date">' + formatDateShort(img.date_taken) + '</span>' +
+        '<span class="wow-gallery-card-time">' + formatTime(img.date_taken) + '</span>' +
         '</div>' +
       '</div>';
     }).join('');
 
     // Bind click and keyboard events on cards
-    dom.galleryGrid.querySelectorAll('.ghost-gallery-card').forEach(function (card) {
+    dom.galleryGrid.querySelectorAll('.wow-gallery-card').forEach(function (card) {
       card.addEventListener('click', function () {
         var idx = parseInt(card.dataset.index);
         if (lightbox) lightbox.open(idx);
@@ -123,24 +123,24 @@
     if (!window.JaterUI || !window.JaterUI.createLightbox) return;
 
     lightbox = window.JaterUI.createLightbox({
-      container: '#ghost-lightbox',
-      img: '#ghost-lightbox-img',
-      close: '.ghost-lightbox-close',
-      bg: '.ghost-lightbox-bg',
-      prev: '.ghost-lightbox-prev',
-      next: '.ghost-lightbox-next',
+      container: '#wow-lightbox',
+      img: '#wow-lightbox-img',
+      close: '.wow-lightbox-close',
+      bg: '.wow-lightbox-bg',
+      prev: '.wow-lightbox-prev',
+      next: '.wow-lightbox-next',
       texts: {
-        date: '#ghost-lightbox-date',
-        time: '#ghost-lightbox-time',
-        resolution: '#ghost-lightbox-resolution',
-        counter: '#ghost-lightbox-counter',
+        date: '#wow-lightbox-date',
+        time: '#wow-lightbox-time',
+        resolution: '#wow-lightbox-resolution',
+        counter: '#wow-lightbox-counter',
       },
       update: function (idx) {
         var img = STATE.images[idx];
         if (!img) return {};
         return {
-          src: 'images/screenshots/ghost/full/' + img.id + '.webp',
-          alt: '对马岛之魂截图 — ' + formatDate(img.date_taken),
+          src: 'images/screenshots/wow/full/' + img.id + '.webp',
+          alt: '魔兽世界截图 — ' + formatDate(img.date_taken),
           date: formatDate(img.date_taken),
           time: formatTime(img.date_taken),
           resolution: (img.width || '?') + ' × ' + (img.height || '?'),
@@ -156,28 +156,13 @@
         return (idx + 1) % STATE.images.length;
       },
       onClose: function (idx) {
-        // Return focus to the gallery card that was open
+        // Return focus to the gallery card
         if (idx >= 0 && dom.galleryGrid) {
           var card = dom.galleryGrid.querySelector('[data-index="' + idx + '"]');
           if (card) card.focus();
         }
       },
     });
-  }
-
-  /* ==========================================================
-     Event Bindings (module-specific, not handled by lightbox)
-     ========================================================== */
-  function bindEvents() {
-    // Retry button
-    var btnRetry = $('#btn-retry-ghost');
-    if (btnRetry) {
-      btnRetry.addEventListener('click', async function () {
-        if (dom.galleryError) dom.galleryError.classList.add('hidden');
-        if (dom.galleryLoading) dom.galleryLoading.classList.remove('hidden');
-        await loadImages();
-      });
-    }
   }
 
   /* ==========================================================
@@ -188,15 +173,14 @@
 
     // Collect DOM refs
     dom = {
-      galleryGrid: $('#ghost-gallery-grid'),
-      galleryLoading: $('#ghost-gallery-loading'),
-      galleryError: $('#ghost-gallery-error'),
-      galleryEmpty: $('#ghost-gallery-empty'),
+      galleryGrid: $('#wow-gallery-grid'),
+      galleryLoading: $('#wow-gallery-loading'),
+      galleryError: $('#wow-gallery-error'),
+      galleryEmpty: $('#wow-gallery-empty'),
     };
 
     STATE.loaded = true;
     createLightbox();
-    bindEvents();
     loadImages();
   }
 
@@ -204,12 +188,11 @@
      Register with module registry
      ========================================================== */
   if (window.JaterMod) {
-    window.JaterMod.register('ghost', { init: init });
+    window.JaterMod.register('wow', { init: init });
   } else {
-    // Fallback: if registry not loaded yet
     document.addEventListener('DOMContentLoaded', function () {
       if (window.JaterMod) {
-        window.JaterMod.register('ghost', { init: init });
+        window.JaterMod.register('wow', { init: init });
       }
     });
   }

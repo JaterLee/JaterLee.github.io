@@ -1,17 +1,19 @@
 /**
- * Grounded Saves — coverflow.js
- * 3D Coverflow 截图轮播，展示在首页
+ * coverflow.js
+ * 3D Coverflow 截图轮播 — Grounded 模块内使用
+ * 使用 JaterUI.createLightbox 共享灯箱组件。
+ *
+ * 依赖：core.js (Jater), ui-kit.js (JaterUI)
  */
 (function () {
   'use strict';
 
-  const $ = (sel) => document.querySelector(sel);
-  const $$ = (sel) => document.querySelectorAll(sel);
+  var $ = window.Jater.$;
 
   /* ==========================================================
      State
      ========================================================== */
-  const STATE = {
+  var STATE = {
     images: [],
     centerIndex: 0,
     autoTimer: null,
@@ -21,23 +23,20 @@
   /* ==========================================================
      DOM Refs — created after load
      ========================================================== */
-  let stage, dotsContainer, prevBtn, nextBtn, emptyEl, linkEl;
+  var stage, dotsContainer, prevBtn, nextBtn, emptyEl;
+  var lightbox = null;
 
   /* ==========================================================
      Helpers
      ========================================================== */
-  function formatDateShort(dateStr) {
-    if (!dateStr) return '';
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
-  }
+  var formatDateShort = window.Jater.formatDateShort;
 
   /**
    * 计算每个卡片在当前 centerIndex 下的视觉位置
    * 返回从 -maxOffset 到 +maxOffset 的数组
    */
   function getVisibleRange() {
-    const total = STATE.images.length;
+    var total = STATE.images.length;
     if (total <= 1) return [0];
     if (total === 2) return [-1, 0];
     // 3-4 cards: show 3
@@ -50,20 +49,20 @@
    * 给定图片索引和 centerIndex，返回它的可视偏移
    */
   function getPosOffset(imgIndex) {
-    const total = STATE.images.length;
+    var total = STATE.images.length;
     if (total === 0) return null;
 
     // 计算环形偏移
-    let diff = imgIndex - STATE.centerIndex;
+    var diff = imgIndex - STATE.centerIndex;
 
     // 环形绕回
-    const half = Math.floor(total / 2);
+    var half = Math.floor(total / 2);
     if (diff > half) diff -= total;
     if (diff < -half) diff += total;
 
-    const visibleRange = getVisibleRange();
-    const minVisible = visibleRange[0];
-    const maxVisible = visibleRange[visibleRange.length - 1];
+    var visibleRange = getVisibleRange();
+    var minVisible = visibleRange[0];
+    var maxVisible = visibleRange[visibleRange.length - 1];
 
     if (diff < minVisible || diff > maxVisible) {
       // 超出可视范围
@@ -78,50 +77,49 @@
      Rendering
      ========================================================== */
   function createDOM() {
-    const section = $('#coverflow-section');
+    var section = $('#coverflow-section');
     if (!section) return;
 
-    // Build structure
-    section.innerHTML = `
-      <div class="coverflow-header">
-        <h2 class="section-title">📸 冒险瞬间</h2>
-        <p class="section-desc">后院冒险中的每一个精彩画面</p>
-      </div>
-      <div class="coverflow-stage" id="coverflow-stage"></div>
-      <button class="coverflow-arrow coverflow-arrow-prev" id="coverflow-prev" aria-label="上一张">
-        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <button class="coverflow-arrow coverflow-arrow-next" id="coverflow-next" aria-label="下一张">
-        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M9 18l6-6-6-6"/></svg>
-      </button>
-      <div class="coverflow-dots" id="coverflow-dots"></div>
-      <div class="coverflow-gallery-link">
-        <a href="gallery.html">浏览全部截图 →</a>
-      </div>
-      <div class="coverflow-empty hidden" id="coverflow-empty">
-        <div class="coverflow-empty-icon">📸</div>
-        <p>还没有截图，去游戏中拍照吧</p>
-      </div>
-      <div class="coverflow-lightbox hidden" id="coverflow-lightbox" aria-hidden="true">
-        <div class="coverflow-lb-bg" id="coverflow-lb-bg"></div>
-        <button class="coverflow-lb-close" id="coverflow-lb-close" aria-label="关闭">
-          <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M18 6L6 18M6 6l12 12"/></svg>
-        </button>
-        <button class="coverflow-lb-arrow coverflow-lb-prev" id="coverflow-lb-prev" aria-label="上一张">
-          <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <button class="coverflow-lb-arrow coverflow-lb-next" id="coverflow-lb-next" aria-label="下一张">
-          <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M9 18l6-6-6-6"/></svg>
-        </button>
-        <div class="coverflow-lb-content">
-          <img src="" alt="" id="coverflow-lb-img">
-        </div>
-        <div class="coverflow-lb-info">
-          <span id="coverflow-lb-date"></span>
-          <span id="coverflow-lb-counter"></span>
-        </div>
-      </div>
-    `;
+    // Build structure (lightbox HTML included, managed by JaterUI.createLightbox)
+    section.innerHTML =
+      '<div class="coverflow-header">' +
+        '<h2 class="section-title">📸 冒险瞬间</h2>' +
+        '<p class="section-desc">后院冒险中的每一个精彩画面</p>' +
+      '</div>' +
+      '<div class="coverflow-stage" id="coverflow-stage"></div>' +
+      '<button class="coverflow-arrow coverflow-arrow-prev" id="coverflow-prev" aria-label="上一张">' +
+        '<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M15 18l-6-6 6-6"/></svg>' +
+      '</button>' +
+      '<button class="coverflow-arrow coverflow-arrow-next" id="coverflow-next" aria-label="下一张">' +
+        '<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M9 18l6-6-6-6"/></svg>' +
+      '</button>' +
+      '<div class="coverflow-dots" id="coverflow-dots"></div>' +
+      '<div class="coverflow-gallery-link">' +
+        '<a href="gallery.html">浏览全部截图 →</a>' +
+      '</div>' +
+      '<div class="coverflow-empty hidden" id="coverflow-empty">' +
+        '<div class="coverflow-empty-icon">📸</div>' +
+        '<p>还没有截图，去游戏中拍照吧</p>' +
+      '</div>' +
+      '<div class="coverflow-lightbox hidden" id="coverflow-lightbox" aria-hidden="true">' +
+        '<div class="coverflow-lb-bg" id="coverflow-lb-bg"></div>' +
+        '<button class="coverflow-lb-close" id="coverflow-lb-close" aria-label="关闭">' +
+          '<svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M18 6L6 18M6 6l12 12"/></svg>' +
+        '</button>' +
+        '<button class="coverflow-lb-arrow coverflow-lb-prev" id="coverflow-lb-prev" aria-label="上一张">' +
+          '<svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M15 18l-6-6 6-6"/></svg>' +
+        '</button>' +
+        '<button class="coverflow-lb-arrow coverflow-lb-next" id="coverflow-lb-next" aria-label="下一张">' +
+          '<svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M9 18l6-6-6-6"/></svg>' +
+        '</button>' +
+        '<div class="coverflow-lb-content">' +
+          '<img src="" alt="" id="coverflow-lb-img">' +
+        '</div>' +
+        '<div class="coverflow-lb-info">' +
+          '<span id="coverflow-lb-date"></span>' +
+          '<span id="coverflow-lb-counter"></span>' +
+        '</div>' +
+      '</div>';
 
     stage = $('#coverflow-stage');
     dotsContainer = $('#coverflow-dots');
@@ -134,19 +132,17 @@
     if (!stage) return;
 
     stage.innerHTML = STATE.images
-      .map((img, i) => {
-        const pos = getPosOffset(i);
+      .map(function (img, i) {
+        var pos = getPosOffset(i);
         if (pos === null) return '';
-        return `
-          <div class="coverflow-card" data-pos="${pos}" data-index="${i}"
-               role="button" tabindex="${pos === 0 ? 0 : -1}"
-               aria-label="截图：${formatDateShort(img.date_taken)}">
-            <img src="images/screenshots/thumb/${img.id}.webp"
-                 alt="Grounded 截图 — ${formatDateShort(img.date_taken)}"
-                 loading="${Math.abs(pos) <= 1 ? 'eager' : 'lazy'}">
-            <div class="coverflow-card-label">${formatDateShort(img.date_taken)}</div>
-          </div>
-        `;
+        return '<div class="coverflow-card" data-pos="' + pos + '" data-index="' + i + '"' +
+          ' role="button" tabindex="' + (pos === 0 ? 0 : -1) + '"' +
+          ' aria-label="截图：' + formatDateShort(img.date_taken) + '">' +
+          '<img src="images/screenshots/thumb/' + img.id + '.webp"' +
+          ' alt="Grounded 截图 — ' + formatDateShort(img.date_taken) + '"' +
+          ' loading="' + (Math.abs(pos) <= 1 ? 'eager' : 'lazy') + '">' +
+          '<div class="coverflow-card-label">' + formatDateShort(img.date_taken) + '</div>' +
+        '</div>';
       })
       .join('');
   }
@@ -159,20 +155,18 @@
     }
 
     dotsContainer.innerHTML = STATE.images
-      .map(
-        (_, i) => `
-          <button class="coverflow-dot${i === STATE.centerIndex ? ' active' : ''}"
-                  data-index="${i}" aria-label="第 ${i + 1} 张"></button>
-        `
-      )
+      .map(function (_, i) {
+        return '<button class="coverflow-dot' + (i === STATE.centerIndex ? ' active' : '') + '"' +
+          ' data-index="' + i + '" aria-label="第 ' + (i + 1) + ' 张"></button>';
+      })
       .join('');
   }
 
   function updateCardPositions() {
-    const cards = stage ? stage.querySelectorAll('.coverflow-card') : [];
-    cards.forEach((card) => {
-      const idx = parseInt(card.dataset.index);
-      const pos = getPosOffset(idx);
+    var cards = stage ? stage.querySelectorAll('.coverflow-card') : [];
+    cards.forEach(function (card) {
+      var idx = parseInt(card.dataset.index);
+      var pos = getPosOffset(idx);
       card.dataset.pos = pos;
 
       // Update tabindex
@@ -180,9 +174,9 @@
     });
 
     // Update dots
-    const dots = dotsContainer ? dotsContainer.querySelectorAll('.coverflow-dot') : [];
-    dots.forEach((dot) => {
-      const idx = parseInt(dot.dataset.index);
+    var dots = dotsContainer ? dotsContainer.querySelectorAll('.coverflow-dot') : [];
+    dots.forEach(function (dot) {
+      var idx = parseInt(dot.dataset.index);
       dot.classList.toggle('active', idx === STATE.centerIndex);
     });
   }
@@ -225,54 +219,53 @@
   }
 
   /* ==========================================================
-     Lightbox
+     Create shared lightbox via JaterUI
      ========================================================== */
-  function openLightbox() {
-    const lb = $('#coverflow-lightbox');
-    if (!lb) return;
-    stopAutoTimer();
-    updateLightboxImage();
-    lb.classList.remove('hidden');
-    lb.setAttribute('aria-hidden', 'false');
-    document.documentElement.style.overflow = 'hidden';
-    $('#coverflow-lb-close').focus();
-  }
+  function createLightbox() {
+    if (!window.JaterUI || !window.JaterUI.createLightbox) return;
 
-  function closeLightbox() {
-    const lb = $('#coverflow-lightbox');
-    if (!lb) return;
-    lb.classList.add('hidden');
-    lb.setAttribute('aria-hidden', 'true');
-    document.documentElement.style.overflow = '';
-    startAutoTimer();
-  }
-
-  function updateLightboxImage() {
-    const img = STATE.images[STATE.centerIndex];
-    if (!img) return;
-    const lbImg = $('#coverflow-lb-img');
-    if (lbImg) {
-      lbImg.style.opacity = '0';
-      setTimeout(function () {
-        lbImg.src = 'images/screenshots/full/' + img.id + '.webp';
-        lbImg.alt = 'Grounded 截图';
-        lbImg.style.opacity = '1';
-      }, 80);
-    }
-    const lbDate = $('#coverflow-lb-date');
-    if (lbDate) lbDate.textContent = formatDateShort(img.date_taken);
-    const lbCounter = $('#coverflow-lb-counter');
-    if (lbCounter) lbCounter.textContent = (STATE.centerIndex + 1) + ' / ' + STATE.images.length;
-  }
-
-  function lightboxPrev() {
-    showPrev();
-    updateLightboxImage();
-  }
-
-  function lightboxNext() {
-    showNext();
-    updateLightboxImage();
+    lightbox = window.JaterUI.createLightbox({
+      container: '#coverflow-lightbox',
+      img: '#coverflow-lb-img',
+      close: '#coverflow-lb-close',
+      bg: '#coverflow-lb-bg',
+      prev: '#coverflow-lb-prev',
+      next: '#coverflow-lb-next',
+      texts: {
+        date: '#coverflow-lb-date',
+        counter: '#coverflow-lb-counter',
+      },
+      update: function (idx) {
+        var img = STATE.images[idx];
+        if (!img) return {};
+        return {
+          src: 'images/screenshots/full/' + img.id + '.webp',
+          alt: 'Grounded 截图',
+          date: formatDateShort(img.date_taken),
+          counter: (idx + 1) + ' / ' + STATE.images.length,
+        };
+      },
+      onPrev: function (idx) {
+        var newIdx = ((idx - 1 + STATE.images.length) % STATE.images.length);
+        STATE.centerIndex = newIdx;
+        updateCardPositions();
+        resetAutoTimer();
+        return newIdx;
+      },
+      onNext: function (idx) {
+        var newIdx = (idx + 1) % STATE.images.length;
+        STATE.centerIndex = newIdx;
+        updateCardPositions();
+        resetAutoTimer();
+        return newIdx;
+      },
+      onOpen: function () {
+        stopAutoTimer();
+      },
+      onClose: function () {
+        startAutoTimer();
+      },
+    });
   }
 
   /* ==========================================================
@@ -280,61 +273,46 @@
      ========================================================== */
   function bindEvents() {
     // Arrow buttons
-    prevBtn.addEventListener('click', showPrev);
-    nextBtn.addEventListener('click', showNext);
-
-    // Lightbox buttons
-    $('#coverflow-lb-close').addEventListener('click', closeLightbox);
-    $('#coverflow-lb-bg').addEventListener('click', closeLightbox);
-    $('#coverflow-lb-prev').addEventListener('click', lightboxPrev);
-    $('#coverflow-lb-next').addEventListener('click', lightboxNext);
+    if (prevBtn) prevBtn.addEventListener('click', showPrev);
+    if (nextBtn) nextBtn.addEventListener('click', showNext);
 
     // Click on cards
-    stage.addEventListener('click', function (e) {
-      const card = e.target.closest('.coverflow-card');
-      if (!card) return;
-      const idx = parseInt(card.dataset.index);
-      const pos = parseInt(card.dataset.pos);
-      if (pos === 0) {
-        // Click center card → open lightbox
-        openLightbox();
-      } else {
-        // Click side card → bring to center
-        navigateTo(idx);
-      }
-    });
+    if (stage) {
+      stage.addEventListener('click', function (e) {
+        var card = e.target.closest('.coverflow-card');
+        if (!card) return;
+        var idx = parseInt(card.dataset.index);
+        var pos = parseInt(card.dataset.pos);
+        if (pos === 0) {
+          // Click center card → open lightbox
+          if (lightbox) lightbox.open(STATE.centerIndex);
+        } else {
+          // Click side card → bring to center
+          navigateTo(idx);
+        }
+      });
+    }
 
     // Click dots
-    dotsContainer.addEventListener('click', function (e) {
-      const dot = e.target.closest('.coverflow-dot');
-      if (!dot) return;
-      const idx = parseInt(dot.dataset.index);
-      navigateTo(idx);
-    });
+    if (dotsContainer) {
+      dotsContainer.addEventListener('click', function (e) {
+        var dot = e.target.closest('.coverflow-dot');
+        if (!dot) return;
+        var idx = parseInt(dot.dataset.index);
+        navigateTo(idx);
+      });
+    }
 
-    // Keyboard
+    // Keyboard — coverflow navigation only (lightbox keyboard handled by shared component)
     document.addEventListener('keydown', function (e) {
-      const lb = $('#coverflow-lightbox');
-      const lbOpen = lb && !lb.classList.contains('hidden');
-
-      if (lbOpen) {
-        if (e.key === 'Escape') {
-          e.preventDefault();
-          closeLightbox();
-        } else if (e.key === 'ArrowLeft') {
-          e.preventDefault();
-          lightboxPrev();
-        } else if (e.key === 'ArrowRight') {
-          e.preventDefault();
-          lightboxNext();
-        }
-        return;
-      }
+      // Skip if lightbox is open — the shared lightbox handles its own keyboard
+      var lb = $('#coverflow-lightbox');
+      if (lb && !lb.classList.contains('hidden')) return;
 
       // Coverflow navigation (only when in viewport)
-      const section = $('#coverflow-section');
+      var section = $('#coverflow-section');
       if (!section) return;
-      const rect = section.getBoundingClientRect();
+      var rect = section.getBoundingClientRect();
       if (rect.bottom < 0 || rect.top > window.innerHeight) return;
 
       if (e.key === 'ArrowLeft') {
@@ -347,46 +325,35 @@
     });
 
     // Touch swipe on coverflow stage
-    let touchStartX = 0;
-    stage.addEventListener('touchstart', function (e) {
-      touchStartX = e.touches[0].clientX;
-      stopAutoTimer();
-    });
+    var touchStartX = 0;
+    if (stage) {
+      stage.addEventListener('touchstart', function (e) {
+        touchStartX = e.touches[0].clientX;
+        stopAutoTimer();
+      });
 
-    stage.addEventListener('touchend', function (e) {
-      const dx = e.changedTouches[0].clientX - touchStartX;
-      if (Math.abs(dx) > 40) {
-        if (dx > 0) showPrev();
-        else showNext();
-      }
-      startAutoTimer();
-    });
-
-    // Touch swipe in lightbox
-    let lbTouchStartX = 0;
-    const lbEl = $('#coverflow-lightbox');
-    lbEl.addEventListener('touchstart', function (e) {
-      lbTouchStartX = e.touches[0].clientX;
-    });
-
-    lbEl.addEventListener('touchend', function (e) {
-      const dx = e.changedTouches[0].clientX - lbTouchStartX;
-      if (Math.abs(dx) > 50) {
-        if (dx > 0) lightboxPrev();
-        else lightboxNext();
-      }
-    });
+      stage.addEventListener('touchend', function (e) {
+        var dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 40) {
+          if (dx > 0) showPrev();
+          else showNext();
+        }
+        startAutoTimer();
+      });
+    }
 
     // Pause on hover
-    stage.addEventListener('mouseenter', function () {
-      STATE.paused = true;
-      stopAutoTimer();
-    });
+    if (stage) {
+      stage.addEventListener('mouseenter', function () {
+        STATE.paused = true;
+        stopAutoTimer();
+      });
 
-    stage.addEventListener('mouseleave', function () {
-      STATE.paused = false;
-      startAutoTimer();
-    });
+      stage.addEventListener('mouseleave', function () {
+        STATE.paused = false;
+        startAutoTimer();
+      });
+    }
   }
 
   /* ==========================================================
@@ -394,12 +361,12 @@
      ========================================================== */
   async function loadImages() {
     try {
-      const resp = await fetch('data/images.json');
+      var resp = await fetch('data/images.json');
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
-      const data = await resp.json();
-      STATE.images = (data.images || []).sort(
-        (a, b) => new Date(b.date_taken) - new Date(a.date_taken)
-      );
+      var data = await resp.json();
+      STATE.images = (data.images || []).sort(function (a, b) {
+        return new Date(b.date_taken) - new Date(a.date_taken);
+      });
     } catch (err) {
       console.warn('Coverflow: failed to load images.json', err.message);
       STATE.images = [];
@@ -413,6 +380,7 @@
     renderCards();
     renderDots();
     updateCardPositions();
+    createLightbox();
     bindEvents();
     startAutoTimer();
   }

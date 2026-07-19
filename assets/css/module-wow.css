@@ -1,0 +1,341 @@
+/* ============================================================
+   Module: World of Warcraft (魔兽世界)
+   Warcraft aesthetic: blue + gold
+   ============================================================ */
+
+/* ── Module Header Accent ── */
+.module-header.wow-header {
+  background: linear-gradient(135deg, rgba(8, 16, 40, 0.6) 0%, rgba(16, 32, 64, 0.4) 100%);
+}
+
+.module-header.wow-header .module-header-title {
+  color: #7eb8ff;
+}
+
+.module-header.wow-header .module-stat-number {
+  color: #0078ff;
+}
+
+/* ── WoW Gallery Container ── */
+.wow-gallery-container {
+  padding: var(--space-6) var(--space-8);
+  max-width: 64rem;
+  margin: 0 auto;
+}
+
+/* ── Loading State ── */
+.wow-gallery-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16) var(--space-8);
+  color: var(--dw-text-muted);
+  gap: var(--space-4);
+}
+
+.wow-gallery-loading.hidden {
+  display: none;
+}
+
+/* ── Error / Empty States ── */
+.wow-gallery-error,
+.wow-gallery-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16) var(--space-8);
+  text-align: center;
+  color: var(--dw-text-muted);
+  gap: var(--space-3);
+}
+
+.wow-gallery-error.hidden,
+.wow-gallery-empty.hidden {
+  display: none;
+}
+
+.wow-gallery-error .empty-icon,
+.wow-gallery-empty .empty-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-3);
+  opacity: 0.5;
+}
+
+.wow-gallery-empty .empty-hint {
+  font-size: 0.8rem;
+  color: var(--dw-text-muted);
+  opacity: 0.6;
+}
+
+/* ── Gallery Grid ── */
+.wow-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  gap: var(--space-4);
+}
+
+.wow-gallery-grid.hidden {
+  display: none;
+}
+
+/* ── Gallery Card ── */
+.wow-gallery-card {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--dw-bg-card);
+  border: 1px solid rgba(0, 120, 255, 0.15);
+  transition: all 0.3s ease;
+  aspect-ratio: 16 / 10;
+}
+
+.wow-gallery-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 120, 255, 0.5);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 120, 255, 0.15);
+}
+
+.wow-gallery-card:focus-visible {
+  outline: 3px solid #0078ff;
+  outline-offset: 2px;
+}
+
+.wow-gallery-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.wow-gallery-card:hover .wow-gallery-card-img {
+  transform: scale(1.05);
+}
+
+/* ── Card Overlay ── */
+.wow-gallery-card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-3) var(--space-4);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.wow-gallery-card:hover .wow-gallery-card-overlay,
+.wow-gallery-card:focus-within .wow-gallery-card-overlay {
+  opacity: 1;
+}
+
+.wow-gallery-card-date {
+  font-size: 0.8rem;
+  color: #7eb8ff;
+  font-weight: 500;
+}
+
+.wow-gallery-card-time {
+  font-size: 0.7rem;
+  color: rgba(126, 184, 255, 0.7);
+}
+
+/* ── WoW Lightbox ── */
+.wow-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.94);
+  animation: wow-lb-fade-in 0.25s ease;
+}
+
+.wow-lightbox.hidden {
+  display: none;
+}
+
+@keyframes wow-lb-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.wow-lightbox-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.wow-lightbox-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.2s ease;
+}
+
+.wow-lightbox-close:hover {
+  background: rgba(0, 120, 255, 0.3);
+  border-color: rgba(0, 120, 255, 0.5);
+}
+
+.wow-lightbox-prev,
+.wow-lightbox-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.2s ease;
+}
+
+.wow-lightbox-prev {
+  left: var(--space-4);
+}
+
+.wow-lightbox-next {
+  right: var(--space-4);
+}
+
+.wow-lightbox-prev:hover,
+.wow-lightbox-next:hover {
+  background: rgba(0, 120, 255, 0.3);
+  border-color: rgba(0, 120, 255, 0.5);
+}
+
+.wow-lightbox-content {
+  position: relative;
+  z-index: 2;
+  max-width: 90vw;
+  max-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wow-lightbox-content img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  transition: opacity 0.2s ease;
+}
+
+.wow-lightbox-info {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: var(--space-5);
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  padding: var(--space-2) var(--space-5);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+}
+
+.wow-lightbox-info span {
+  white-space: nowrap;
+}
+
+/* ── Responsive: Tablet ── */
+@media (max-width: 1023px) {
+  .wow-gallery-container {
+    padding: var(--space-4);
+  }
+
+  .wow-gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+    gap: var(--space-3);
+  }
+
+  .wow-lightbox-prev,
+  .wow-lightbox-next {
+    width: 40px;
+    height: 40px;
+  }
+
+  .wow-lightbox-info {
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    font-size: 0.75rem;
+  }
+}
+
+/* ── Responsive: Mobile ── */
+@media (max-width: 639px) {
+  .wow-gallery-container {
+    padding: var(--space-3);
+  }
+
+  .wow-gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(160px, 100%), 1fr));
+    gap: var(--space-2);
+  }
+
+  .wow-gallery-card-overlay {
+    opacity: 1;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .wow-gallery-card-date {
+    font-size: 0.7rem;
+  }
+
+  .wow-gallery-card-time {
+    font-size: 0.65rem;
+  }
+
+  .wow-lightbox-prev,
+  .wow-lightbox-next {
+    width: 36px;
+    height: 36px;
+  }
+
+  .wow-lightbox-prev {
+    left: var(--space-2);
+  }
+
+  .wow-lightbox-next {
+    right: var(--space-2);
+  }
+
+  .wow-lightbox-info {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.7rem;
+    bottom: var(--space-2);
+  }
+}

@@ -5,12 +5,14 @@
  * 越远越回收（更靠右、更小、旋转角度更大），
  * 形成一条向左凸出的弧线。
  * 支持滚轮 / 键盘 / 触摸滑动 / 点击切换。
+ *
+ * 依赖：core.js (window.Jater), module-registry.js (window.JaterMod)
  */
 (function () {
   'use strict';
 
-  var $ = function (sel) { return document.querySelector(sel); };
-  var $$ = function (sel) { return document.querySelectorAll(sel); };
+  var $ = window.Jater.$;
+  var $$ = window.Jater.$$;
 
   /* ==========================================================
      Arc Trajectory Parameters
@@ -36,7 +38,6 @@
     modules: [],
     activeModule: 'grounded',
     activeIndex: 0,
-    initialized: {},
   };
 
   /* ==========================================================
@@ -70,9 +71,13 @@
     // Resolve active index
     var idx = STATE.modules.findIndex(function (m) { return m.id === STATE.activeModule; });
     STATE.activeIndex = idx >= 0 ? idx : 0;
-    STATE.activeModule = STATE.modules[STATE.activeIndex].id;
+    STATE.activeModule = STATE.modules[STATE.activeIndex] ? STATE.modules[STATE.activeIndex].id : 'grounded';
     renderAll();
     render();
+    // Activate default module via registry (modules are already registered by now)
+    if (window.JaterMod.isRegistered(STATE.activeModule)) {
+      window.JaterMod.activate(STATE.activeModule);
+    }
   }
 
   /* ==========================================================
@@ -122,9 +127,6 @@
       discRing.appendChild(el);
       cards.push(el);
     });
-
-    // Trigger initial activation (no animation)
-    activateModule(STATE.activeModule);
   }
 
   /* ==========================================================
@@ -173,33 +175,7 @@
   }
 
   /* ==========================================================
-     Module Activation (right panel)
-     ========================================================== */
-  function activateModule(moduleId) {
-    $$('.module-content').forEach(function (el) {
-      el.classList.remove('active');
-    });
-
-    var target = $('#module-' + moduleId);
-    if (target) {
-      target.classList.add('active');
-      var rightPanel = $('#dw-right-panel');
-      if (rightPanel) rightPanel.scrollTop = 0;
-    }
-
-    var firstLoad = !STATE.initialized[moduleId];
-    window.dispatchEvent(new CustomEvent('dw:modulechange', {
-      detail: { module: moduleId, firstLoad: firstLoad },
-    }));
-    STATE.initialized[moduleId] = true;
-
-    if (history.replaceState) {
-      history.replaceState(null, '', '#' + moduleId);
-    }
-  }
-
-  /* ==========================================================
-     Go to module by ID
+     Module Navigation — delegates to JaterMod registry
      ========================================================== */
   function goToModule(moduleId) {
     if (moduleId === STATE.activeModule) return;
@@ -208,16 +184,17 @@
     STATE.activeModule = moduleId;
     STATE.activeIndex = idx;
     render();
-    activateModule(moduleId);
+    window.JaterMod.activate(moduleId);
   }
 
   function goTo(index) {
     var N = STATE.modules.length;
     var idx = ((index % N) + N) % N;
-    STATE.activeModule = STATE.modules[idx].id;
+    var moduleId = STATE.modules[idx] ? STATE.modules[idx].id : STATE.activeModule;
+    STATE.activeModule = moduleId;
     STATE.activeIndex = idx;
     render();
-    activateModule(STATE.activeModule);
+    window.JaterMod.activate(moduleId);
   }
 
   function navigateNext() {
@@ -299,23 +276,15 @@
   }
 
   /* ==========================================================
-     URL Hash
-     ========================================================== */
-  function checkInitialHash() {
-    var hash = window.location.hash.replace('#', '');
-    var validIds = STATE.modules.map(function (m) { return m.id; });
-    if (hash && validIds.includes(hash) && hash !== STATE.activeModule) {
-      goToModule(hash);
-    }
-  }
-
-  /* ==========================================================
      Init
      ========================================================== */
   async function init() {
     await loadModuleConfig();
     bindEvents();
-    checkInitialHash();
+    // Delegate hash check to registry (after all modules registered)
+    if (window.JaterMod) {
+      window.JaterMod.checkInitialHash();
+    }
   }
 
   if (document.readyState === 'loading') {

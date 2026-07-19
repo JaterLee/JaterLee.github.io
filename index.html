@@ -17,11 +17,17 @@
   <link rel="stylesheet" href="assets/css/module-grounded.css">
   <link rel="stylesheet" href="assets/css/module-ghost.css">
   <link rel="stylesheet" href="assets/css/module-history.css">
-  <!-- Scripts (deferred) -->
+  <link rel="stylesheet" href="assets/css/module-wow.css">
+  <!-- Scripts (deferred, order matters for dependencies) -->
+  <script defer src="assets/js/core.js"></script>
+  <script defer src="assets/js/ui-kit.js"></script>
+  <script defer src="assets/js/module-registry.js"></script>
   <script defer src="assets/js/dw-navigation.js"></script>
-  <script defer src="assets/js/app.js"></script>
+  <script defer src="assets/js/module-grounded.js"></script>
   <script defer src="assets/js/coverflow.js"></script>
   <script defer src="assets/js/module-ghost.js"></script>
+  <script defer src="assets/js/module-history.js"></script>
+  <script defer src="assets/js/module-wow.js"></script>
 </head>
 <body>
 
@@ -125,7 +131,7 @@
             <p class="section-desc">点击下载朋友的存档，或者将你的存档分享给大家</p>
 
             <div class="saves-grid" id="saves-grid" role="list" aria-label="存档列表">
-              <!-- JS populated by app.js -->
+              <!-- JS populated by module-grounded.js -->
             </div>
 
             <div class="error-state hidden" id="saves-error" role="alert">
@@ -156,7 +162,7 @@
             </div>
 
             <div class="timeline" id="changelog-timeline" role="list" aria-label="冒险日志时间线">
-              <!-- JS populated by app.js -->
+              <!-- JS populated by module-grounded.js -->
             </div>
 
             <div class="error-state hidden" id="changelog-error" role="alert">
@@ -247,42 +253,89 @@
           </div>
           <div class="module-stats" id="history-stats">
             <div class="module-stat">
-              <span class="module-stat-number">--</span>
+              <span class="module-stat-number" id="stat-history-chapters">--</span>
               <span class="module-stat-label">已读章节</span>
             </div>
             <div class="module-stat">
-              <span class="module-stat-number">--</span>
+              <span class="module-stat-number" id="stat-history-notes">--</span>
               <span class="module-stat-label">笔记</span>
             </div>
           </div>
         </div>
 
-        <div class="history-placeholder">
-          <div class="history-placeholder-icon" aria-hidden="true">📜</div>
-          <p class="history-placeholder-text">五代十国的读书笔记正在整理中。<br>后续将在这里记录章节摘要、历史人物和阅读感悟。</p>
+        <!-- Dynamic Notes Container -->
+        <div class="history-notes-container">
+          <div class="ghost-gallery-loading" id="history-loading">
+            <div class="spinner"></div>
+            <p>加载中...</p>
+          </div>
+          <div class="ghost-gallery-empty hidden" id="history-empty">
+            <div class="empty-icon" aria-hidden="true">📜</div>
+            <p>还没有读书笔记</p>
+            <p class="empty-hint">在 data/history-notes.json 中添加笔记吧</p>
+          </div>
+          <div class="history-chapter-list" id="history-notes-list"></div>
         </div>
+      </div>
 
-        <!-- Sample chapter cards (preview) -->
-        <div class="module-preview-cards">
-          <div class="module-preview-card history-chapter-card">
-            <div class="history-chapter-header">
-              <span class="history-chapter-number">一</span>
-              <span class="history-chapter-title">朱温篡唐 — 后梁的建立</span>
-              <span class="history-chapter-date">07-15</span>
+      <!-- ───── MODULE: World of Warcraft (魔兽世界) ───── -->
+      <div id="module-wow" class="module-content" role="tabpanel" aria-label="魔兽世界">
+
+        <div class="module-header wow-header">
+          <div class="module-header-icon" aria-hidden="true">⚔️</div>
+          <div class="module-header-info">
+            <h2 class="module-header-title">玩魔兽世界</h2>
+            <p class="module-header-desc">艾泽拉斯的冒险记录</p>
+          </div>
+          <div class="module-stats" id="wow-stats">
+            <div class="module-stat">
+              <span class="module-stat-number" id="stat-wow-images">--</span>
+              <span class="module-stat-label">截图</span>
             </div>
-            <div class="history-chapter-summary">朱温原是黄巢部将，后降唐赐名全忠。最终篡唐建立后梁，开启五代十国乱世。</div>
-            <div class="history-events">
-              <span class="history-event-tag">白马之祸 (904)</span>
-              <span class="history-event-tag">朱温称帝 (907)</span>
+            <div class="module-stat">
+              <span class="module-stat-number" id="stat-wow-range">--</span>
+              <span class="module-stat-label">拍摄跨度</span>
             </div>
           </div>
-          <div class="module-preview-card history-chapter-card">
-            <div class="history-chapter-header">
-              <span class="history-chapter-number">二</span>
-              <span class="history-chapter-title">李存勖灭梁 — 后唐的建立</span>
-              <span class="history-chapter-date">即将到来...</span>
-            </div>
-            <div class="history-chapter-summary">李克用之子李存勖继承父志，最终攻灭后梁，建立后唐，一度收复燕云十六州。</div>
+        </div>
+
+        <!-- Screenshot Gallery -->
+        <div class="wow-gallery-container">
+          <div class="wow-gallery-loading" id="wow-gallery-loading">
+            <div class="spinner"></div>
+            <p>加载中...</p>
+          </div>
+          <div class="wow-gallery-error hidden" id="wow-gallery-error" role="alert">
+            <p>无法加载截图数据，请稍后再试。</p>
+          </div>
+          <div class="wow-gallery-empty hidden" id="wow-gallery-empty">
+            <div class="empty-icon" aria-hidden="true">⚔️</div>
+            <p>还没有魔兽世界截图</p>
+            <p class="empty-hint">运行同步脚本来添加截图</p>
+          </div>
+          <div class="wow-gallery-grid" id="wow-gallery-grid"></div>
+        </div>
+
+        <!-- WoW Lightbox -->
+        <div class="wow-lightbox hidden" id="wow-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="魔兽世界截图查看器">
+          <div class="wow-lightbox-bg"></div>
+          <button class="wow-lightbox-close" aria-label="关闭">
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+          <button class="wow-lightbox-prev" aria-label="上一张">
+            <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button class="wow-lightbox-next" aria-label="下一张">
+            <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <div class="wow-lightbox-content">
+            <img src="" alt="" id="wow-lightbox-img">
+          </div>
+          <div class="wow-lightbox-info">
+            <span id="wow-lightbox-date"></span>
+            <span id="wow-lightbox-time"></span>
+            <span id="wow-lightbox-resolution"></span>
+            <span id="wow-lightbox-counter"></span>
           </div>
         </div>
       </div>
