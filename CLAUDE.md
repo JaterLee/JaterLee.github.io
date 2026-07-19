@@ -219,3 +219,69 @@ Cross-module screenshot synchronization with centralized config and batch commit
 4. **Separate repo config from local config**: `modules.json` holds repo-level settings (paths, patterns); `screenshot-config.json` holds machine-specific source directories. The latter is gitignored — different machines have different game install paths.
 5. **Multiple filename patterns are common**: WoW has two formats (`WoWScrnShot_` legacy and `WowClassic_` modern). Support `filename_patterns` array from the start — don't force one pattern per module.
 6. **Ghost's actual filenames didn't match the assumed pattern**: assumed `Ghost of Tsushima_YYYY.MM.DD-HH.MM.SS.png`, actual files from the screenshot tool were `Screenshot_YYYY-MM-DD_HH-MM-SS.png`. Always verify filename patterns against real files before writing config.
+
+## Coverflow Reusable Component (2026-07-19)
+
+Refactored `coverflow.js` from a hardcoded Grounded-only IIFE into a reusable factory `JaterCoverflow.create(config)`. All three game modules (Grounded, Ghost, WoW) now share the same 3D carousel component.
+
+**Factory config**:
+
+| Field | Description |
+|-------|-------------|
+| `container` | CSS selector for the empty section to populate |
+| `images` | Pre-loaded image array (use this when module fetches its own data) |
+| `dataUrl` | JSON URL for auto-fetch (backward compat for Grounded) |
+| `thumbPath` / `fullPath` | Thumbnail / full-size image path prefixes |
+| `title` / `description` | Section heading and subtitle |
+| `altPrefix` | Image alt text prefix (e.g. "魔兽世界截图") |
+| `galleryLink` | Optional "浏览全部截图 →" link href |
+| `moduleClass` | Extra CSS class for background variant (e.g. `ghost-coverflow`) |
+
+**Instance isolation**: Each instance derives a namespace from its container ID (e.g. `#coverflow-section-ghost` → `ghost-cf-*` internal IDs). All STATE, DOM refs, timers, and lightbox are per-instance.
+
+**Module integration**: `module-ghost.js` and `module-wow.js` call `JaterCoverflow.create({ images: STATE.images, ... })` in their `init()`, passing pre-fetched data. Coverflow DOM is created inside the module's section. Lightbox is created via `JaterUI.createLightbox()` per instance.
+
+**CSS**: Added `.ghost-coverflow` (dark red `#1a0a0a→#3d1a1a→#2a1010`) and `.wow-coverflow` (dark blue `#0a1226→#162448→#101a30`) background variants. Grounded green remains default.
+
+### Performance: Virtual Window Rendering
+
+With WoW at 111+ images, rendering all cards to DOM was unsustainable. Optimizations:
+
+| Optimization | Before | After |
+|-------------|--------|-------|
+| DOM card count | All N images | Max 7 (visible ±3) |
+| Navigation update | O(n) iterate all cards | O(1) incremental sync |
+| Dot navigation | N dots (111 buttons) | Compact counter `◀ 5/111 ▶` for >20 images |
+
+**`syncCards()`**: On each navigation, compares current DOM cards against needed window indices — removes cards that left the window, creates cards that entered, updates positions of existing. New cards entering the window use `document.createElement` (not `innerHTML`).
+
+**`WINDOW_HALF = 3`**: Positions -2..2 are visible, ±3 is buffer for smooth transitions. Total ≤7 cards in DOM.
+
+**`DOT_LIMIT = 20`**: Above this threshold, replace individual dots with `◀ N / M ▶` compact counter (CSS: `.coverflow-dot-nav`, `.coverflow-dot-counter`).
+
+## Force Push Recovery (2026-07-19)
+
+### What happened
+
+Force push (`--force`) overwrote the remote branch with a local commit tree that was behind the remote. The remote commit `3072c8b` (containing today's Grounded saves, changelog, and new save zip) was orphaned. Additionally, WoW screenshot image files were lost because they were only on the remote.
+
+### Root causes
+
+1. **Git Data API batch commits create remote-only commits**: the sync script pushes screenshots directly to the remote via Git Data API. These commits exist on the remote but NOT in the local clone. After a sync runs (including via pre-commit hook), `git push` is rejected with "fetch first" — creating a temptation to force push.
+2. **`git pull` times out on large binary repos**: 111 WoW screenshots ≈ 30MB. Over slow network, `git fetch` can timeout, making it impossible to do a normal `git pull` before pushing.
+3. **Pre-commit hook + push rejection = vicious cycle**: `git commit` triggers pre-commit → sync runs → creates remote commit → `git push` rejected → user force pushes → loses data.
+
+### Recovery
+
+1. **GitHub retains force-pushed commits by SHA for a short time**. Found via `GET /repos/:owner/:repo/events` API.
+2. **Fetch individual files** via `GET /repos/:owner/:repo/contents/:path?ref=<full-sha>` — the Contents API can read from any commit, even orphaned ones.
+3. **For binary files**, save API response to disk first (don't pipe through node stdin — JSON parse fails on large base64 strings).
+4. **For lost screenshots**, cleared the remote manifest (`data/wow-images.json` → `{"images":[]}`) and re-ran `sync-all.js --module=wow` to regenerate all 111 images from local source.
+
+### Prevention rules
+
+1. **NEVER `git push --force` without first checking what's on the remote**. Always try `git fetch` first.
+2. **Before force pushing, verify**: does the remote have commits I haven't seen? Are there working-directory changes that should be committed first?
+3. **If `git pull` times out**, use `git fetch origin <specific-commit-sha>` to fetch just the metadata, or use the GitHub API to inspect the remote state.
+4. **After recovering from force push**, run `sync-all.js` to ensure all screenshot binary files are restored — the manifest JSON files alone aren't enough.
+5. **The stash is your friend**: `git stash` before any risky remote operation to preserve working directory changes.
