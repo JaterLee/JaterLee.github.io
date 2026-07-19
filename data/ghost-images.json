@@ -1,6 +1,6 @@
 {
   "last_updated": "2026-07-19",
-  "total": 23,
+  "total": 25,
   "images": [
     {
       "id": "ghost-20260718-181902",
@@ -252,6 +252,28 @@
       "file_size_webp": 8386,
       "width": 469,
       "height": 543,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "ghost-1784425175069",
+      "filename": "WowClassic_2026-07-19_09-36-16",
+      "date_taken": "2026-07-19T01:39:35",
+      "file_size_original": 6940054,
+      "file_size_webp": 147692,
+      "width": 1920,
+      "height": 804,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "ghost-1784425178897",
+      "filename": "WowClassic_2026-07-19_09-37-15",
+      "date_taken": "2026-07-19T01:39:38",
+      "file_size_original": 6329982,
+      "file_size_webp": 135198,
+      "width": 1920,
+      "height": 804,
       "tags": [],
       "caption": ""
     }
