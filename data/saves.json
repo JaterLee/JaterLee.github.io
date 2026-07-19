@@ -1,7 +1,32 @@
 {
-  "last_updated": "2026-07-16",
-  "total_saves": 3,
+  "last_updated": "2026-07-19",
+  "total_saves": 4,
   "saves": [
+    {
+      "id": "save-2026-07-19-第88天-树篱基地",
+      "title": "第88天·树篱基地",
+      "description": "第88天·树篱基地。游戏版本 1.4.7。",
+      "filename": "save-2026-07-19-第88天-树篱基地.zip",
+      "file_size_bytes": 704701,
+      "date_added": "2026-07-19",
+      "game_version": "1.4.7",
+      "thumbnail": "images/screenshots/thumb/grounded-20260719-183936.webp",
+      "stats": {
+        "days_survived": 88,
+        "players": [
+          "Jater",
+          "Alex",
+          "Sam",
+          "Mike"
+        ],
+        "tier_reached": "Tier 2",
+        "bases": [],
+        "biomes_explored": [],
+        "bosses_defeated": []
+      },
+      "highlights": [],
+      "tags": []
+    },
     {
       "id": "save-logout-2026-07-16",
       "title": "最新存档 — 草地探险",
@@ -13,10 +38,19 @@
       "thumbnail": "images/screenshots/thumb/grounded-20260716-003959.webp",
       "stats": {
         "days_survived": 28,
-        "players": ["Jater", "Alex", "Sam", "Mike"],
+        "players": [
+          "Jater",
+          "Alex",
+          "Sam",
+          "Mike"
+        ],
         "tier_reached": "Tier 2",
-        "bases": ["草地主基地"],
-        "biomes_explored": ["草地"],
+        "bases": [
+          "草地主基地"
+        ],
+        "biomes_explored": [
+          "草地"
+        ],
         "bosses_defeated": []
       },
       "highlights": [
@@ -24,7 +58,11 @@
         "最新退出存档状态",
         "游戏版本 1.4.7.4815"
       ],
-      "tags": ["最新", "4人联机", "草地"]
+      "tags": [
+        "最新",
+        "4人联机",
+        "草地"
+      ]
     },
     {
       "id": "save-day28-2026-07-05",
@@ -37,10 +75,19 @@
       "thumbnail": "assets/img/thumb-day28.jpg",
       "stats": {
         "days_survived": 28,
-        "players": ["Jater", "Alex", "Sam", "Mike"],
+        "players": [
+          "Jater",
+          "Alex",
+          "Sam",
+          "Mike"
+        ],
         "tier_reached": "Tier 2",
-        "bases": ["草地主基地"],
-        "biomes_explored": ["草地"],
+        "bases": [
+          "草地主基地"
+        ],
+        "biomes_explored": [
+          "草地"
+        ],
         "bosses_defeated": []
       },
       "highlights": [
@@ -48,7 +95,12 @@
         "草地基地初具规模",
         "4 人分工明确：建造、采集、战斗、探索"
       ],
-      "tags": ["中期", "4人联机", "草地", "里程碑"]
+      "tags": [
+        "中期",
+        "4人联机",
+        "草地",
+        "里程碑"
+      ]
     },
     {
       "id": "save-day13-2026-07-05",
@@ -61,10 +113,19 @@
       "thumbnail": "assets/img/thumb-day13.jpg",
       "stats": {
         "days_survived": 13,
-        "players": ["Jater", "Alex", "Sam", "Mike"],
+        "players": [
+          "Jater",
+          "Alex",
+          "Sam",
+          "Mike"
+        ],
         "tier_reached": "Tier 1",
-        "bases": ["初始营地"],
-        "biomes_explored": ["草地"],
+        "bases": [
+          "初始营地"
+        ],
+        "biomes_explored": [
+          "草地"
+        ],
         "bosses_defeated": []
       },
       "highlights": [
@@ -72,7 +133,12 @@
         "基础工具已制作",
         "正在选址建立主基地"
       ],
-      "tags": ["早期", "4人联机", "草地", "入门"]
+      "tags": [
+        "早期",
+        "4人联机",
+        "草地",
+        "入门"
+      ]
     }
   ]
 }
