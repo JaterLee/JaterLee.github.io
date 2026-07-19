@@ -1,6 +1,6 @@
 {
-  "last_updated": "2026-07-15",
-  "total": 8,
+  "last_updated": "2026-07-19",
+  "total": 16,
   "images": [
     {
       "id": "grounded-20260715-234920",
@@ -85,6 +85,94 @@
       "date_taken": "2026-07-16T00:39:59",
       "file_size_original": 5316608,
       "file_size_webp": 90832,
+      "width": 1920,
+      "height": 1080,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "grounded-20260719-164109",
+      "filename": "Grounded_2026.07.19-16.41.09",
+      "date_taken": "2026-07-19T16:41:09",
+      "file_size_original": 7323648,
+      "file_size_webp": 200392,
+      "width": 1920,
+      "height": 1080,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "grounded-20260719-165351",
+      "filename": "Grounded_2026.07.19-16.53.51",
+      "date_taken": "2026-07-19T16:53:51",
+      "file_size_original": 7323648,
+      "file_size_webp": 218050,
+      "width": 1920,
+      "height": 1080,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "grounded-20260719-172341",
+      "filename": "Grounded_2026.07.19-17.23.41",
+      "date_taken": "2026-07-19T17:23:41",
+      "file_size_original": 5316608,
+      "file_size_webp": 71556,
+      "width": 1920,
+      "height": 1080,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "grounded-20260719-172410",
+      "filename": "Grounded_2026.07.19-17.24.10",
+      "date_taken": "2026-07-19T17:24:10",
+      "file_size_original": 5316608,
+      "file_size_webp": 56866,
+      "width": 1920,
+      "height": 1080,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "grounded-20260719-174407",
+      "filename": "Grounded_2026.07.19-17.44.07",
+      "date_taken": "2026-07-19T17:44:07",
+      "file_size_original": 7323648,
+      "file_size_webp": 167872,
+      "width": 1920,
+      "height": 1080,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "grounded-20260719-174533",
+      "filename": "Grounded_2026.07.19-17.45.33",
+      "date_taken": "2026-07-19T17:45:33",
+      "file_size_original": 7323648,
+      "file_size_webp": 271202,
+      "width": 1920,
+      "height": 1080,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "grounded-20260719-174727",
+      "filename": "Grounded_2026.07.19-17.47.27",
+      "date_taken": "2026-07-19T17:47:27",
+      "file_size_original": 7323648,
+      "file_size_webp": 122160,
+      "width": 1920,
+      "height": 1080,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "grounded-20260719-183936",
+      "filename": "Grounded_2026.07.19-18.39.36",
+      "date_taken": "2026-07-19T18:39:36",
+      "file_size_original": 3858432,
+      "file_size_webp": 39086,
       "width": 1920,
       "height": 1080,
       "tags": [],
