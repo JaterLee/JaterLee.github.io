@@ -2,6 +2,105 @@
   "last_updated": "2026-07-19",
   "images": [
     {
+      "id": "wow-20260117-162410",
+      "filename": "WoWScrnShot_011726_162410",
+      "date_taken": "2026-01-17T16:24:10",
+      "file_size_original": 974433,
+      "file_size_webp": 241770,
+      "width": 1920,
+      "height": 804,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "wow-20260119-234128",
+      "filename": "WoWScrnShot_011926_234128",
+      "date_taken": "2026-01-19T23:41:28",
+      "file_size_original": 1092868,
+      "file_size_webp": 277052,
+      "width": 1920,
+      "height": 804,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "wow-20260328-231258",
+      "filename": "WoWScrnShot_032826_231258",
+      "date_taken": "2026-03-28T23:12:58",
+      "file_size_original": 1207106,
+      "file_size_webp": 287218,
+      "width": 1920,
+      "height": 804,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "wow-20260404-191759",
+      "filename": "WoWScrnShot_040426_191759",
+      "date_taken": "2026-04-04T19:17:59",
+      "file_size_original": 897250,
+      "file_size_webp": 221374,
+      "width": 1920,
+      "height": 804,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "wow-20260408-235050",
+      "filename": "WoWScrnShot_040826_235050",
+      "date_taken": "2026-04-08T23:50:50",
+      "file_size_original": 1457115,
+      "file_size_webp": 348406,
+      "width": 1920,
+      "height": 804,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "wow-20260409-000319",
+      "filename": "WoWScrnShot_040926_000319",
+      "date_taken": "2026-04-09T00:03:19",
+      "file_size_original": 1134121,
+      "file_size_webp": 269330,
+      "width": 1920,
+      "height": 804,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "wow-20260409-001944",
+      "filename": "WoWScrnShot_040926_001944",
+      "date_taken": "2026-04-09T00:19:44",
+      "file_size_original": 1153188,
+      "file_size_webp": 280198,
+      "width": 1920,
+      "height": 804,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "wow-20260410-235148",
+      "filename": "WoWScrnShot_041026_235148",
+      "date_taken": "2026-04-10T23:51:48",
+      "file_size_original": 1205801,
+      "file_size_webp": 290680,
+      "width": 1920,
+      "height": 804,
+      "tags": [],
+      "caption": ""
+    },
+    {
+      "id": "wow-20260411-174636",
+      "filename": "WoWScrnShot_041126_174636",
+      "date_taken": "2026-04-11T17:46:36",
+      "file_size_original": 852753,
+      "file_size_webp": 201606,
+      "width": 1920,
+      "height": 804,
+      "tags": [],
+      "caption": ""
+    },
+    {
       "id": "wow-20260411-174907",
       "filename": "WoWScrnShot_041126_174907",
       "date_taken": "2026-04-11T17:49:07",
@@ -1091,9 +1190,9 @@
       "caption": ""
     },
     {
-      "id": "wow-1784441483668",
+      "id": "wow-20260719-093616",
       "filename": "WowClassic_2026-07-19_09-36-16",
-      "date_taken": "2026-07-19T06:11:23",
+      "date_taken": "2026-07-19T09:36:16",
       "file_size_original": 6940054,
       "file_size_webp": 147692,
       "width": 1920,
@@ -1102,9 +1201,9 @@
       "caption": ""
     },
     {
-      "id": "wow-1784441486807",
+      "id": "wow-20260719-093715",
       "filename": "WowClassic_2026-07-19_09-37-15",
-      "date_taken": "2026-07-19T06:11:26",
+      "date_taken": "2026-07-19T09:37:15",
       "file_size_original": 6329982,
       "file_size_webp": 135198,
       "width": 1920,
@@ -1113,9 +1212,9 @@
       "caption": ""
     },
     {
-      "id": "wow-1784441490417",
+      "id": "wow-20260719-102317",
       "filename": "WowClassic_2026-07-19_10-23-17",
-      "date_taken": "2026-07-19T06:11:30",
+      "date_taken": "2026-07-19T10:23:17",
       "file_size_original": 10044773,
       "file_size_webp": 369686,
       "width": 1920,
@@ -1124,5 +1223,5 @@
       "caption": ""
     }
   ],
-  "total": 102
+  "total": 111
 }
