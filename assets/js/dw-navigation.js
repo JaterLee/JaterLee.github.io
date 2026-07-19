@@ -18,11 +18,11 @@
      ========================================================== */
   var ARC = {
     ySpacing:    85,    // vertical spacing between cards (px)
-    bulgeX:      55,    // active card max left bulge (px)
-    retractStep: 18,    // retract per step back toward center (px)
-    rotateStep:  6,     // rotation degrees per step
+    bulgeX:      35,    // active card max left bulge (px)
+    retractStep: 48,    // retract per step back toward center (px)
+    rotateStep:  3,     // rotation degrees per step
     maxVisible:  4,     // hide cards beyond this distance
-    activeScale: 1.08,  // active card scale (slightly larger than 1)
+    activeScale: 1.28,  // active card scale (slightly larger than 1)
     minScale:    0.7,   // minimum scale
     scaleStep:   0.14,  // scale reduction per step
     minOpacity:  0.15,  // minimum opacity
@@ -53,7 +53,7 @@
     return [
       { id: 'grounded', name: '玩禁闭求生',   subtitle: 'Grounded',           icon: '🕷️', primary_color: '#4a7c59' },
       { id: 'ghost',    name: '玩对马岛之魂', subtitle: 'Ghost of Tsushima',  icon: '🗡️', primary_color: '#c0392b' },
-      { id: 'history',  name: '看五代十国史', subtitle: 'Five Dynasties',     icon: '📜', primary_color: '#dbb42c' },
+      { id: 'history',  name: '看五代十国史', subtitle: 'Five Dynasties',     icon: '📜', primary_color: '#dbb42c' }
     ];
   }
 

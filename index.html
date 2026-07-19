@@ -21,6 +21,7 @@
   <script defer src="assets/js/dw-navigation.js"></script>
   <script defer src="assets/js/app.js"></script>
   <script defer src="assets/js/coverflow.js"></script>
+  <script defer src="assets/js/module-ghost.js"></script>
 </head>
 <body>
 
@@ -183,37 +184,54 @@
           </div>
           <div class="module-stats" id="ghost-stats">
             <div class="module-stat">
-              <span class="module-stat-number">--</span>
-              <span class="module-stat-label">游戏进度</span>
+              <span class="module-stat-number" id="stat-ghost-images">--</span>
+              <span class="module-stat-label">截图</span>
             </div>
             <div class="module-stat">
-              <span class="module-stat-number">--</span>
-              <span class="module-stat-label">游玩时长</span>
+              <span class="module-stat-number" id="stat-ghost-range">--</span>
+              <span class="module-stat-label">拍摄跨度</span>
             </div>
           </div>
         </div>
 
-        <div class="ghost-placeholder">
-          <div class="ghost-placeholder-icon" aria-hidden="true">🗡️</div>
-          <p class="ghost-placeholder-text">对马岛之魂的冒险记录正在整理中。<br>后续将在这里展示游戏进度、剧情笔记和精彩截图。</p>
+        <!-- Screenshot Gallery -->
+        <div class="ghost-gallery-container">
+          <div class="ghost-gallery-loading" id="ghost-gallery-loading">
+            <div class="spinner"></div>
+            <p>加载中...</p>
+          </div>
+          <div class="ghost-gallery-error hidden" id="ghost-gallery-error" role="alert">
+            <p>无法加载截图数据，请稍后再试。</p>
+            <button class="btn btn-retry" id="btn-retry-ghost">重新加载</button>
+          </div>
+          <div class="ghost-gallery-empty hidden" id="ghost-gallery-empty">
+            <div class="empty-icon" aria-hidden="true">🗡️</div>
+            <p>还没有对马岛截图</p>
+            <p class="empty-hint">运行 sync-ghost-images.js 来同步截图</p>
+          </div>
+          <div class="ghost-gallery-grid" id="ghost-gallery-grid"></div>
         </div>
 
-        <!-- Sample session cards (preview) -->
-        <div class="module-preview-cards">
-          <div class="module-preview-card ghost-session-card">
-            <div class="ghost-session-card-title">对马岛序章</div>
-            <div class="ghost-session-card-date">2026-07-16</div>
-            <div class="ghost-session-card-desc">志村大人被蒙古军俘虏，境井仁成为最后希望。完成序章剧情，学会基础战斗技巧。</div>
-            <div class="ghost-session-card-milestones">
-              <span class="ghost-milestone-tag">完成序章</span>
-              <span class="ghost-milestone-tag">武士刀连击</span>
-              <span class="ghost-milestone-tag">弓箭</span>
-            </div>
+        <!-- Ghost Lightbox -->
+        <div class="ghost-lightbox hidden" id="ghost-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="对马岛截图查看器">
+          <div class="ghost-lightbox-bg"></div>
+          <button class="ghost-lightbox-close" aria-label="关闭">
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+          <button class="ghost-lightbox-prev" aria-label="上一张">
+            <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button class="ghost-lightbox-next" aria-label="下一张">
+            <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <div class="ghost-lightbox-content">
+            <img src="" alt="" id="ghost-lightbox-img">
           </div>
-          <div class="module-preview-card ghost-session-card">
-            <div class="ghost-session-card-title">初探对马岛</div>
-            <div class="ghost-session-card-date">即将到来...</div>
-            <div class="ghost-session-card-desc">探索开放世界，解放被蒙古军占领的村庄，收集资源升级装备。</div>
+          <div class="ghost-lightbox-info">
+            <span id="ghost-lightbox-date"></span>
+            <span id="ghost-lightbox-time"></span>
+            <span id="ghost-lightbox-resolution"></span>
+            <span id="ghost-lightbox-counter"></span>
           </div>
         </div>
       </div>
