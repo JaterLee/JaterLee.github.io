@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Grounded 游戏截图 — 后院冒险的每一个精彩瞬间">
-  <title>截图画廊 — Grounded Saves</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
+  <meta name="description" content="游戏摄影日志 — 记录后院、对马岛、艾泽拉斯的每一帧画面">
+  <title>摄影日志 — Jater 的游戏记录</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/gallery.css">
   <script defer src="assets/js/gallery.js"></script>
@@ -18,68 +18,77 @@
   <!-- Header / Navigation -->
   <header class="site-header" id="site-header">
     <div class="header-inner container">
-      <a href="index.html" class="logo" aria-label="Grounded Saves 首页">
+      <a href="index.html" class="logo" aria-label="Jater 的游戏记录 首页">
         <svg class="logo-icon" viewBox="0 0 40 40" width="36" height="36" aria-hidden="true">
           <path d="M20 2c-2 6-6 10-8 16-1 3 0 7 2 9 3 3 9 3 12 0 2-2 3-6 2-9-2-6-6-10-8-16z" fill="#4a7c59"/>
           <path d="M20 8c-1 3-3 5-4 8-1 2 0 3 1 4l3 2 3-2c1-1 2-2 1-4-1-3-3-5-4-8z" fill="#6b9e7a"/>
           <rect x="17" y="27" width="6" height="8" rx="2" fill="#6b4f2e"/>
         </svg>
-        <span class="logo-text">截图画廊</span>
+        <span class="logo-text">摄影日志</span>
       </a>
 
       <nav class="nav-menu" role="navigation" aria-label="主导航">
         <a href="index.html" class="nav-link">← 返回首页</a>
         <a href="index.html#saves" class="nav-link">存档</a>
         <a href="index.html#changelog" class="nav-link">日志</a>
-        <a href="gallery.html" class="nav-link active">📸 画廊</a>
+        <a href="gallery.html" class="nav-link active">📷 摄影</a>
       </nav>
     </div>
   </header>
 
   <!-- Main Content -->
-  <main id="main-content" class="gallery-main container">
+  <main id="main-content" class="journal-main container">
 
-    <!-- Stats Banner -->
-    <section class="gallery-hero" aria-label="画廊概览">
-      <h1 class="gallery-title">📸 后院瞬间</h1>
-      <p class="gallery-subtitle">Grounded 冒险中的每一个精彩画面</p>
-      <div class="gallery-stats" id="gallery-stats">
-        <div class="gallery-stat">
-          <span class="gallery-stat-number" id="stat-total">--</span>
-          <span class="gallery-stat-label">总截图</span>
+    <!-- Hero Banner -->
+    <section class="journal-hero" aria-label="摄影日志概览">
+      <h1 class="journal-title">📷 摄影日志</h1>
+      <p class="journal-subtitle">游戏旅途中的每一帧画面</p>
+      <div class="journal-stats" id="journal-stats">
+        <div class="journal-stat">
+          <span class="journal-stat-number" id="stat-total">--</span>
+          <span class="journal-stat-label">总照片</span>
         </div>
-        <div class="gallery-stat">
-          <span class="gallery-stat-number" id="stat-range">--</span>
-          <span class="gallery-stat-label">拍摄跨度</span>
+        <div class="journal-stat">
+          <span class="journal-stat-number" id="stat-days">--</span>
+          <span class="journal-stat-label">拍摄日</span>
+        </div>
+        <div class="journal-stat">
+          <span class="journal-stat-number" id="stat-games">--</span>
+          <span class="journal-stat-label">游戏</span>
         </div>
       </div>
     </section>
 
-    <!-- Gallery Grid -->
-    <section class="gallery-section" aria-labelledby="gallery-heading">
-      <h2 class="sr-only" id="gallery-heading">截图列表</h2>
+    <!-- Game Filter -->
+    <nav class="journal-filters" id="journal-filters" aria-label="按游戏筛选">
+      <!-- JS populated -->
+    </nav>
+
+    <!-- Timeline -->
+    <section class="journal-section" aria-labelledby="journal-heading">
+      <h2 class="sr-only" id="journal-heading">摄影时间线</h2>
 
       <!-- Loading -->
-      <div class="gallery-loading" id="gallery-loading">
+      <div class="journal-loading" id="journal-loading">
         <div class="spinner"></div>
-        <p>加载中...</p>
+        <p>翻阅日志中...</p>
       </div>
 
       <!-- Error State -->
-      <div class="error-state hidden" id="gallery-error" role="alert">
-        <p>无法加载截图数据，请稍后再试。</p>
-        <button class="btn btn-retry" id="btn-retry-gallery">重新加载</button>
+      <div class="error-state hidden" id="journal-error" role="alert">
+        <p>无法加载摄影日志，请稍后再试。</p>
+        <button class="btn btn-retry" id="btn-retry-journal">重新加载</button>
       </div>
 
       <!-- Empty State -->
-      <div class="empty-state hidden" id="gallery-empty">
-        <div class="empty-icon" aria-hidden="true">📸</div>
-        <p>还没有截图</p>
-        <p class="empty-hint">在游戏中按 P 键拍照，截图会自动保存到 Pictures/Grounded 文件夹</p>
+      <div class="empty-state hidden" id="journal-empty">
+        <div class="empty-icon" aria-hidden="true">📷</div>
+        <p>还没有照片</p>
+        <p class="empty-hint">开始游戏，按下截图键，它们就会出现在这里</p>
       </div>
 
-      <!-- Image Grid -->
-      <div class="gallery-grid" id="gallery-grid" role="list" aria-label="截图列表">
+      <!-- Timeline (JS populated) -->
+      <div class="journal-timeline hidden" id="journal-timeline" role="list">
         <!-- JS populated -->
       </div>
     </section>
@@ -102,6 +111,7 @@
       <img src="" alt="" id="lightbox-img">
     </div>
     <div class="lightbox-info" id="lightbox-info">
+      <span id="lightbox-game"></span>
       <span id="lightbox-date"></span>
       <span id="lightbox-resolution"></span>
       <span id="lightbox-counter"></span>

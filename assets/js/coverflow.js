@@ -103,7 +103,7 @@
       }
 
       var galleryLinkHTML = GALLERY_LINK
-        ? '<div class="coverflow-gallery-link"><a href="' + GALLERY_LINK + '">浏览全部截图 →</a></div>'
+        ? '<div class="coverflow-gallery-link"><a href="' + GALLERY_LINK + '">浏览摄影日志 →</a></div>'
         : '';
 
       container.innerHTML =

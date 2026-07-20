@@ -1,40 +1,40 @@
 /* ============================================================
-   Gallery Page Styles — Grounded Saves 截图画廊
+   摄影日志样式 — Photography Journal Timeline
    ============================================================ */
 
 /* ---------- Layout ---------- */
-.gallery-main {
+.journal-main {
   padding-top: calc(var(--header-height) + var(--space-8));
   padding-bottom: var(--space-16);
 }
 
 /* ---------- Hero Banner ---------- */
-.gallery-hero {
+.journal-hero {
   text-align: center;
-  padding: var(--space-12) 0 var(--space-8);
+  padding: var(--space-12) 0 var(--space-6);
 }
 
-.gallery-title {
+.journal-title {
   font-size: clamp(1.5rem, 3vw, 2.25rem);
   font-weight: 700;
   color: var(--green-900);
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-1);
 }
 
-.gallery-subtitle {
+.journal-subtitle {
   color: var(--color-text-muted);
   font-size: 1.05rem;
   margin-bottom: var(--space-6);
 }
 
-.gallery-stats {
+.journal-stats {
   display: flex;
-  gap: var(--space-8);
+  gap: var(--space-6);
   justify-content: center;
   flex-wrap: wrap;
 }
 
-.gallery-stat {
+.journal-stat {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,16 +43,17 @@
   padding: var(--space-4) var(--space-8);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
+  min-width: 100px;
 }
 
-.gallery-stat-number {
-  font-family: var(--font-mono);
+.journal-stat-number {
+  font-family: var(--font-serif);
   font-size: clamp(1.5rem, 2.5vw, 2rem);
   font-weight: 700;
-  color: var(--green-700);
+  color: var(--brown-600);
 }
 
-.gallery-stat-label {
+.journal-stat-label {
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--brown-400);
@@ -60,8 +61,49 @@
   letter-spacing: 0.05em;
 }
 
+/* ---------- Game Filter Chips ---------- */
+.journal-filters {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: var(--space-6) 0 var(--space-8);
+}
+
+.journal-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-5);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-card);
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.journal-filter-chip:hover {
+  border-color: var(--brown-400);
+  color: var(--color-text);
+}
+
+.journal-filter-chip.active {
+  background: var(--brown-800);
+  border-color: var(--brown-800);
+  color: var(--color-text-inverse);
+}
+
+/* When only one game, hide filters entirely */
+.journal-filters.single-game {
+  display: none;
+}
+
 /* ---------- Loading ---------- */
-.gallery-loading {
+.journal-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -70,28 +112,152 @@
   color: var(--color-text-muted);
 }
 
-.gallery-loading .spinner {
+.journal-loading .spinner {
   width: 32px;
   height: 32px;
   border-width: 3px;
 }
 
-/* ---------- Grid ---------- */
-.gallery-section {
-  padding-top: var(--space-8);
+/* ---------- Section ---------- */
+.journal-section {
+  padding-top: var(--space-4);
 }
 
-.gallery-grid {
+/* ============================================================
+   Timeline
+   ============================================================ */
+
+.journal-timeline {
+  position: relative;
+  padding-left: 0;
+}
+
+/* Vertical timeline line */
+.journal-timeline::before {
+  content: '';
+  position: absolute;
+  left: 23px;          /* center of 12px dot + 17px padding */
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--brown-200) 4%,
+    var(--brown-200) 96%,
+    transparent 100%
+  );
+  border-radius: 1px;
+}
+
+/* ---------- Day Entry ---------- */
+.journal-day {
+  position: relative;
+  padding-left: 64px;   /* 17px padding + 12px dot + 35px gap */
+  margin-bottom: var(--space-10);
+}
+
+/* Date marker — colored dot on the timeline */
+.journal-day-dot {
+  position: absolute;
+  left: 17px;           /* aligns center with timeline line at 23px */
+  top: 8px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--color-bg);
+  box-shadow: 0 0 0 1px var(--brown-200);
+  z-index: 1;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.journal-day:hover .journal-day-dot {
+  transform: scale(1.5);
+}
+
+/* ---------- Date Header ---------- */
+.journal-day-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.journal-day-date {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--brown-800);
+  line-height: 1.3;
+}
+
+.journal-day-weekday {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--brown-400);
+}
+
+/* ---------- Game Section (within a day) ---------- */
+.journal-game-section {
+  margin-bottom: var(--space-4);
+}
+
+.journal-game-section + .journal-game-section {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px dashed var(--brown-200);
+}
+
+.journal-game-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-3);
+  letter-spacing: 0.02em;
+}
+
+.journal-game-badge.grounded {
+  background: rgba(74, 124, 89, 0.1);
+  color: var(--green-700);
+}
+
+.journal-game-badge.ghost {
+  background: rgba(192, 57, 43, 0.08);
+  color: #c0392b;
+}
+
+.journal-game-badge.wow {
+  background: rgba(0, 120, 255, 0.08);
+  color: #0078ff;
+}
+
+/* ---------- Photo Grid ---------- */
+.journal-photos {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
-  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+  gap: var(--space-3);
 }
 
-/* ---------- Image Card ---------- */
-.gallery-card {
+/* When a day has only 1 photo, constrain width to avoid being comically wide */
+.journal-photos.single-photo {
+  grid-template-columns: 1fr;
+  max-width: 560px;
+}
+
+.journal-photos.dual-photo {
+  grid-template-columns: 1fr 1fr;
+  max-width: 720px;
+}
+
+/* ---------- Photo Card ---------- */
+.journal-photo-card {
   position: relative;
   background: var(--color-bg-card);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-card);
   cursor: pointer;
@@ -99,17 +265,17 @@
   aspect-ratio: 16 / 10;
 }
 
-.gallery-card:hover {
+.journal-photo-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-card-hover);
 }
 
-.gallery-card:focus-visible {
+.journal-photo-card:focus-visible {
   outline: 2px solid var(--amber-500);
   outline-offset: 2px;
 }
 
-.gallery-card-img {
+.journal-photo-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -117,42 +283,59 @@
   transition: transform var(--transition-base);
 }
 
-.gallery-card:hover .gallery-card-img {
+.journal-photo-card:hover img {
   transform: scale(1.04);
 }
 
-/* Overlay on hover */
-.gallery-card-overlay {
+/* Time badge */
+.journal-photo-time {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  font-family: var(--font-mono);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+}
+
+/* Caption */
+.journal-photo-caption {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: var(--space-3) var(--space-4);
-  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  padding: var(--space-6) var(--space-3) var(--space-2);
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.65));
   color: #fff;
+  font-size: 0.75rem;
+  line-height: 1.4;
   opacity: 0;
   transition: opacity var(--transition-base);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  pointer-events: none;
 }
 
-.gallery-card:hover .gallery-card-overlay,
-.gallery-card:focus-visible .gallery-card-overlay {
+.journal-photo-card:hover .journal-photo-caption {
   opacity: 1;
 }
 
-.gallery-card-date {
-  font-size: 0.8125rem;
-  font-weight: 500;
+/* Show captions always on touch devices */
+@media (hover: none) {
+  .journal-photo-caption {
+    opacity: 1;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+  }
 }
 
-.gallery-card-resolution {
-  font-size: 0.75rem;
-  opacity: 0.8;
-}
+/* ============================================================
+   Lightbox (mostly reused from original, with game info)
+   ============================================================ */
 
-/* ---------- Lightbox ---------- */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -188,14 +371,13 @@
   max-height: 85vh;
   object-fit: contain;
   border-radius: var(--radius-md);
-  box-shadow: 0 4px 40px rgba(0,0,0,0.5);
-  /* Fade in */
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.5);
   animation: lb-fade-in 200ms ease;
 }
 
 @keyframes lb-fade-in {
   from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 /* Lightbox buttons */
@@ -204,7 +386,7 @@
 .lightbox-next {
   position: absolute;
   z-index: 2;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255, 255, 255, 0.8);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -216,7 +398,7 @@
 .lightbox-prev:hover,
 .lightbox-next:hover {
   color: #fff;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .lightbox-close {
@@ -250,13 +432,13 @@
   transform: translateX(-50%);
   z-index: 2;
   display: flex;
-  gap: var(--space-6);
-  background: rgba(0,0,0,0.65);
+  gap: var(--space-5);
+  background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   padding: var(--space-2) var(--space-6);
   border-radius: var(--radius-full);
-  color: rgba(255,255,255,0.85);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 0.8125rem;
   font-weight: 500;
 }
@@ -265,23 +447,62 @@
   white-space: nowrap;
 }
 
-/* ---------- Responsive ---------- */
+#lightbox-game {
+  font-weight: 600;
+}
 
-/* Mobile: hide overlay info always show date below card */
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+/* Mobile */
 @media (max-width: 639px) {
-  .gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(min(160px, 100%), 1fr));
+  .journal-timeline {
+    /* Slightly less left space on mobile */
+  }
+
+  .journal-timeline::before {
+    left: 15px;
+  }
+
+  .journal-day {
+    padding-left: 46px;
+    margin-bottom: var(--space-8);
+  }
+
+  .journal-day-dot {
+    left: 9px;
+  }
+
+  .journal-day-date {
+    font-size: 1.1rem;
+  }
+
+  .journal-photos {
+    grid-template-columns: repeat(auto-fill, minmax(min(140px, 100%), 1fr));
+    gap: var(--space-2);
+  }
+
+  .journal-photos.single-photo {
+    max-width: 100%;
+  }
+
+  .journal-photos.dual-photo {
+    max-width: 100%;
+  }
+
+  .journal-photo-time {
+    font-size: 0.625rem;
+    padding: 1px 4px;
+  }
+
+  .journal-stats {
     gap: var(--space-3);
   }
 
-  .gallery-card-overlay {
-    opacity: 1;
-    background: linear-gradient(transparent, rgba(0,0,0,0.55));
-    padding: var(--space-2) var(--space-3);
-  }
-
-  .gallery-card-resolution {
-    display: none;
+  .journal-stat {
+    padding: var(--space-3) var(--space-5);
+    min-width: 80px;
   }
 
   .lightbox-prev,
@@ -290,13 +511,8 @@
     height: 40px;
   }
 
-  .lightbox-prev {
-    left: var(--space-2);
-  }
-
-  .lightbox-next {
-    right: var(--space-2);
-  }
+  .lightbox-prev { left: var(--space-2); }
+  .lightbox-next { right: var(--space-2); }
 
   .lightbox-info {
     gap: var(--space-3);
@@ -310,22 +526,40 @@
     width: 36px;
     height: 36px;
   }
+
+  /* Filter chips scrollable on mobile */
+  .journal-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: var(--space-4) var(--space-2) var(--space-6);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .journal-filters::-webkit-scrollbar { display: none; }
 }
 
 /* Tablet */
 @media (min-width: 640px) and (max-width: 1023px) {
-  .gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+  .journal-photos {
+    grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr));
   }
 }
 
-/* ---------- Reduced Motion ---------- */
+/* ============================================================
+   Reduced Motion
+   ============================================================ */
 @media (prefers-reduced-motion: reduce) {
-  .gallery-card:hover {
+  .journal-photo-card:hover {
     transform: none;
   }
 
-  .gallery-card:hover .gallery-card-img {
+  .journal-photo-card:hover img {
+    transform: none;
+  }
+
+  .journal-day:hover .journal-day-dot {
     transform: none;
   }
 

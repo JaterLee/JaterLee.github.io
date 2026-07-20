@@ -658,7 +658,7 @@
         var jsonBase64 = base64FromString(jsonStr);
         addLog('更新 images.json (' + imagesData.total + ' 张)...', 'info');
         await githubPut('data/images.json', jsonBase64, 'Add ' + successCount + ' screenshot(s)', imagesSha);
-        addLog('✅ 成功上传 ' + successCount + ' 张截图！<a href="gallery.html">去画廊查看 →</a>', 'success');
+        addLog('✅ 成功上传 ' + successCount + ' 张截图！<a href="gallery.html">去摄影日志查看 →</a>', 'success');
       } else {
         addLog('没有新截图需要上传', 'info');
       }
