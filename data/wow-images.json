@@ -1190,17 +1190,6 @@
       "caption": ""
     },
     {
-      "id": "wow-20260719-093616",
-      "filename": "WowClassic_2026-07-19_09-36-16",
-      "date_taken": "2026-07-19T09:36:16",
-      "file_size_original": 6940054,
-      "file_size_webp": 147692,
-      "width": 1920,
-      "height": 804,
-      "tags": [],
-      "caption": ""
-    },
-    {
       "id": "wow-20260719-093715",
       "filename": "WowClassic_2026-07-19_09-37-15",
       "date_taken": "2026-07-19T09:37:15",
@@ -1210,18 +1199,7 @@
       "height": 804,
       "tags": [],
       "caption": ""
-    },
-    {
-      "id": "wow-20260719-102317",
-      "filename": "WowClassic_2026-07-19_10-23-17",
-      "date_taken": "2026-07-19T10:23:17",
-      "file_size_original": 10044773,
-      "file_size_webp": 369686,
-      "width": 1920,
-      "height": 804,
-      "tags": [],
-      "caption": ""
     }
   ],
-  "total": 111
+  "total": 109
 }

@@ -217,14 +217,21 @@
           </div>
           <div class="module-stats" id="history-stats">
             <div class="module-stat">
-              <span class="module-stat-number" id="stat-history-chapters">--</span>
-              <span class="module-stat-label">已读章节</span>
-            </div>
-            <div class="module-stat">
               <span class="module-stat-number" id="stat-history-notes">--</span>
               <span class="module-stat-label">笔记</span>
             </div>
+            <div class="module-stat">
+              <span class="module-stat-number" id="stat-history-range">--</span>
+              <span class="module-stat-label">日期跨度</span>
+            </div>
           </div>
+        </div>
+
+        <!-- Type Filter Buttons -->
+        <div class="history-filters" id="history-filters" role="tablist" aria-label="按类型筛选">
+          <button class="history-filter-btn active" data-filter="all" role="tab" aria-selected="true">全部</button>
+          <button class="history-filter-btn" data-filter="passage" role="tab" aria-selected="false">📖 摘录</button>
+          <button class="history-filter-btn" data-filter="reflection" role="tab" aria-selected="false">💭 感悟</button>
         </div>
 
         <!-- Dynamic Notes Container -->
@@ -236,9 +243,9 @@
           <div class="ghost-gallery-empty hidden" id="history-empty">
             <div class="empty-icon" aria-hidden="true">📜</div>
             <p>还没有读书笔记</p>
-            <p class="empty-hint">在 data/history-notes.json 中添加笔记吧</p>
+            <p class="empty-hint">在 content/history/ 中添加 .md 文件，运行 node scripts/sync-history.js 生成数据</p>
           </div>
-          <div class="history-chapter-list" id="history-notes-list"></div>
+          <div class="history-masonry" id="history-masonry"></div>
         </div>
       </div>
 
@@ -289,6 +296,27 @@
           <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 11l5 5 5-5M12 4v12"/></svg>
           下载存档
         </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Note Detail Modal -->
+  <div class="history-modal-overlay hidden" id="history-modal-overlay" aria-hidden="true">
+    <div class="history-modal" role="dialog" aria-modal="true" aria-labelledby="history-modal-title">
+      <div class="history-modal-header">
+        <div class="history-modal-header-info">
+          <span class="history-modal-type-badge" id="history-modal-type-badge"></span>
+          <h3 class="history-modal-title" id="history-modal-title"></h3>
+        </div>
+        <button class="history-modal-close" id="history-modal-close" aria-label="关闭详情">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="history-modal-meta" id="history-modal-meta">
+        <!-- JS populated: date, source, tags -->
+      </div>
+      <div class="history-modal-body" id="history-modal-body">
+        <!-- JS populated: rendered markdown -->
       </div>
     </div>
   </div>

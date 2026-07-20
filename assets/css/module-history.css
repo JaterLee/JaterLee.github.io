@@ -1,187 +1,508 @@
 /* ============================================================
    Module: Five Dynasties History (五代十国史)
-   Chinese classical scroll aesthetic: parchment + gold
+   中文古籍美学：羊皮纸 + 鎏金 + 宋体
+   卡片瀑布流 + 详情弹窗 + markdown 正文排版
    ============================================================ */
 
 /* ── Module Header Accent ── */
 .module-header.history-header {
   background: linear-gradient(135deg, rgba(26, 18, 4, 0.6) 0%, rgba(42, 30, 12, 0.4) 100%);
 }
-
 .module-header.history-header .module-header-title {
   color: var(--dw-gold-300);
 }
-
 .module-header.history-header .module-stat-number {
   color: var(--dw-gold-500);
 }
 
-/* ── History Content Area ── */
-.history-content {
-  padding: var(--space-6) var(--space-8);
-  max-width: 56rem;
-  margin: 0 auto;
-}
-
-/* ── Placeholder ── */
-.history-placeholder {
+/* ── Type Filter Buttons ── */
+.history-filters {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: var(--space-16) var(--space-8);
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-8);
+  border-bottom: 1px solid rgba(219, 180, 44, 0.1);
+  flex-wrap: wrap;
 }
-
-.history-placeholder-icon {
-  font-size: 5rem;
-  margin-bottom: var(--space-6);
-  opacity: 0.5;
-}
-
-.history-placeholder-text {
-  color: var(--dw-text-muted);
-  font-size: 1rem;
-  max-width: 24rem;
-  line-height: 1.7;
-  margin-bottom: var(--space-8);
-}
-
-/* ── Chapter Cards (for future content) ── */
-.history-chapter-list {
-  max-width: 48rem;
-  margin: 0 auto;
-  padding: var(--space-6) var(--space-8);
-}
-
-.history-chapter-card {
-  background: linear-gradient(135deg, #1e1a10 0%, #282218 100%);
-  border: 1px solid rgba(219, 180, 44, 0.15);
-  border-left: 3px solid var(--dw-gold-700);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  padding: var(--space-4);
-  margin-bottom: var(--space-4);
-  transition: all var(--transition-base);
-}
-
-.history-chapter-card:hover {
-  border-left-color: var(--dw-gold-500);
-  border-top-color: rgba(219, 180, 44, 0.3);
-  border-right-color: rgba(219, 180, 44, 0.3);
-  border-bottom-color: rgba(219, 180, 44, 0.3);
-  transform: translateX(2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.history-chapter-header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin-bottom: var(--space-3);
-}
-
-.history-chapter-number {
-  font-family: 'Noto Serif SC', Georgia, serif;
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: var(--dw-gold-700);
-  line-height: 1;
-  flex-shrink: 0;
-}
-
-.history-chapter-title {
-  font-family: 'Noto Serif SC', Georgia, serif;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--dw-gold-300);
-}
-
-.history-chapter-date {
-  font-size: 0.7rem;
-  color: var(--dw-text-muted);
-  margin-left: auto;
-  flex-shrink: 0;
-}
-
-.history-chapter-summary {
-  font-size: 0.875rem;
-  color: var(--dw-text-muted);
-  line-height: 1.7;
-}
-
-/* ── Figure Cards (for future content) ── */
-.history-figures-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr));
-  gap: var(--space-3);
-  margin-top: var(--space-4);
-}
-
-.history-figure-card {
+.history-filter-btn {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: inherit;
   background: var(--dw-bg-card);
-  border: 1px solid rgba(219, 180, 44, 0.1);
-  border-radius: var(--radius-sm);
-  padding: var(--space-3);
-  text-align: center;
+  color: var(--dw-text-muted);
+  border: 1px solid rgba(219, 180, 44, 0.15);
+  transition: all var(--transition-fast);
+  cursor: pointer;
 }
-
-.history-figure-name {
-  font-family: 'Noto Serif SC', Georgia, serif;
-  font-size: 1rem;
-  font-weight: 700;
+.history-filter-btn:hover {
+  border-color: var(--dw-gold-700);
+  background: var(--dw-bg-card-hover);
   color: var(--dw-text);
 }
-
-.history-figure-role {
-  font-size: 0.7rem;
-  color: var(--dw-gold-500);
-  margin-top: 2px;
-  letter-spacing: 0.05em;
+.history-filter-btn.active {
+  background: var(--dw-gold-700);
+  color: #1a1814;
+  border-color: var(--dw-gold-500);
+  font-weight: 600;
 }
 
-.history-figure-desc {
-  font-size: 0.75rem;
-  color: var(--dw-text-muted);
-  margin-top: var(--space-2);
-  line-height: 1.5;
+/* ============================================================
+   Masonry Waterfall Grid (CSS Columns)
+   Desktop: 3 cols | Tablet: 2 cols | Mobile: 1 col
+   ============================================================ */
+.history-masonry {
+  column-count: 3;
+  column-gap: var(--space-5);
+  padding: var(--space-6) var(--space-8);
+  max-width: 72rem;
+  margin: 0 auto;
 }
 
-/* ── Key Events ── */
-.history-events {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin-top: var(--space-3);
+/* ── Base Card ── */
+.history-card {
+  break-inside: avoid;
+  margin-bottom: var(--space-5);
+  background: linear-gradient(135deg, #1e1a10 0%, #282218 100%);
+  border: 1px solid rgba(219, 180, 44, 0.12);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+.history-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+  border-color: rgba(219, 180, 44, 0.3);
+}
+.history-card:focus-visible {
+  outline: 2px solid var(--dw-gold-500);
+  outline-offset: 2px;
 }
 
-.history-event-tag {
-  font-size: 0.7rem;
+/* ── Card Type Variants ── */
+.history-card-passage {
+  border-left: 3px solid var(--dw-gold-700);
+}
+.history-card-reflection {
+  border-left: 3px solid #5a7a5a;
+}
+
+/* ── Card Type Badge ── */
+.history-card-type-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   padding: 2px 10px;
-  background: rgba(219, 180, 44, 0.1);
-  color: var(--dw-gold-300);
   border-radius: var(--radius-full);
-  border: 1px solid rgba(219, 180, 44, 0.15);
-}
-
-/* ── Notes block ── */
-.history-notes {
-  margin-top: var(--space-4);
-  padding: var(--space-3) var(--space-4);
-  background: rgba(219, 180, 44, 0.04);
-  border-radius: var(--radius-sm);
-  border: 1px dashed rgba(219, 180, 44, 0.1);
-}
-
-.history-notes-label {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--dw-gold-500);
   margin-bottom: var(--space-2);
 }
+.history-card-passage .history-card-type-badge {
+  background: rgba(219, 180, 44, 0.15);
+  color: var(--dw-gold-300);
+}
+.history-card-reflection .history-card-type-badge {
+  background: rgba(90, 122, 90, 0.15);
+  color: #9fbf9f;
+}
 
-.history-notes-text {
-  font-size: 0.8rem;
+/* ── Card Title ── */
+.history-card-title {
+  font-family: 'Noto Serif SC', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--dw-text);
+  margin: 0 0 var(--space-2);
+  line-height: 1.4;
+}
+
+/* ── Card Source Row (passage only) ── */
+.history-card-source-row {
+  font-size: 0.75rem;
+  color: var(--dw-gold-500);
+  margin-bottom: var(--space-2);
+  font-style: italic;
+}
+
+/* ── Card Excerpt ── */
+.history-card-excerpt {
+  font-size: 0.85rem;
   color: var(--dw-text-muted);
   line-height: 1.7;
+  margin-bottom: var(--space-3);
+  /* Multi-line clamp for consistent card heights */
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Card Tags ── */
+.history-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+.history-card-tag {
+  font-size: 0.65rem;
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(219, 180, 44, 0.06);
+  border: 1px solid rgba(219, 180, 44, 0.08);
+  color: var(--dw-gold-300);
+}
+
+/* ── Card Footer ── */
+.history-card-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 0.7rem;
+  color: var(--dw-text-muted);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(219, 180, 44, 0.08);
+}
+.history-card-date {
+  flex-shrink: 0;
+}
+.history-card-source {
+  flex-shrink: 0;
   font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.history-card-detail-btn {
+  margin-left: auto;
+  font-size: 0.75rem;
+  font-family: inherit;
+  color: var(--dw-gold-300);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+  flex-shrink: 0;
+}
+.history-card-detail-btn:hover {
+  background: rgba(219, 180, 44, 0.1);
+}
+
+/* ── Empty Filter Result ── */
+.history-empty-filter {
+  text-align: center;
+  padding: var(--space-12) var(--space-4);
+  color: var(--dw-text-muted);
+}
+
+/* ============================================================
+   Detail Modal
+   ============================================================ */
+.history-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+.history-modal-overlay.hidden {
+  pointer-events: none;
+}
+.history-modal-overlay:not(.hidden) {
+  opacity: 1;
+}
+
+.history-modal {
+  background: linear-gradient(180deg, #1e1b14 0%, #252016 100%);
+  border: 1px solid rgba(219, 180, 44, 0.2);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 42rem;
+  max-height: 85vh;
+  overflow-y: auto;
+  transform: scale(0.95) translateY(10px);
+  transition: transform var(--transition-base);
+}
+.history-modal-overlay:not(.hidden) .history-modal {
+  transform: scale(1) translateY(0);
+}
+
+/* ── Modal Header ── */
+.history-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: var(--space-6) var(--space-6) var(--space-4);
+  border-bottom: 1px solid rgba(219, 180, 44, 0.12);
+  gap: var(--space-4);
+}
+.history-modal-header-info {
+  flex: 1;
+  min-width: 0;
+}
+.history-modal-type-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 12px;
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-2);
+}
+.history-modal-type-badge.badge-passage {
+  background: rgba(219, 180, 44, 0.15);
+  color: var(--dw-gold-300);
+}
+.history-modal-type-badge.badge-reflection {
+  background: rgba(90, 122, 90, 0.15);
+  color: #9fbf9f;
+}
+
+.history-modal-title {
+  font-family: 'Noto Serif SC', Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--dw-text);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.history-modal-close {
+  flex-shrink: 0;
+  color: var(--dw-text-muted);
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+  background: none;
+  border: none;
+  cursor: pointer;
+  line-height: 0;
+}
+.history-modal-close:hover {
+  color: var(--dw-text);
+  background: rgba(219, 180, 44, 0.1);
+}
+
+/* ── Modal Meta ── */
+.history-modal-meta {
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 0.8rem;
+  color: var(--dw-text-muted);
+  border-bottom: 1px solid rgba(219, 180, 44, 0.06);
+}
+.history-modal-date,
+.history-modal-source {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.history-modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-left: auto;
+}
+.history-modal-tag {
+  font-size: 0.7rem;
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(219, 180, 44, 0.08);
+  border: 1px solid rgba(219, 180, 44, 0.1);
+  color: var(--dw-gold-300);
+}
+
+/* ── Modal Body ── */
+.history-modal-body {
+  padding: var(--space-6);
+  color: var(--dw-text);
+  line-height: 1.9;
+  font-size: 0.95rem;
+}
+
+/* ============================================================
+   Markdown Body Typography
+   ============================================================ */
+
+/* Reset indent for compatibility */
+.history-md-body {
+  /* container for rendered markdown, no extra styles */
+}
+
+.history-md-body p {
+  margin: 0 0 var(--space-4);
+  text-indent: 2em;
+}
+.history-md-body p:last-child {
+  margin-bottom: 0;
+}
+
+.history-md-body h2 {
+  font-family: 'Noto Serif SC', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--dw-gold-300);
+  margin: var(--space-6) 0 var(--space-3);
+  padding-bottom: var(--space-1);
+  border-bottom: 1px solid rgba(219, 180, 44, 0.1);
+  text-indent: 0;
+}
+.history-md-body h3 {
+  font-family: 'Noto Serif SC', Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--dw-gold-300);
+  margin: var(--space-5) 0 var(--space-2);
+  text-indent: 0;
+}
+.history-md-body h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--dw-text);
+  margin: var(--space-4) 0 var(--space-2);
+  text-indent: 0;
+}
+
+.history-md-body strong {
+  color: var(--dw-gold-300);
+  font-weight: 700;
+}
+.history-md-body em {
+  font-style: italic;
+  color: var(--dw-text-muted);
+}
+
+.history-md-body blockquote {
+  margin: var(--space-4) 0;
+  padding: var(--space-3) var(--space-5);
+  border-left: 3px solid var(--dw-gold-700);
+  background: rgba(219, 180, 44, 0.04);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--dw-gold-300);
+  font-style: italic;
+  text-indent: 0;
+}
+.history-md-body blockquote p {
+  text-indent: 0;
+}
+
+.history-md-body code {
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.85em;
+  padding: 1px 6px;
+  background: rgba(219, 180, 44, 0.08);
+  border-radius: var(--radius-sm);
+  color: var(--dw-gold-300);
+}
+
+.history-md-body a {
+  color: var(--dw-gold-500);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.history-md-body a:hover {
+  color: var(--dw-gold-300);
+}
+
+.history-md-body ul,
+.history-md-body ol {
+  margin: var(--space-3) 0;
+  padding-left: var(--space-6);
+  text-indent: 0;
+}
+.history-md-body ul {
+  list-style: disc;
+}
+.history-md-body ol {
+  list-style: decimal;
+}
+.history-md-body li {
+  margin-bottom: var(--space-1);
+  color: var(--dw-text);
+  line-height: 1.8;
+}
+
+.history-md-body hr {
+  border: none;
+  border-top: 1px solid rgba(219, 180, 44, 0.15);
+  margin: var(--space-5) 0;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+/* Tablet: 2 columns */
+@media (max-width: 1024px) {
+  .history-masonry {
+    column-count: 2;
+    padding: var(--space-4) var(--space-6);
+  }
+  .history-filters {
+    padding: var(--space-3) var(--space-6);
+  }
+  .history-modal {
+    max-width: 36rem;
+  }
+}
+
+/* Mobile: 1 column */
+@media (max-width: 640px) {
+  .history-masonry {
+    column-count: 1;
+    padding: var(--space-3) var(--space-4);
+    column-gap: 0;
+  }
+  .history-filters {
+    padding: var(--space-3) var(--space-4);
+    justify-content: center;
+  }
+  .history-filter-btn {
+    font-size: 0.8rem;
+    padding: var(--space-1) var(--space-3);
+  }
+  .history-card {
+    padding: var(--space-4);
+  }
+  .history-card-title {
+    font-size: 1rem;
+  }
+
+  /* Full-screen modal on mobile */
+  .history-modal-overlay {
+    padding: 0;
+    align-items: stretch;
+  }
+  .history-modal {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+    border: none;
+  }
+  .history-modal-header {
+    padding: var(--space-4);
+  }
+  .history-modal-title {
+    font-size: 1.2rem;
+  }
+  .history-modal-meta {
+    padding: var(--space-3) var(--space-4);
+  }
+  .history-modal-body {
+    padding: var(--space-4);
+    font-size: 0.9rem;
+  }
 }

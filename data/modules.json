@@ -25,7 +25,14 @@
       "screenshots": {
         "data_file": "data/ghost-images.json",
         "image_path": "images/screenshots/ghost",
-        "filename_pattern": "Screenshot_(\\d{4})-(\\d{2})-(\\d{2})_(\\d{2})-(\\d{2})-(\\d{2})",
+        "filename_patterns": [
+          {
+            "pattern": "Screenshot_(\\d{4})-(\\d{2})-(\\d{2})_(\\d{2})-(\\d{2})-(\\d{2})"
+          },
+          {
+            "pattern": "GhostOfTsushima_(\\d{4})-(\\d{2})-(\\d{2})_(\\d{2})-(\\d{2})-(\\d{2})"
+          }
+        ],
         "id_prefix": "ghost"
       }
     },

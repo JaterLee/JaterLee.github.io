@@ -331,6 +331,56 @@ export function loadLocalSourceDirs() {
  * @param {{log: Function}} options
  * @returns {Promise<{uploaded: number, latestId: string|null, latestFile: string|null}>}
  */
+/**
+ * 补全缺失的本地 webp 文件——从源截图重新压缩并保存到本地。
+ * 仅在 manifest 有记录但本地文件缺失时才操作，不上传到远程。
+ */
+async function repairMissingLocalFiles(moduleId, sc, localSourceDir, imagesData, sharp, log) {
+  const fullDir = path.join(PROJECT_ROOT, sc.image_path, 'full');
+  const thumbDir = path.join(PROJECT_ROOT, sc.image_path, 'thumb');
+  fs.mkdirSync(fullDir, { recursive: true });
+  fs.mkdirSync(thumbDir, { recursive: true });
+
+  const missing = [];
+  for (const img of imagesData.images || []) {
+    const fullPath = path.join(fullDir, `${img.id}.webp`);
+    const thumbPath = path.join(thumbDir, `${img.id}.webp`);
+    if (!fs.existsSync(fullPath) || !fs.existsSync(thumbPath)) {
+      missing.push(img);
+    }
+  }
+
+  if (!missing.length) return 0;
+
+  log(`   🔧 [${moduleId}] 补全 ${missing.length} 个缺失的本地 webp 文件...`);
+  let repaired = 0;
+
+  for (const img of missing) {
+    // 尝试匹配源文件（支持多种扩展名）
+    let sourcePath = null;
+    for (const ext of ['.png', '.jpg', '.jpeg']) {
+      const testPath = path.join(localSourceDir, img.filename + ext);
+      if (fs.existsSync(testPath)) { sourcePath = testPath; break; }
+    }
+    if (!sourcePath) {
+      log(`   ⚠️  找不到源文件: ${img.filename}，跳过`);
+      continue;
+    }
+
+    try {
+      const result = await compressImage(sharp, sourcePath);
+      fs.writeFileSync(path.join(fullDir, `${img.id}.webp`), result.fullBuffer);
+      fs.writeFileSync(path.join(thumbDir, `${img.id}.webp`), result.thumbBuffer);
+      repaired++;
+    } catch (err) {
+      log(`   ❌ ${img.filename}: ${err.message}`);
+    }
+  }
+
+  log(`   ✅ [${moduleId}] 补全完成: ${repaired}/${missing.length}`);
+  return repaired;
+}
+
 export async function syncScreenshots(moduleId, sc, localSourceDir, { log = console.log } = {}) {
   if (!localSourceDir || !fs.existsSync(localSourceDir)) {
     log(`⚠️  [${moduleId}] 截图目录不存在，跳过 (${localSourceDir || '未配置'})`);
@@ -380,6 +430,8 @@ export async function syncScreenshots(moduleId, sc, localSourceDir, { log = cons
       log(`   [${moduleId}] 本地 ${sc.data_file} 已创建`);
     }
     log(`   [${moduleId}] 没有新截图`);
+    // 补全缺失的本地 webp 文件（远程有但本地没有）
+    await repairMissingLocalFiles(moduleId, sc, localSourceDir, imagesData, sharp, log);
     // Get latest existing image as fallback
     const sorted = [...(imagesData.images || [])].sort(
       (a, b) => new Date(b.date_taken) - new Date(a.date_taken)
@@ -416,6 +468,16 @@ export async function syncScreenshots(moduleId, sc, localSourceDir, { log = cons
         id: `${sc.id_prefix}-${Date.now()}`,
         dateTaken: new Date().toISOString().replace(/\.\d{3}Z$/, ''),
       };
+
+      // 写入本地磁盘，避免远程独有 commit 导致 push 前必须 pull
+      const fullDir = path.join(PROJECT_ROOT, sc.image_path, 'full');
+      const thumbDir = path.join(PROJECT_ROOT, sc.image_path, 'thumb');
+      fs.mkdirSync(fullDir, { recursive: true });
+      fs.mkdirSync(thumbDir, { recursive: true });
+      const fullPath = path.join(fullDir, `${info.id}.webp`);
+      const thumbPath = path.join(thumbDir, `${info.id}.webp`);
+      fs.writeFileSync(fullPath, result.fullBuffer);
+      fs.writeFileSync(thumbPath, result.thumbBuffer);
 
       // Stage files for batch commit
       batchFiles.push({
@@ -485,6 +547,9 @@ export async function syncScreenshots(moduleId, sc, localSourceDir, { log = cons
   const localManifest = path.join(PROJECT_ROOT, sc.data_file);
   fs.writeFileSync(localManifest, manifestJson, 'utf-8');
   log(`✅ [${moduleId}] ${sc.data_file} 已更新 (${imagesData.total} 张) [本地+远程]`);
+
+  // 补全缺失的本地 webp 文件（旧条目可能只有远程有）
+  await repairMissingLocalFiles(moduleId, sc, localSourceDir, imagesData, sharp, log);
 
   return { uploaded, latestId, latestFile };
 }
