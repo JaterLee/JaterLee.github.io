@@ -1044,4 +1044,74 @@ h1, h2, h3 {
     bottom: var(--space-4);
     right: var(--space-4);
   }
+
+  /* Filter buttons: horizontal scroll on mobile */
+  .changelog-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    padding-bottom: var(--space-2);
+    justify-content: flex-start;
+    scrollbar-width: none;
+    touch-action: pan-x;
+  }
+  .changelog-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .changelog-filter-btn {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    white-space: nowrap;
+  }
+
+  /* Timeline: tighter mobile layout */
+  .timeline {
+    padding-left: var(--space-6);
+  }
+
+  .timeline::before {
+    left: 10px;
+  }
+
+  .timeline-dot {
+    left: -18px;
+  }
+
+  /* Save modal: fullscreen on mobile */
+  .modal-overlay {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .modal {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .modal-header {
+    padding: var(--space-4);
+  }
+
+  .modal-body {
+    padding: var(--space-4);
+  }
+
+  .modal-footer {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .modal-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+}
+
+/* Very narrow screens (< 360px) */
+@media (max-width: 359px) {
+  .save-card-actions {
+    flex-direction: column;
+  }
 }

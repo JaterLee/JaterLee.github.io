@@ -608,6 +608,11 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    touch-action: pan-x;
+  }
+  .dw-disc-ring::-webkit-scrollbar {
+    display: none;
   }
 
   .dw-stack-card {
@@ -648,7 +653,7 @@
   }
 
   .dw-right-panel {
-    overflow-y: visible;
+    overflow-y: auto;
     flex: 1;
   }
 
@@ -667,6 +672,15 @@
     margin-left: 0;
     width: 100%;
     justify-content: center;
+    gap: var(--space-3);
+  }
+
+  .module-stat-number {
+    font-size: 1.1rem;
+  }
+
+  .module-stat-label {
+    font-size: 0.6rem;
   }
 
   .module-preview-cards {
