@@ -467,11 +467,10 @@
     column-gap: 0;
   }
   .history-filters {
-    flex-wrap: nowrap;
+    display: block;
+    white-space: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x proximity;
-    justify-content: flex-start;
     padding: var(--space-3) var(--space-4);
     scrollbar-width: none;
     touch-action: pan-x;
@@ -480,10 +479,10 @@
     display: none;
   }
   .history-filter-btn {
+    display: inline-block;
+    vertical-align: middle;
     font-size: 0.8rem;
     padding: var(--space-1) var(--space-3);
-    flex: 0 0 auto;
-    scroll-snap-align: start;
     white-space: nowrap;
   }
   .history-card {

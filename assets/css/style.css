@@ -1047,12 +1047,11 @@ h1, h2, h3 {
 
   /* Filter buttons: horizontal scroll on mobile */
   .changelog-filters {
-    flex-wrap: nowrap;
+    display: block;
+    white-space: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x proximity;
     padding-bottom: var(--space-2);
-    justify-content: flex-start;
     scrollbar-width: none;
     touch-action: pan-x;
   }
@@ -1061,8 +1060,8 @@ h1, h2, h3 {
   }
 
   .changelog-filter-btn {
-    flex: 0 0 auto;
-    scroll-snap-align: start;
+    display: inline-block;
+    vertical-align: middle;
     white-space: nowrap;
   }
 
