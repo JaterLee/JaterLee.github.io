@@ -601,9 +601,8 @@
 
   .dw-disc-ring {
     position: static;
-    display: flex;
-    flex-direction: row;
-    gap: var(--space-3);
+    display: block;
+    white-space: nowrap;
     padding: 0 var(--space-4);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -617,7 +616,8 @@
 
   .dw-stack-card {
     position: static;
-    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: middle;
     scroll-snap-align: center;
     transform: none !important;
     opacity: 1 !important;
@@ -625,6 +625,7 @@
     pointer-events: auto !important;
     top: auto;
     left: auto;
+    margin-right: var(--space-3);
   }
 
   .dw-stack-card-inner {
