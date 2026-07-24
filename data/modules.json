@@ -66,6 +66,14 @@
           }
         ]
       }
+    },
+    {
+      "id": "life",
+      "name": "看生活小记",
+      "subtitle": "Life Notes",
+      "icon": "🌱",
+      "primary_color": "#b58d6b",
+      "theme": "life"
     }
   ]
 }

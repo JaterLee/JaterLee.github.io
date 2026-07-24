@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="assets/css/module-ghost.css">
   <link rel="stylesheet" href="assets/css/module-history.css">
   <link rel="stylesheet" href="assets/css/module-wow.css">
+  <link rel="stylesheet" href="assets/css/module-life.css">
   <!-- Scripts (deferred, order matters for dependencies) -->
   <script defer src="assets/js/core.js"></script>
   <script defer src="assets/js/ui-kit.js"></script>
@@ -28,6 +29,7 @@
   <script defer src="assets/js/module-ghost.js"></script>
   <script defer src="assets/js/module-history.js"></script>
   <script defer src="assets/js/module-wow.js"></script>
+  <script defer src="assets/js/module-life.js"></script>
 </head>
 <body>
 
@@ -274,6 +276,60 @@
         <section class="coverflow-section wow-coverflow" id="coverflow-section-wow" aria-label="魔兽世界截图轮播">
           <!-- JS populated by coverflow.js -->
         </section>
+      </div>
+
+      <!-- ───── MODULE: Life Notes (生活小记) ───── -->
+      <div id="module-life" class="module-content" role="tabpanel" aria-label="生活小记">
+
+        <div class="module-header life-header">
+          <div class="module-header-icon" aria-hidden="true">🌱</div>
+          <div class="module-header-info">
+            <h2 class="module-header-title">看生活小记</h2>
+            <p class="module-header-desc">Jater 的日常记录</p>
+          </div>
+          <div class="module-stats" id="life-stats">
+            <div class="module-stat">
+              <span class="module-stat-number" id="stat-life-notes">--</span>
+              <span class="module-stat-label">笔记</span>
+            </div>
+            <div class="module-stat">
+              <span class="module-stat-number" id="stat-life-range">--</span>
+              <span class="module-stat-label">日期跨度</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline Container -->
+        <div class="life-timeline-container">
+          <div class="life-loading" id="life-loading">
+            <div class="spinner"></div>
+            <p>加载中...</p>
+          </div>
+          <div class="life-empty hidden" id="life-empty">
+            <div class="life-empty-icon" aria-hidden="true">🌱</div>
+            <p class="life-empty-text">还没有生活记录</p>
+          </div>
+          <div class="life-timeline" id="life-timeline"></div>
+        </div>
+
+        <!-- Detail Modal -->
+        <div class="life-modal-overlay hidden" id="life-modal-overlay" aria-hidden="true">
+          <div class="life-modal" role="dialog" aria-modal="true" aria-labelledby="life-modal-title">
+            <div class="life-modal-header">
+              <div class="life-modal-header-info">
+                <div class="life-modal-date" id="life-modal-date"></div>
+                <h3 class="life-modal-title" id="life-modal-title"></h3>
+              </div>
+              <button class="life-modal-close" id="life-modal-close" aria-label="关闭">
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <div class="life-modal-body" id="life-modal-body">
+              <!-- JS populated -->
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </section>
