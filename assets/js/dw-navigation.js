@@ -86,6 +86,8 @@
     if (window.JaterMod.isRegistered(STATE.activeModule)) {
       window.JaterMod.activate(STATE.activeModule);
     }
+    // Save current module on initial load so refreshes remember it
+    saveActiveModule(STATE.activeModule);
   }
 
   /* ==========================================================
@@ -222,6 +224,7 @@
     STATE.activeIndex = idx;
     render();
     window.JaterMod.activate(moduleId);
+    saveActiveModule(moduleId);
   }
 
   function navigateNext() {
