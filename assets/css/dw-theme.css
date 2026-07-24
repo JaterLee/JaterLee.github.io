@@ -586,6 +586,7 @@
   /* Mobile: flatten stack to horizontal scrollable row */
   .dw-circular-stage {
     flex: none;
+    width: 100%;
     padding: var(--space-3) 0;
     overflow: visible;
     min-height: 0;
@@ -595,20 +596,23 @@
 
   .dw-disc {
     position: static;
-    width: auto;
+    width: 100%;
     height: auto;
   }
 
   .dw-disc-ring {
     position: static;
-    display: block;
-    white-space: nowrap;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: var(--space-3);
+    width: 100%;
     padding: 0 var(--space-4);
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x proximity;
     scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
     touch-action: pan-x;
+    box-sizing: border-box;
   }
   .dw-disc-ring::-webkit-scrollbar {
     display: none;
@@ -616,16 +620,13 @@
 
   .dw-stack-card {
     position: static;
-    display: inline-block;
-    vertical-align: middle;
-    scroll-snap-align: center;
+    flex: 0 0 auto;
     transform: none !important;
     opacity: 1 !important;
     filter: none !important;
     pointer-events: auto !important;
     top: auto;
     left: auto;
-    margin-right: var(--space-3);
   }
 
   .dw-stack-card-inner {
