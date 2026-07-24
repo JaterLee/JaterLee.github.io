@@ -70,7 +70,11 @@
 .life-cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
+  gap: 3px;
+  background: var(--dw-border, rgba(255,255,255,0.08));
+  border: 1px solid var(--dw-border, rgba(255,255,255,0.1));
+  border-radius: var(--radius-sm);
+  padding: 1px;
 }
 
 /* ── Weekday Header Cells ── */
@@ -94,6 +98,7 @@
   cursor: default;
   position: relative;
   transition: all var(--transition-fast);
+  background: var(--dw-bg-card, #1a1a2e);
 }
 .life-cal-cell:not(.life-cal-empty) {
   cursor: pointer;
