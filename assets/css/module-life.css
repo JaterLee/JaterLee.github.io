@@ -5,13 +5,13 @@
 
 /* ── Module Header Accent ── */
 .module-header.life-header {
-  background: linear-gradient(135deg, rgba(68, 192, 254, 0.10) 0%, rgba(68, 192, 254, 0.03) 100%);
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.10) 0%, rgba(217, 119, 6, 0.03) 100%);
 }
 .module-header.life-header .module-header-title {
-  color: #44c0fe;
+  color: #d97706;
 }
 .module-header.life-header .module-stat-number {
-  color: #66d0ff;
+  color: #fbbf24;
 }
 
 /* ============================================================
@@ -71,8 +71,8 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 3px;
-  background: rgba(68, 192, 254, 0.06);
-  border: 1px solid rgba(68, 192, 254, 0.12);
+  background: rgba(217, 119, 6, 0.06);
+  border: 1px solid rgba(217, 119, 6, 0.12);
   border-radius: var(--radius-sm);
   padding: 1px;
 }
@@ -104,7 +104,7 @@
   cursor: pointer;
 }
 .life-cal-cell:not(.life-cal-empty):hover {
-  background: rgba(68, 192, 254, 0.06);
+  background: rgba(217, 119, 6, 0.06);
 }
 
 .life-cal-day-num {
@@ -120,14 +120,14 @@
 
 /* ── Has Content (Blue Dot) ── */
 .life-cal-has-content .life-cal-day-num {
-  color: #44c0fe;
+  color: #d97706;
   font-weight: 600;
 }
 .life-cal-has-content {
-  background: rgba(68, 192, 254, 0.10);
+  background: rgba(217, 119, 6, 0.10);
 }
 .life-cal-has-content:hover {
-  background: rgba(68, 192, 254, 0.18) !important;
+  background: rgba(217, 119, 6, 0.18) !important;
 }
 
 .life-cal-dot {
@@ -135,14 +135,14 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #44c0fe;
+  background: #d97706;
   margin-top: 2px;
 }
 
 /* ── Selected Day ── */
 .life-cal-selected {
-  background: rgba(68, 192, 254, 0.20) !important;
-  outline: 2px solid #44c0fe;
+  background: rgba(217, 119, 6, 0.20) !important;
+  outline: 2px solid #d97706;
   outline-offset: -2px;
 }
 .life-cal-selected .life-cal-day-num {
@@ -199,9 +199,9 @@
   font-size: 0.7rem;
   padding: 1px 8px;
   border-radius: var(--radius-full);
-  background: rgba(68, 192, 254, 0.10);
-  border: 1px solid rgba(68, 192, 254, 0.15);
-  color: #66d0ff;
+  background: rgba(217, 119, 6, 0.10);
+  border: 1px solid rgba(217, 119, 6, 0.15);
+  color: #fbbf24;
 }
 
 .life-entry-divider {
@@ -231,16 +231,16 @@
   font-family: 'Noto Serif SC', Georgia, serif;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #44c0fe;
+  color: #d97706;
   margin: var(--space-6) 0 var(--space-3);
   padding-bottom: var(--space-1);
-  border-bottom: 1px solid rgba(68, 192, 254, 0.12);
+  border-bottom: 1px solid rgba(217, 119, 6, 0.12);
 }
 .life-md-body h3 {
   font-family: 'Noto Serif SC', Georgia, serif;
   font-size: 1.1rem;
   font-weight: 700;
-  color: #44c0fe;
+  color: #d97706;
   margin: var(--space-5) 0 var(--space-2);
 }
 .life-md-body strong {
@@ -254,17 +254,17 @@
   font-family: var(--font-mono, 'Courier New', monospace);
   font-size: 0.85em;
   padding: 1px 6px;
-  background: rgba(68, 192, 254, 0.10);
+  background: rgba(217, 119, 6, 0.10);
   border-radius: var(--radius-sm);
-  color: #44c0fe;
+  color: #d97706;
 }
 .life-md-body a {
-  color: #44c0fe;
+  color: #d97706;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 .life-md-body a:hover {
-  color: #66d0ff;
+  color: #fbbf24;
 }
 .life-md-body ul, .life-md-body ol {
   margin: var(--space-3) 0;
@@ -278,7 +278,7 @@
 }
 .life-md-body hr {
   border: none;
-  border-top: 1px solid rgba(68, 192, 254, 0.12);
+  border-top: 1px solid rgba(217, 119, 6, 0.12);
   margin: var(--space-5) 0;
 }
 
