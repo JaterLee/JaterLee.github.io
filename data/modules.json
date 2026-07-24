@@ -3,7 +3,7 @@
   "modules": [
     {
       "id": "grounded",
-      "name": "玩禁闭求生",
+      "name": "禁闭求生",
       "subtitle": "Grounded",
       "icon": "🕷️",
       "primary_color": "#4a7c59",
@@ -17,7 +17,7 @@
     },
     {
       "id": "ghost",
-      "name": "玩对马岛之魂",
+      "name": "对马岛之魂",
       "subtitle": "Ghost of Tsushima",
       "icon": "🗡️",
       "primary_color": "#c0392b",
@@ -38,7 +38,7 @@
     },
     {
       "id": "history",
-      "name": "看五代十国史",
+      "name": "五代十国史",
       "subtitle": "Five Dynasties",
       "icon": "📜",
       "primary_color": "#dbb42c",
@@ -46,7 +46,7 @@
     },
     {
       "id": "wow",
-      "name": "玩魔兽世界",
+      "name": "魔兽世界",
       "subtitle": "World of Warcraft",
       "icon": "⚔️",
       "primary_color": "#0078ff",
@@ -69,7 +69,7 @@
     },
     {
       "id": "life",
-      "name": "看生活小记",
+      "name": "生活小记",
       "subtitle": "Life Notes",
       "icon": "🌱",
       "primary_color": "#b58d6b",

@@ -52,9 +52,9 @@
      ========================================================== */
   function getFallbackModules() {
     return [
-      { id: 'grounded', name: '玩禁闭求生',   subtitle: 'Grounded',           icon: '🕷️', primary_color: '#4a7c59' },
-      { id: 'ghost',    name: '玩对马岛之魂', subtitle: 'Ghost of Tsushima',  icon: '🗡️', primary_color: '#c0392b' },
-      { id: 'history',  name: '看五代十国史', subtitle: 'Five Dynasties',     icon: '📜', primary_color: '#dbb42c' }
+      { id: 'grounded', name: '禁闭求生',   subtitle: 'Grounded',           icon: '🕷️', primary_color: '#4a7c59' },
+      { id: 'ghost',    name: '对马岛之魂', subtitle: 'Ghost of Tsushima',  icon: '🗡️', primary_color: '#c0392b' },
+      { id: 'history',  name: '五代十国史', subtitle: 'Five Dynasties',     icon: '📜', primary_color: '#dbb42c' }
     ];
   }
 
@@ -72,6 +72,10 @@
     if (window.JaterMod && window.JaterMod.setModuleConfigs) {
       window.JaterMod.setModuleConfigs(STATE.modules);
     }
+    // Restore last active module from localStorage
+    var savedId = loadSavedModule(STATE.modules);
+    STATE.activeModule = savedId || 'grounded';
+
     // Resolve active index
     var idx = STATE.modules.findIndex(function (m) { return m.id === STATE.activeModule; });
     STATE.activeIndex = idx >= 0 ? idx : 0;
@@ -207,6 +211,7 @@
     STATE.activeIndex = idx;
     render();
     window.JaterMod.activate(moduleId);
+    saveActiveModule(moduleId);
   }
 
   function goTo(index) {
@@ -295,6 +300,25 @@
       stage.addEventListener('touchstart', handleTouchStart, { passive: true });
       stage.addEventListener('touchend', handleTouchEnd, { passive: true });
     }
+  }
+
+  /* ==========================================================
+     localStorage — 记住上次的 tab
+     ========================================================== */
+  var LS_KEY = 'dw-active-module';
+
+  function saveActiveModule(id) {
+    try { localStorage.setItem(LS_KEY, id); } catch (e) { /* ignore */ }
+  }
+
+  function loadSavedModule(modules) {
+    try {
+      var saved = localStorage.getItem(LS_KEY);
+      if (saved && modules.some(function (m) { return m.id === saved; })) {
+        return saved;
+      }
+    } catch (e) { /* ignore */ }
+    return null;
   }
 
   /* ==========================================================
