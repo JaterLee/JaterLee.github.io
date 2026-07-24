@@ -74,6 +74,14 @@
       "icon": "☕",
       "primary_color": "#b58d6b",
       "theme": "life"
+    },
+    {
+      "id": "marketing",
+      "name": "营销管理",
+      "subtitle": "Marketing Management",
+      "icon": "📖",
+      "primary_color": "#8a8a8a",
+      "theme": "marketing"
     }
   ]
 }

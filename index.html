@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="assets/css/module-history.css">
   <link rel="stylesheet" href="assets/css/module-wow.css">
   <link rel="stylesheet" href="assets/css/module-life.css">
+  <link rel="stylesheet" href="assets/css/module-marketing.css">
   <!-- Scripts (deferred, order matters for dependencies) -->
   <script defer src="assets/js/core.js"></script>
   <script defer src="assets/js/ui-kit.js"></script>
@@ -30,6 +31,7 @@
   <script defer src="assets/js/module-history.js"></script>
   <script defer src="assets/js/module-wow.js"></script>
   <script defer src="assets/js/module-life.js"></script>
+  <script defer src="assets/js/module-marketing.js"></script>
 </head>
 <body>
 
@@ -334,6 +336,48 @@
             </div>
           </div>
         </div>
+
+      </div>
+
+      <!-- ───── MODULE: Marketing Management (营销管理) ───── -->
+      <div id="module-marketing" class="module-content" role="tabpanel" aria-label="营销管理">
+
+        <div class="module-header marketing-header">
+          <div class="module-header-icon" aria-hidden="true">📖</div>
+          <div class="module-header-info">
+            <h2 class="module-header-title">营销管理</h2>
+            <p class="module-header-desc">读营销管理 · 笔记与思考</p>
+          </div>
+          <div class="module-stats" id="marketing-stats">
+            <div class="module-stat">
+              <span class="module-stat-number" id="stat-marketing-notes">--</span>
+              <span class="module-stat-label">笔记</span>
+            </div>
+            <div class="module-stat">
+              <span class="module-stat-number" id="stat-marketing-range">--</span>
+              <span class="module-stat-label">日期跨度</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Type Filter Buttons -->
+        <div class="marketing-filters" id="marketing-filters" role="tablist" aria-label="按类型筛选">
+          <button class="marketing-filter-btn active" data-filter="all" role="tab" aria-selected="true">全部</button>
+          <button class="marketing-filter-btn" data-filter="note" role="tab" aria-selected="false">📝 笔记</button>
+          <button class="marketing-filter-btn" data-filter="summary" role="tab" aria-selected="false">📖 摘要</button>
+        </div>
+
+        <!-- Dynamic Notes Container -->
+        <div class="marketing-loading" id="marketing-loading">
+          <div class="spinner"></div>
+          <p>加载中...</p>
+        </div>
+        <div class="marketing-empty hidden" id="marketing-empty">
+          <div class="empty-icon" aria-hidden="true">📖</div>
+          <p>还没有读书笔记</p>
+          <p class="empty-hint">在 content/marketing/ 中添加 .md 文件，运行 <code>node scripts/sync-marketing.js</code> 生成数据</p>
+        </div>
+        <div class="marketing-masonry" id="marketing-masonry"></div>
 
       </div>
 
