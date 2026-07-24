@@ -140,6 +140,24 @@
     var N = STATE.modules.length;
     var cur = STATE.activeIndex;
 
+    // 移动端由 CSS 控制横向滚动，JS 跳过 arc 定位
+    if (window.innerWidth <= 639) {
+      cards.forEach(function (el, i) {
+        el.style.transform = '';
+        el.style.opacity = '';
+        el.style.zIndex = '';
+        el.style.filter = '';
+        el.style.pointerEvents = '';
+
+        var isActive = i === cur;
+        el.classList.toggle('dw-card-front', isActive);
+        el.classList.toggle('dw-card-side', !isActive);
+        el.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        el.setAttribute('tabindex', isActive ? '0' : '-1');
+      });
+      return;
+    }
+
     cards.forEach(function (el, i) {
       var delta = shortestDelta(i, cur, N);
       var absD = Math.abs(delta);
