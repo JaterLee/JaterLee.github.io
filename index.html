@@ -299,36 +299,43 @@
           </div>
         </div>
 
-        <!-- Timeline Container -->
-        <div class="life-timeline-container">
-          <div class="life-loading" id="life-loading">
-            <div class="spinner"></div>
-            <p>加载中...</p>
-          </div>
-          <div class="life-empty hidden" id="life-empty">
-            <div class="life-empty-icon" aria-hidden="true">🌱</div>
-            <p class="life-empty-text">还没有生活记录</p>
-          </div>
-          <div class="life-timeline" id="life-timeline"></div>
+        <!-- Calendar + Entry Panel -->
+        <div class="life-loading" id="life-loading">
+          <div class="spinner"></div>
+          <p>加载中...</p>
         </div>
+        <div class="life-empty hidden" id="life-empty">
+          <div class="life-empty-icon" aria-hidden="true">🌱</div>
+          <p class="life-empty-text">还没有生活记录</p>
+        </div>
+        <div class="life-calendar" id="life-calendar">
 
-        <!-- Detail Modal -->
-        <div class="life-modal-overlay hidden" id="life-modal-overlay" aria-hidden="true">
-          <div class="life-modal" role="dialog" aria-modal="true" aria-labelledby="life-modal-title">
-            <div class="life-modal-header">
-              <div class="life-modal-header-info">
-                <div class="life-modal-date" id="life-modal-date"></div>
-                <h3 class="life-modal-title" id="life-modal-title"></h3>
-              </div>
-              <button class="life-modal-close" id="life-modal-close" aria-label="关闭">
-                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M18 6L6 18M6 6l12 12"/></svg>
-              </button>
+          <!-- Calendar Panel -->
+          <div class="life-cal-panel">
+            <div class="life-cal-nav">
+              <button class="life-cal-nav-btn" id="life-cal-prev">←</button>
+              <span class="life-cal-month-title" id="life-month-title"></span>
+              <button class="life-cal-nav-btn" id="life-cal-next">→</button>
             </div>
-            <div class="life-modal-body" id="life-modal-body">
+            <div class="life-cal-grid" id="life-cal-grid"></div>
+            <div style="text-align:center;margin-top:var(--space-3)">
+              <button class="life-cal-nav-btn" id="life-cal-today">今天</button>
+            </div>
+          </div>
+
+          <!-- Entry Detail Panel -->
+          <div class="life-entry-panel hidden" id="life-entry-panel">
+            <div class="life-entry-date" id="life-entry-date"></div>
+            <h3 class="life-entry-title" id="life-entry-title"></h3>
+            <div class="life-entry-tags hidden" id="life-entry-tags"></div>
+            <hr class="life-entry-divider">
+            <div class="life-entry-body" id="life-entry-body">
               <!-- JS populated -->
             </div>
           </div>
         </div>
+
+      </div>
 
       </div>
 

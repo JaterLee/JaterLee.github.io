@@ -1,219 +1,220 @@
 /* ============================================================
    Module: Life Notes (生活小记)
-   暖色调时间线风格 — 日常随笔、生活记录
+   日历风格主页 + 图文混编详情
    ============================================================ */
 
 /* ── Module Header Accent ── */
 .module-header.life-header {
-  background: linear-gradient(135deg, rgba(181, 141, 107, 0.15) 0%, rgba(200, 170, 140, 0.08) 100%);
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.12) 0%, rgba(100, 160, 230, 0.06) 100%);
 }
 .module-header.life-header .module-header-title {
-  color: var(--life-primary, #b58d6b);
+  color: #5b9bd5;
 }
 .module-header.life-header .module-stat-number {
-  color: var(--life-primary-light, #d4b896);
-}
-
-/* ── Timeline Container ── */
-.life-timeline {
-  max-width: 48rem;
-  margin: 0 auto;
-  padding: var(--space-8) var(--space-6);
-  position: relative;
-}
-
-/* ── Timeline Entry Card ── */
-.life-entry {
-  position: relative;
-  margin-bottom: var(--space-6);
-  padding: var(--space-5);
-  background: var(--dw-bg-card);
-  border: 1px solid rgba(181, 141, 107, 0.12);
-  border-radius: var(--radius-md);
-  transition: all var(--transition-base);
-  cursor: pointer;
-}
-.life-entry:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-  border-color: rgba(181, 141, 107, 0.25);
-}
-
-/* ── Entry Date Badge ── */
-.life-entry-date {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  font-size: 0.75rem;
-  color: var(--life-primary, #b58d6b);
-  margin-bottom: var(--space-2);
-  font-weight: 500;
-}
-
-/* ── Entry Title ── */
-.life-entry-title {
-  font-family: 'Noto Serif SC', Georgia, serif;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--dw-text);
-  margin: 0 0 var(--space-2);
-  line-height: 1.4;
-}
-
-/* ── Entry Excerpt ── */
-.life-entry-excerpt {
-  font-size: 0.85rem;
-  color: var(--dw-text-muted);
-  line-height: 1.7;
-  margin-bottom: var(--space-3);
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* ── Entry Footer ── */
-.life-entry-footer {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: 0.75rem;
-  color: var(--dw-text-muted);
-  padding-top: var(--space-2);
-  border-top: 1px solid rgba(181, 141, 107, 0.08);
-}
-.life-entry-readmore {
-  margin-left: auto;
-  color: var(--life-primary, #b58d6b);
-  font-weight: 500;
-  transition: color var(--transition-fast);
-}
-
-/* ── Empty State ── */
-.life-empty {
-  text-align: center;
-  padding: var(--space-12) var(--space-4);
-  color: var(--dw-text-muted);
-}
-.life-empty-icon {
-  font-size: 3rem;
-  margin-bottom: var(--space-4);
-  opacity: 0.5;
-}
-.life-empty-text {
-  font-size: 1rem;
-}
-
-/* ── Loading State ── */
-.life-loading {
-  text-align: center;
-  padding: var(--space-12) var(--space-4);
-  color: var(--dw-text-muted);
+  color: #7bb8e8;
 }
 
 /* ============================================================
-   Detail Modal (shared structure, life-themed)
+   Calendar Container
    ============================================================ */
-.life-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.65);
-  z-index: 200;
+.life-calendar {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  max-width: 64rem;
+  margin: 0 auto;
+  min-height: 300px;
+}
+
+/* ── Calendar Panel (left) ── */
+.life-cal-panel {
+  flex: 0 0 380px;
+  background: var(--dw-bg-card);
+  border: 1px solid var(--dw-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  align-self: flex-start;
+}
+
+/* ── Month Navigation ── */
+.life-cal-nav {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: var(--space-4);
-  opacity: 0;
-  transition: opacity var(--transition-base);
-}
-.life-modal-overlay.hidden {
-  pointer-events: none;
-}
-.life-modal-overlay:not(.hidden) {
-  opacity: 1;
-}
-
-.life-modal {
-  background: linear-gradient(180deg, #201b16 0%, #26211b 100%);
-  border: 1px solid rgba(181, 141, 107, 0.2);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  width: 100%;
-  max-width: 42rem;
-  max-height: 85vh;
-  overflow-y: auto;
-  transform: scale(0.95) translateY(10px);
-  transition: transform var(--transition-base);
-}
-.life-modal-overlay:not(.hidden) .life-modal {
-  transform: scale(1) translateY(0);
-}
-
-/* ── Modal Header ── */
-.life-modal-header {
-  display: flex;
-  align-items: flex-start;
   justify-content: space-between;
-  padding: var(--space-6) var(--space-6) var(--space-4);
-  border-bottom: 1px solid rgba(181, 141, 107, 0.12);
-  gap: var(--space-4);
+  margin-bottom: var(--space-4);
 }
-.life-modal-header-info {
+.life-cal-nav-btn {
+  background: none;
+  border: 1px solid var(--dw-border);
+  color: var(--dw-text-muted);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: inherit;
+  transition: all var(--transition-fast);
+}
+.life-cal-nav-btn:hover {
+  color: var(--dw-text);
+  border-color: var(--dw-text-muted);
+  background: var(--dw-bg-card-hover);
+}
+.life-cal-month-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--dw-text);
+}
+
+/* ── Calendar Grid ── */
+.life-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+/* ── Weekday Header Cells ── */
+.life-cal-wd {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--dw-text-muted);
+  padding: var(--space-2) 0;
+  text-transform: uppercase;
+}
+
+/* ── Day Cells ── */
+.life-cal-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
+  cursor: default;
+  position: relative;
+  transition: all var(--transition-fast);
+}
+.life-cal-cell:not(.life-cal-empty) {
+  cursor: pointer;
+}
+.life-cal-cell:not(.life-cal-empty):hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.life-cal-day-num {
+  font-size: 0.85rem;
+  color: var(--dw-text);
+  line-height: 1;
+}
+
+/* ── Empty Cell ── */
+.life-cal-empty {
+  background: transparent;
+}
+
+/* ── Has Content (Blue Dot) ── */
+.life-cal-has-content .life-cal-day-num {
+  color: #5b9bd5;
+  font-weight: 600;
+}
+.life-cal-has-content {
+  background: rgba(74, 144, 226, 0.08);
+}
+.life-cal-has-content:hover {
+  background: rgba(74, 144, 226, 0.15) !important;
+}
+
+.life-cal-dot {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #5b9bd5;
+  margin-top: 2px;
+}
+
+/* ── Selected Day ── */
+.life-cal-selected {
+  background: rgba(74, 144, 226, 0.18) !important;
+  outline: 2px solid #5b9bd5;
+  outline-offset: -2px;
+}
+.life-cal-selected .life-cal-day-num {
+  color: #fff;
+  font-weight: 700;
+}
+.life-cal-selected .life-cal-dot {
+  background: #fff;
+}
+
+/* ============================================================
+   Entry Detail Panel (right)
+   ============================================================ */
+.life-entry-panel {
   flex: 1;
   min-width: 0;
+  background: var(--dw-bg-card);
+  border: 1px solid var(--dw-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  overflow-y: auto;
+  max-height: 70vh;
 }
 
-.life-modal-title {
+.life-entry-panel.hidden {
+  display: none;
+}
+
+.life-entry-date {
+  font-size: 0.8rem;
+  color: var(--dw-text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.life-entry-title {
   font-family: 'Noto Serif SC', Georgia, serif;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--dw-text);
-  margin: 0;
+  margin: 0 0 var(--space-3);
   line-height: 1.3;
 }
 
-.life-modal-close {
-  flex-shrink: 0;
-  color: var(--dw-text-muted);
-  padding: var(--space-1);
-  border-radius: var(--radius-sm);
-  transition: color var(--transition-fast), background var(--transition-fast);
-  background: none;
-  border: none;
-  cursor: pointer;
-  line-height: 0;
-}
-.life-modal-close:hover {
-  color: var(--dw-text);
-  background: rgba(181, 141, 107, 0.1);
-}
-
-/* ── Modal Meta ── */
-.life-modal-meta {
-  padding: var(--space-4) var(--space-6);
+.life-entry-tags {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3);
-  font-size: 0.8rem;
-  color: var(--dw-text-muted);
-  border-bottom: 1px solid rgba(181, 141, 107, 0.06);
-}
-.life-modal-date {
-  display: inline-flex;
-  align-items: center;
   gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+.life-entry-tags.hidden {
+  display: none;
+}
+.life-entry-tag {
+  font-size: 0.7rem;
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(74, 144, 226, 0.08);
+  border: 1px solid rgba(74, 144, 226, 0.12);
+  color: #7bb8e8;
 }
 
-/* ── Modal Body ── */
-.life-modal-body {
-  padding: var(--space-6);
+.life-entry-divider {
+  border: none;
+  border-top: 1px solid var(--dw-border);
+  margin: 0 0 var(--space-4);
+}
+
+/* ── Entry Body ── */
+.life-entry-body {
   color: var(--dw-text);
   line-height: 1.9;
   font-size: 0.95rem;
 }
 
-/* ── Modal Body Markdown Typography ── */
+/* ============================================================
+   Markdown Body Typography
+   ============================================================ */
 .life-md-body p {
   margin: 0 0 var(--space-4);
 }
@@ -223,22 +224,21 @@
 
 .life-md-body h2 {
   font-family: 'Noto Serif SC', Georgia, serif;
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--life-primary, #b58d6b);
+  color: #5b9bd5;
   margin: var(--space-6) 0 var(--space-3);
   padding-bottom: var(--space-1);
-  border-bottom: 1px solid rgba(181, 141, 107, 0.1);
+  border-bottom: 1px solid rgba(74, 144, 226, 0.12);
 }
 .life-md-body h3 {
   font-family: 'Noto Serif SC', Georgia, serif;
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--life-primary, #b58d6b);
+  color: #5b9bd5;
   margin: var(--space-5) 0 var(--space-2);
 }
 .life-md-body strong {
-  color: var(--life-primary-light, #d4b896);
   font-weight: 700;
 }
 .life-md-body em {
@@ -249,17 +249,17 @@
   font-family: var(--font-mono, 'Courier New', monospace);
   font-size: 0.85em;
   padding: 1px 6px;
-  background: rgba(181, 141, 107, 0.08);
+  background: rgba(74, 144, 226, 0.08);
   border-radius: var(--radius-sm);
-  color: var(--life-primary, #b58d6b);
+  color: #5b9bd5;
 }
 .life-md-body a {
-  color: var(--life-primary, #b58d6b);
+  color: #5b9bd5;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 .life-md-body a:hover {
-  color: var(--life-primary-light, #d4b896);
+  color: #7bb8e8;
 }
 .life-md-body ul, .life-md-body ol {
   margin: var(--space-3) 0;
@@ -273,41 +273,71 @@
 }
 .life-md-body hr {
   border: none;
-  border-top: 1px solid rgba(181, 141, 107, 0.15);
+  border-top: 1px solid rgba(74, 144, 226, 0.12);
   margin: var(--space-5) 0;
+}
+
+/* ── Images in Markdown ── */
+.life-inline-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  margin: var(--space-3) 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.life-img-block {
+  margin: var(--space-4) 0;
+}
+.life-img-block img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  display: block;
+}
+
+/* ============================================================
+   Loading & Empty States
+   ============================================================ */
+.life-loading,
+.life-empty {
+  text-align: center;
+  padding: var(--space-12) var(--space-4);
+  color: var(--dw-text-muted);
+}
+.life-empty-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-4);
+  opacity: 0.5;
 }
 
 /* ============================================================
    Responsive
    ============================================================ */
 @media (max-width: 640px) {
-  .life-timeline {
-    padding: var(--space-4) var(--space-3);
+  .life-calendar {
+    flex-direction: column;
+    padding: var(--space-3);
+    gap: var(--space-3);
   }
-  .life-entry {
+  .life-cal-panel {
+    flex: none;
+    width: 100%;
     padding: var(--space-3);
   }
+  .life-cal-cell {
+    min-height: 36px;
+  }
+  .life-cal-day-num {
+    font-size: 0.8rem;
+  }
+  .life-entry-panel {
+    max-height: none;
+    padding: var(--space-4);
+    overflow-y: visible;
+  }
   .life-entry-title {
-    font-size: 1rem;
-  }
-  .life-modal-overlay {
-    padding: 0;
-    align-items: stretch;
-  }
-  .life-modal {
-    max-width: 100%;
-    max-height: 100vh;
-    border-radius: 0;
-    border: none;
-  }
-  .life-modal-header {
-    padding: var(--space-4);
-  }
-  .life-modal-title {
-    font-size: 1.2rem;
-  }
-  .life-modal-body {
-    padding: var(--space-4);
-    font-size: 0.9rem;
+    font-size: 1.1rem;
   }
 }

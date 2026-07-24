@@ -1,6 +1,6 @@
 /**
  * module-life.js
- * 生活小记 Module — 时间线列表 + 详情弹窗
+ * 生活小记 Module — 日历主页 + 图文混编详情
  * 通过 JaterMod 注册，首次激活时懒加载。
  *
  * 依赖：core.js (Jater), module-registry.js (JaterMod)
@@ -16,9 +16,12 @@
      State
      ========================================================== */
   var STATE = {
-    entries: [],
-    loading: false,
+    entries: [],          // [{ id, title, date, body, images? }]
+    entriesByDate: {},    // { '2026-07-24': entry }
     loaded: false,
+    currentYear: 0,
+    currentMonth: 0,     // 1-12
+    selectedDate: null,  // '2026-07-24'
   };
 
   /* ==========================================================
@@ -27,7 +30,7 @@
   var dom = {};
 
   /* ==========================================================
-     Lightweight Markdown Renderer
+     Lightweight Markdown Renderer (supports images)
      ========================================================== */
   function renderMarkdown(md) {
     if (!md) return '';
@@ -46,6 +49,7 @@
       var line = lines[i];
       if (line.trim() === '') { i++; continue; }
 
+      // Heading
       var hMatch = line.match(/^(#{1,4})\s+(.+)$/);
       if (hMatch) {
         var level = hMatch[1].length + 1;
@@ -54,6 +58,14 @@
         i++; continue;
       }
 
+      // Image on its own line (block-level image)
+      var imgMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+      if (imgMatch) {
+        blocks.push('<div class="life-img-block"><img src="' + escapeAttr(imgMatch[2]) + '" alt="' + escapeAttr(imgMatch[1]) + '" loading="lazy"></div>');
+        i++; continue;
+      }
+
+      // Blockquote
       if (line.match(/^>\s/)) {
         var quoteLines = [];
         while (i < lines.length && lines[i].match(/^>\s/)) {
@@ -65,6 +77,7 @@
         continue;
       }
 
+      // Unordered list
       if (line.match(/^[-*]\s/)) {
         var listItems = [];
         while (i < lines.length && lines[i].match(/^[-*]\s/)) {
@@ -75,6 +88,7 @@
         continue;
       }
 
+      // Ordered list
       if (line.match(/^\d+\.\s/)) {
         var olItems = [];
         while (i < lines.length && lines[i].match(/^\d+\.\s/)) {
@@ -85,9 +99,10 @@
         continue;
       }
 
+      // Paragraph
       var paraLines = [];
       while (i < lines.length && lines[i].trim() !== '' &&
-             !lines[i].match(/^(#{1,4}\s|>\s|[-*]\s|\d+\.\s)/)) {
+             !lines[i].match(/^(#{1,4}\s|!\[.*\]\(.*\)$|>\s|[-*]\s|\d+\.\s)/)) {
         paraLines.push(lines[i]);
         i++;
       }
@@ -100,6 +115,8 @@
   }
 
   function applyInline(text) {
+    // Images first (before link handling)
+    text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" loading="lazy" class="life-inline-img">');
     return text
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.+?)\*/g, '<em>$1</em>')
@@ -107,14 +124,17 @@
       .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
   }
 
+  function escapeAttr(s) {
+    return (s || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
   /* ==========================================================
      Data Loading
      ========================================================== */
   async function loadEntries() {
-    STATE.loading = true;
     if (dom.loading) dom.loading.classList.remove('hidden');
+    if (dom.calendar) dom.calendar.style.display = 'none';
     if (dom.empty) dom.empty.classList.add('hidden');
-    if (dom.timeline) dom.timeline.innerHTML = '';
 
     try {
       var resp = await fetch('data/life-notes.json');
@@ -126,27 +146,41 @@
       STATE.entries = [];
     }
 
-    STATE.loading = false;
-    if (dom.loading) dom.loading.classList.add('hidden');
-    renderAll();
-  }
+    // Build date index
+    STATE.entriesByDate = {};
+    STATE.entries.forEach(function (e) {
+      if (e.date) STATE.entriesByDate[e.date] = e;
+    });
 
-  /* ==========================================================
-     Rendering
-     ========================================================== */
-  function renderAll() {
-    updateStats();
+    if (dom.loading) dom.loading.classList.add('hidden');
 
     if (!STATE.entries.length) {
       if (dom.empty) dom.empty.classList.remove('hidden');
-      if (dom.timeline) dom.timeline.innerHTML = '';
+      if (dom.calendar) dom.calendar.style.display = 'none';
       return;
     }
 
-    if (dom.empty) dom.empty.classList.add('hidden');
-    renderTimeline();
+    // Determine initial month from latest entry
+    var dates = STATE.entries.map(function (e) { return e.date; }).filter(Boolean).sort();
+    var latest = dates[dates.length - 1];
+    if (latest) {
+      var parts = latest.split('-');
+      STATE.currentYear = parseInt(parts[0], 10);
+      STATE.currentMonth = parseInt(parts[1], 10);
+    } else {
+      var now = new Date();
+      STATE.currentYear = now.getFullYear();
+      STATE.currentMonth = now.getMonth() + 1;
+    }
+
+    if (dom.calendar) dom.calendar.style.display = '';
+    renderCalendar();
+    updateStats();
   }
 
+  /* ==========================================================
+     Stats
+     ========================================================== */
   function updateStats() {
     var elTotal = $('#stat-life-notes');
     var elRange = $('#stat-life-range');
@@ -167,87 +201,190 @@
     }
   }
 
-  function renderTimeline() {
-    if (!dom.timeline) return;
+  /* ==========================================================
+     Calendar Engine
+     ========================================================== */
 
-    dom.timeline.innerHTML = STATE.entries.map(function (entry) {
-      var excerpt = entry.body
-        ? entry.body.replace(/[#*>`\[\]\(\)]/g, '').replace(/\n+/g, ' ').trim().slice(0, 120)
+  var WEEKDAY_CN = ['日', '一', '二', '三', '四', '五', '六'];
+
+  function daysInMonth(year, month) {
+    return new Date(year, month, 0).getDate();
+  }
+
+  function firstDayOfMonth(year, month) {
+    // 0=Sun, 1=Mon, ..., 6=Sat
+    return new Date(year, month - 1, 1).getDay();
+  }
+
+  function formatYYYYMM(year, month) {
+    return year + '-' + String(month).padStart(2, '0');
+  }
+
+  function padDay(d) {
+    return String(d).padStart(2, '0');
+  }
+
+  function renderCalendar() {
+    if (!dom.calendarGrid) return;
+
+    var y = STATE.currentYear;
+    var m = STATE.currentMonth;
+    var ymKey = formatYYYYMM(y, m);
+
+    // Update header
+    if (dom.monthTitle) {
+      dom.monthTitle.textContent = y + ' 年 ' + m + ' 月';
+    }
+
+    var totalDays = daysInMonth(y, m);
+    var startDow = firstDayOfMonth(y, m); // 0=Sun
+
+    var cells = '';
+
+    // Weekday headers
+    WEEKDAY_CN.forEach(function (wd) {
+      cells += '<div class="life-cal-wd">' + wd + '</div>';
+    });
+
+    // Empty cells before first day
+    for (var e = 0; e < startDow; e++) {
+      cells += '<div class="life-cal-cell life-cal-empty"></div>';
+    }
+
+    // Day cells
+    for (var d = 1; d <= totalDays; d++) {
+      var dateStr = ymKey + '-' + padDay(d);
+      var entry = STATE.entriesByDate[dateStr];
+      var hasContent = !!entry;
+      var classes = 'life-cal-cell';
+      if (hasContent) classes += ' life-cal-has-content';
+      if (dateStr === STATE.selectedDate) classes += ' life-cal-selected';
+
+      var label = hasContent
+        ? '<span class="life-cal-dot"></span>'
         : '';
-      if (excerpt.length >= 120) excerpt += '...';
 
-      return '<article class="life-entry" data-entry-id="' + escapeHtml(entry.id) + '" tabindex="0">' +
-        '<div class="life-entry-date">📅 ' + formatDate(entry.date) + '</div>' +
-        '<h3 class="life-entry-title">' + escapeHtml(entry.title) + '</h3>' +
-        (excerpt ? '<p class="life-entry-excerpt">' + escapeHtml(excerpt) + '</p>' : '') +
-        '<div class="life-entry-footer">' +
-          '<span class="life-entry-readmore">阅读全文 →</span>' +
-        '</div>' +
-      '</article>';
-    }).join('');
+      cells += '<div class="' + classes + '" data-date="' + dateStr + '" tabindex="0">' +
+        '<span class="life-cal-day-num">' + d + '</span>' +
+        label +
+      '</div>';
+    }
 
-    dom.timeline.querySelectorAll('.life-entry').forEach(function (card) {
-      card.addEventListener('click', function () {
-        var id = card.dataset.entryId;
-        if (id) openModal(id);
+    dom.calendarGrid.innerHTML = cells;
+
+    // Bind click
+    dom.calendarGrid.querySelectorAll('.life-cal-cell').forEach(function (cell) {
+      cell.addEventListener('click', function () {
+        var date = cell.dataset.date;
+        if (date && STATE.entriesByDate[date]) {
+          selectDate(date);
+        }
       });
-      card.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') {
+      cell.addEventListener('keydown', function (e) {
+        if ((e.key === 'Enter' || e.key === ' ') && cell.dataset.date && STATE.entriesByDate[cell.dataset.date]) {
           e.preventDefault();
-          var id = card.dataset.entryId;
-          if (id) openModal(id);
+          selectDate(cell.dataset.date);
         }
       });
     });
+
+    // If no date selected, select latest or first available
+    if (!STATE.selectedDate || !STATE.entriesByDate[STATE.selectedDate]) {
+      var dates = STATE.entries.map(function (e) { return e.date; }).filter(Boolean).sort();
+      if (dates.length) {
+        selectDate(dates[dates.length - 1]);
+      }
+    } else {
+      // Re-select to update content
+      showEntry(STATE.selectedDate);
+    }
   }
 
   /* ==========================================================
-     Detail Modal
+     Date Selection & Entry Display
      ========================================================== */
-  function openModal(entryId) {
-    var entry = STATE.entries.find(function (e) { return e.id === entryId; });
-    if (!entry) return;
+  function selectDate(dateStr) {
+    STATE.selectedDate = dateStr;
 
-    if (dom.modalTitle) dom.modalTitle.textContent = entry.title;
-    if (dom.modalDate) dom.modalDate.textContent = '📅 ' + formatDate(entry.date);
+    // Update calendar cell highlighting
+    dom.calendarGrid.querySelectorAll('.life-cal-cell').forEach(function (cell) {
+      cell.classList.toggle('life-cal-selected', cell.dataset.date === dateStr);
+    });
 
-    if (dom.modalBody) {
-      dom.modalBody.innerHTML = renderMarkdown(entry.body || '');
-    }
-
-    if (dom.modalOverlay) {
-      dom.modalOverlay.classList.remove('hidden');
-      dom.modalOverlay.setAttribute('aria-hidden', 'false');
-    }
-    document.documentElement.style.overflow = 'hidden';
-    if (dom.modalClose) dom.modalClose.focus();
+    showEntry(dateStr);
   }
 
-  function closeModal() {
-    if (dom.modalOverlay) {
-      dom.modalOverlay.classList.add('hidden');
-      dom.modalOverlay.setAttribute('aria-hidden', 'true');
+  function showEntry(dateStr) {
+    var entry = STATE.entriesByDate[dateStr];
+    if (!entry) {
+      if (dom.entryPanel) dom.entryPanel.classList.add('hidden');
+      return;
     }
-    document.documentElement.style.overflow = '';
+
+    if (dom.entryPanel) dom.entryPanel.classList.remove('hidden');
+
+    // Date
+    if (dom.entryDate) dom.entryDate.textContent = '📅 ' + formatDate(entry.date);
+
+    // Title
+    if (dom.entryTitle) dom.entryTitle.textContent = entry.title;
+
+    // Tags
+    if (dom.entryTags) {
+      if (entry.tags && entry.tags.length) {
+        dom.entryTags.innerHTML = entry.tags.map(function (t) {
+          return '<span class="life-entry-tag">#' + escapeHtml(t) + '</span>';
+        }).join('');
+        dom.entryTags.classList.remove('hidden');
+      } else {
+        dom.entryTags.classList.add('hidden');
+      }
+    }
+
+    // Body
+    if (dom.entryBody) {
+      dom.entryBody.innerHTML = renderMarkdown(entry.body || '');
+    }
+
+    // Scroll entry panel to top
+    if (dom.entryPanel) dom.entryPanel.scrollTop = 0;
+  }
+
+  /* ==========================================================
+     Month Navigation
+     ========================================================== */
+  function goPrevMonth() {
+    STATE.currentMonth--;
+    if (STATE.currentMonth < 1) {
+      STATE.currentMonth = 12;
+      STATE.currentYear--;
+    }
+    renderCalendar();
+  }
+
+  function goNextMonth() {
+    STATE.currentMonth++;
+    if (STATE.currentMonth > 12) {
+      STATE.currentMonth = 1;
+      STATE.currentYear++;
+    }
+    renderCalendar();
+  }
+
+  function goToday() {
+    var now = new Date();
+    STATE.currentYear = now.getFullYear();
+    STATE.currentMonth = now.getMonth() + 1;
+    renderCalendar();
   }
 
   /* ==========================================================
      Event Bindings
      ========================================================== */
   function bindEvents() {
-    if (dom.modalClose) {
-      dom.modalClose.addEventListener('click', closeModal);
-    }
-    if (dom.modalOverlay) {
-      dom.modalOverlay.addEventListener('click', function (e) {
-        if (e.target === dom.modalOverlay) closeModal();
-      });
-    }
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && dom.modalOverlay && !dom.modalOverlay.classList.contains('hidden')) {
-        closeModal();
-      }
-    });
+    if (dom.btnPrev) dom.btnPrev.addEventListener('click', goPrevMonth);
+    if (dom.btnNext) dom.btnNext.addEventListener('click', goNextMonth);
+    if (dom.btnToday) dom.btnToday.addEventListener('click', goToday);
   }
 
   /* ==========================================================
@@ -259,12 +396,17 @@
     dom = {
       loading: $('#life-loading'),
       empty: $('#life-empty'),
-      timeline: $('#life-timeline'),
-      modalOverlay: $('#life-modal-overlay'),
-      modalTitle: $('#life-modal-title'),
-      modalDate: $('#life-modal-date'),
-      modalBody: $('#life-modal-body'),
-      modalClose: $('#life-modal-close'),
+      calendar: $('#life-calendar'),
+      monthTitle: $('#life-month-title'),
+      calendarGrid: $('#life-cal-grid'),
+      btnPrev: $('#life-cal-prev'),
+      btnNext: $('#life-cal-next'),
+      btnToday: $('#life-cal-today'),
+      entryPanel: $('#life-entry-panel'),
+      entryDate: $('#life-entry-date'),
+      entryTitle: $('#life-entry-title'),
+      entryTags: $('#life-entry-tags'),
+      entryBody: $('#life-entry-body'),
     };
 
     STATE.loaded = true;
