@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-07-19",
+  "last_updated": "2026-07-25",
   "images": [
     {
       "id": "wow-20260117-162410",
@@ -1199,7 +1199,18 @@
       "height": 804,
       "tags": [],
       "caption": ""
+    },
+    {
+      "id": "wow-20260724-230231",
+      "filename": "WoWScrnShot_072426_230231",
+      "date_taken": "2026-07-24T23:02:31",
+      "file_size_original": 5214634,
+      "file_size_webp": 285984,
+      "width": 1920,
+      "height": 804,
+      "tags": [],
+      "caption": ""
     }
   ],
-  "total": 109
+  "total": 110
 }
