@@ -3,6 +3,7 @@ id: yelv-deguang-sha-hu-lin
 title: 耶律德光之死：杀胡林中的天命
 type: passage
 date: 2026-07-26
+source: 《辽史》《旧五代史》
 tags: [耶律德光, 辽国, 杀胡林, 五代十国, 疫病]
 ---
 
