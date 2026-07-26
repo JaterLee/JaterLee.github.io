@@ -183,6 +183,128 @@
 }
 
 /* ============================================================
+   Placeholder State (empty content)
+   ============================================================ */
+.marketing-placeholder {
+  text-align: center;
+  padding: var(--space-8) var(--space-6);
+  max-width: 36rem;
+  margin: 0 auto;
+}
+.marketing-placeholder-icon {
+  color: #8a8a8a;
+  margin-bottom: var(--space-5);
+  opacity: 0.7;
+}
+.marketing-placeholder-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #c0c0c0;
+  margin: 0 0 var(--space-2);
+}
+.marketing-placeholder-desc {
+  font-size: 0.9rem;
+  color: var(--dw-text-muted);
+  margin: 0 0 var(--space-8);
+  line-height: 1.6;
+}
+
+/* Preview Ghost Card — shows what a note looks like */
+.marketing-preview-card {
+  text-align: left;
+  background: linear-gradient(135deg, #1e1e1e 0%, #262626 100%);
+  border: 1px solid rgba(138, 138, 138, 0.12);
+  border-left: 3px solid #6b6b6b;
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  margin-bottom: var(--space-6);
+  opacity: 0.55;
+  filter: grayscale(0.3);
+  pointer-events: none;
+  user-select: none;
+}
+.marketing-preview-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-2);
+  background: rgba(138, 138, 138, 0.15);
+  color: #b0b0b0;
+}
+.marketing-preview-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--dw-text);
+  margin: 0 0 var(--space-2);
+  opacity: 0.8;
+}
+.marketing-preview-chapter {
+  font-size: 0.75rem;
+  color: #9a9a9a;
+  margin-bottom: var(--space-2);
+  font-style: italic;
+}
+.marketing-preview-excerpt {
+  font-size: 0.85rem;
+  color: var(--dw-text-muted);
+  line-height: 1.7;
+  margin-bottom: var(--space-4);
+}
+.marketing-preview-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+.marketing-preview-tag {
+  font-size: 0.65rem;
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(138, 138, 138, 0.08);
+  border: 1px solid rgba(138, 138, 138, 0.1);
+  color: #b0b0b0;
+}
+.marketing-preview-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--dw-text-muted);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(138, 138, 138, 0.08);
+}
+.marketing-preview-detail {
+  color: #b0b0b0;
+  font-size: 0.75rem;
+}
+
+/* Setup hint card */
+.marketing-placeholder-hint {
+  display: inline-block;
+  text-align: left;
+  font-size: 0.78rem;
+  color: var(--dw-text-muted);
+  background: rgba(138, 138, 138, 0.05);
+  border: 1px dashed rgba(138, 138, 138, 0.15);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+  line-height: 1.8;
+}
+.marketing-placeholder-hint p {
+  margin: 0;
+}
+.marketing-placeholder-hint code {
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.82em;
+  padding: 1px 6px;
+  background: rgba(138, 138, 138, 0.12);
+  border-radius: var(--radius-sm);
+  color: #b0b0b0;
+}
+
+/* ============================================================
    Detail Modal
    ============================================================ */
 .marketing-modal-overlay {
@@ -227,6 +349,26 @@
   padding: var(--space-6) var(--space-6) var(--space-4);
   border-bottom: 1px solid rgba(138, 138, 138, 0.14);
   gap: var(--space-4);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: linear-gradient(180deg, #1e1e1e 0%, #1e1e1e 85%, transparent 100%);
+}
+/* Scroll shadow */
+.marketing-modal-header::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.marketing-modal.scrolled .marketing-modal-header::after {
+  opacity: 1;
 }
 .marketing-modal-header-info {
   flex: 1;
@@ -252,17 +394,25 @@
 .marketing-modal-close {
   flex-shrink: 0;
   color: var(--dw-text-muted);
-  padding: var(--space-1);
-  border-radius: var(--radius-sm);
-  transition: color var(--transition-fast), background var(--transition-fast);
-  background: none;
-  border: none;
+  padding: var(--space-2);
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+  background: rgba(138, 138, 138, 0.08);
+  border: 1px solid rgba(138, 138, 138, 0.15);
   cursor: pointer;
   line-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .marketing-modal-close:hover {
   color: var(--dw-text);
-  background: rgba(138, 138, 138, 0.1);
+  background: rgba(138, 138, 138, 0.2);
+  border-color: rgba(138, 138, 138, 0.4);
+  transform: scale(1.08);
+}
+.marketing-modal-close:active {
+  transform: scale(0.95);
 }
 
 .marketing-modal-meta {
@@ -301,6 +451,39 @@
   color: var(--dw-text);
   line-height: 1.9;
   font-size: 0.95rem;
+}
+
+/* Modal footer + bottom close button */
+.marketing-modal-footer {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  border-top: 1px solid rgba(138, 138, 138, 0.1);
+}
+.marketing-modal-close-bottom {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-8);
+  font-size: 0.9rem;
+  font-family: inherit;
+  font-weight: 600;
+  color: #b0b0b0;
+  background: rgba(138, 138, 138, 0.08);
+  border: 1px solid rgba(138, 138, 138, 0.22);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.marketing-modal-close-bottom:hover {
+  background: rgba(138, 138, 138, 0.2);
+  border-color: rgba(138, 138, 138, 0.45);
+  color: #d0d0d0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+.marketing-modal-close-bottom:active {
+  transform: translateY(0) scale(0.97);
 }
 
 /* ============================================================
@@ -421,4 +604,7 @@
   .marketing-modal-title { font-size: 1.2rem; }
   .marketing-modal-meta { padding: var(--space-3) var(--space-4); }
   .marketing-modal-body { padding: var(--space-4); font-size: 0.9rem; }
+  .marketing-placeholder { padding: var(--space-5) var(--space-4); }
+  .marketing-placeholder-title { font-size: 1.1rem; }
+  .marketing-preview-card { padding: var(--space-3); }
 }

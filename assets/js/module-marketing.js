@@ -176,6 +176,19 @@
     });
   }
 
+  function showModal() {
+    if (dom.modalOverlay) {
+      dom.modalOverlay.classList.remove('hidden');
+      dom.modalOverlay.setAttribute('aria-hidden', 'false');
+    }
+    document.documentElement.style.overflow = 'hidden';
+    if (dom.modal) {
+      dom.modal.scrollTop = 0;
+      dom.modal.classList.remove('scrolled');
+    }
+    if (dom.modalClose) dom.modalClose.focus();
+  }
+
   function openModal(noteId) {
     var note = STATE.notes.find(function (n) { return n.id === noteId; });
     if (!note) return;
@@ -196,12 +209,7 @@
       dom.modalMeta.innerHTML = metaParts.join('\n');
     }
     if (dom.modalBody) dom.modalBody.innerHTML = renderMarkdown(note.body || '');
-    if (dom.modalOverlay) {
-      dom.modalOverlay.classList.remove('hidden');
-      dom.modalOverlay.setAttribute('aria-hidden', 'false');
-    }
-    document.documentElement.style.overflow = 'hidden';
-    if (dom.modalClose) dom.modalClose.focus();
+    showModal();
   }
 
   function closeModal() {
@@ -212,6 +220,10 @@
       dom.modalOverlay.setAttribute('aria-hidden', 'true');
     }
     document.documentElement.style.overflow = '';
+    if (dom.modal) {
+      dom.modal.scrollTop = 0;
+      dom.modal.classList.remove('scrolled');
+    }
     if (closingId && dom.masonry) {
       var trigger = dom.masonry.querySelector('[data-note-id="' + closingId + '"]');
       if (trigger) trigger.focus();
@@ -230,11 +242,64 @@
         });
       });
     }
+
+    // Modal close buttons
     if (dom.modalClose) dom.modalClose.addEventListener('click', closeModal);
-    if (dom.modalOverlay) dom.modalOverlay.addEventListener('click', function (e) { if (e.target === dom.modalOverlay) closeModal(); });
+    if (dom.modalCloseBottom) dom.modalCloseBottom.addEventListener('click', closeModal);
+
+    // Overlay click to close
+    if (dom.modalOverlay) {
+      dom.modalOverlay.addEventListener('click', function (e) { if (e.target === dom.modalOverlay) closeModal(); });
+    }
+
+    // Scroll shadow toggle
+    if (dom.modal) {
+      dom.modal.addEventListener('scroll', function () {
+        if (dom.modal.scrollTop > 8) dom.modal.classList.add('scrolled');
+        else dom.modal.classList.remove('scrolled');
+      }, { passive: true });
+    }
+
+    // Escape key
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && dom.modalOverlay && !dom.modalOverlay.classList.contains('hidden')) closeModal();
     });
+
+    // Swipe down to dismiss on mobile
+    if (dom.modal) {
+      var touchStartY = 0;
+      var touchMoved = false;
+
+      dom.modal.addEventListener('touchstart', function (e) {
+        if (e.touches.length === 1 && dom.modal.scrollTop <= 0) {
+          touchStartY = e.touches[0].clientY;
+          touchMoved = false;
+        }
+      }, { passive: true });
+
+      dom.modal.addEventListener('touchmove', function (e) {
+        if (touchStartY === 0) return;
+        var deltaY = e.touches[0].clientY - touchStartY;
+        if (deltaY > 10) {
+          touchMoved = true;
+          var resistance = Math.min(deltaY * 0.4, 60);
+          dom.modal.style.transform = 'translateY(' + resistance + 'px)';
+          dom.modal.style.transition = 'none';
+        }
+      }, { passive: true });
+
+      dom.modal.addEventListener('touchend', function () {
+        if (touchMoved && touchStartY > 0) {
+          var match = dom.modal.style.transform && dom.modal.style.transform.match(/translateY\((\d+)px\)/);
+          var deltaY = match ? parseInt(match[1], 10) : 0;
+          dom.modal.style.transform = '';
+          dom.modal.style.transition = '';
+          if (deltaY > 40) closeModal();
+        }
+        touchStartY = 0;
+        touchMoved = false;
+      });
+    }
   }
 
   function init() {
@@ -245,11 +310,13 @@
       masonry: $('#marketing-masonry'),
       filterBtns: document.querySelectorAll('.marketing-filter-btn'),
       modalOverlay: $('#marketing-modal-overlay'),
+      modal: document.querySelector('.marketing-modal'),
       modalTitle: $('#marketing-modal-title'),
       modalTypeBadge: $('#marketing-modal-type-badge'),
       modalMeta: $('#marketing-modal-meta'),
       modalBody: $('#marketing-modal-body'),
       modalClose: $('#marketing-modal-close'),
+      modalCloseBottom: $('#marketing-modal-close-bottom'),
     };
     STATE.loaded = true;
     bindEvents();

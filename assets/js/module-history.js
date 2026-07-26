@@ -329,6 +329,12 @@
     }
     document.documentElement.style.overflow = 'hidden';
 
+    // Reset scroll position on open
+    if (dom.modal) {
+      dom.modal.scrollTop = 0;
+      dom.modal.classList.remove('scrolled');
+    }
+
     // Focus the modal for accessibility
     if (dom.modalClose) dom.modalClose.focus();
   }
@@ -342,6 +348,12 @@
       dom.modalOverlay.setAttribute('aria-hidden', 'true');
     }
     document.documentElement.style.overflow = '';
+
+    // Reset scroll position and shadow
+    if (dom.modal) {
+      dom.modal.scrollTop = 0;
+      dom.modal.classList.remove('scrolled');
+    }
 
     // Return focus to the triggering card
     if (closingId && dom.masonry) {
@@ -371,9 +383,14 @@
       });
     }
 
-    // Modal close button
+    // Modal close button (top)
     if (dom.modalClose) {
       dom.modalClose.addEventListener('click', closeModal);
+    }
+
+    // Modal close button (bottom)
+    if (dom.modalCloseBottom) {
+      dom.modalCloseBottom.addEventListener('click', closeModal);
     }
 
     // Overlay click to close
@@ -383,12 +400,70 @@
       });
     }
 
+    // Scroll shadow toggle on modal
+    if (dom.modal) {
+      dom.modal.addEventListener('scroll', function () {
+        if (dom.modal.scrollTop > 8) {
+          dom.modal.classList.add('scrolled');
+        } else {
+          dom.modal.classList.remove('scrolled');
+        }
+      }, { passive: true });
+    }
+
     // Escape key to close
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && dom.modalOverlay && !dom.modalOverlay.classList.contains('hidden')) {
         closeModal();
       }
     });
+
+    // Swipe down to dismiss on mobile
+    if (dom.modal) {
+      var touchStartY = 0;
+      var touchMoved = false;
+
+      dom.modal.addEventListener('touchstart', function (e) {
+        // Only track single-finger touches at the top of scrolled content
+        if (e.touches.length === 1 && dom.modal.scrollTop <= 0) {
+          touchStartY = e.touches[0].clientY;
+          touchMoved = false;
+        }
+      }, { passive: true });
+
+      dom.modal.addEventListener('touchmove', function (e) {
+        if (touchStartY === 0) return;
+        var deltaY = e.touches[0].clientY - touchStartY;
+        // Only consider it a swipe if moving downward
+        if (deltaY > 10) {
+          touchMoved = true;
+          // Apply drag resistance (visual feedback)
+          var resistance = Math.min(deltaY * 0.4, 60);
+          dom.modal.style.transform = 'translateY(' + resistance + 'px)';
+          dom.modal.style.transition = 'none';
+        }
+      }, { passive: true });
+
+      dom.modal.addEventListener('touchend', function () {
+        if (touchMoved && touchStartY > 0) {
+          var deltaY = 0;
+          // Recalculate from the current transform
+          var currentTransform = dom.modal.style.transform;
+          var match = currentTransform && currentTransform.match(/translateY\((\d+)px\)/);
+          if (match) deltaY = parseInt(match[1], 10);
+
+          // Reset transform
+          dom.modal.style.transform = '';
+          dom.modal.style.transition = '';
+
+          if (deltaY > 40) {
+            closeModal();
+          }
+        }
+        touchStartY = 0;
+        touchMoved = false;
+      });
+    }
   }
 
   /* ==========================================================
@@ -405,11 +480,13 @@
       masonry: $('#history-masonry'),
       filterBtns: document.querySelectorAll('.history-filter-btn'),
       modalOverlay: $('#history-modal-overlay'),
+      modal: document.querySelector('.history-modal'),
       modalTitle: $('#history-modal-title'),
       modalTypeBadge: $('#history-modal-type-badge'),
       modalMeta: $('#history-modal-meta'),
       modalBody: $('#history-modal-body'),
       modalClose: $('#history-modal-close'),
+      modalCloseBottom: $('#history-modal-close-bottom'),
     };
 
     STATE.loaded = true;

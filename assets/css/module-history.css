@@ -246,6 +246,27 @@
   padding: var(--space-6) var(--space-6) var(--space-4);
   border-bottom: 1px solid rgba(219, 180, 44, 0.12);
   gap: var(--space-4);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: linear-gradient(180deg, #1e1b14 0%, #1e1b14 85%, transparent 100%);
+  /* Reserve space for the shadow pseudo-element */
+}
+/* Scroll shadow: appears below sticky header when content is scrolled */
+.history-modal-header::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.history-modal.scrolled .history-modal-header::after {
+  opacity: 1;
 }
 .history-modal-header-info {
   flex: 1;
@@ -280,17 +301,25 @@
 .history-modal-close {
   flex-shrink: 0;
   color: var(--dw-text-muted);
-  padding: var(--space-1);
-  border-radius: var(--radius-sm);
-  transition: color var(--transition-fast), background var(--transition-fast);
-  background: none;
-  border: none;
+  padding: var(--space-2);
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+  background: rgba(219, 180, 44, 0.06);
+  border: 1px solid rgba(219, 180, 44, 0.12);
   cursor: pointer;
   line-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .history-modal-close:hover {
   color: var(--dw-text);
-  background: rgba(219, 180, 44, 0.1);
+  background: rgba(219, 180, 44, 0.18);
+  border-color: rgba(219, 180, 44, 0.35);
+  transform: scale(1.08);
+}
+.history-modal-close:active {
+  transform: scale(0.95);
 }
 
 /* ── Modal Meta ── */
@@ -331,6 +360,39 @@
   color: var(--dw-text);
   line-height: 1.9;
   font-size: 0.95rem;
+}
+
+/* ── Modal Footer (bottom close bar) ── */
+.history-modal-footer {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  border-top: 1px solid rgba(219, 180, 44, 0.08);
+}
+.history-modal-close-bottom {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-8);
+  font-size: 0.9rem;
+  font-family: 'Noto Serif SC', Georgia, serif;
+  font-weight: 600;
+  color: var(--dw-gold-300);
+  background: rgba(219, 180, 44, 0.08);
+  border: 1px solid rgba(219, 180, 44, 0.2);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.history-modal-close-bottom:hover {
+  background: rgba(219, 180, 44, 0.18);
+  border-color: rgba(219, 180, 44, 0.4);
+  color: var(--dw-gold-200);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+.history-modal-close-bottom:active {
+  transform: translateY(0) scale(0.97);
 }
 
 /* ============================================================
