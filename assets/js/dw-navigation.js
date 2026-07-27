@@ -72,20 +72,30 @@
     if (window.JaterMod && window.JaterMod.setModuleConfigs) {
       window.JaterMod.setModuleConfigs(STATE.modules);
     }
-    // Restore last active module from localStorage
-    var savedId = loadSavedModule(STATE.modules);
-    STATE.activeModule = savedId || 'grounded';
+
+    // Save the original URL hash before activate overwrites it
+    var initialHash = window.location.hash.replace('#', '');
+
+    // Determine target module: URL hash > localStorage > default
+    var targetId = null;
+    if (initialHash && window.JaterMod.isRegistered(initialHash)) {
+      targetId = initialHash;
+    } else {
+      var savedId = loadSavedModule(STATE.modules);
+      targetId = (savedId && window.JaterMod.isRegistered(savedId)) ? savedId : 'grounded';
+    }
 
     // Resolve active index
-    var idx = STATE.modules.findIndex(function (m) { return m.id === STATE.activeModule; });
+    var idx = STATE.modules.findIndex(function (m) { return m.id === targetId; });
     STATE.activeIndex = idx >= 0 ? idx : 0;
     STATE.activeModule = STATE.modules[STATE.activeIndex] ? STATE.modules[STATE.activeIndex].id : 'grounded';
+
     renderAll();
     render();
-    // Activate default module via registry (modules are already registered by now)
-    if (window.JaterMod.isRegistered(STATE.activeModule)) {
-      window.JaterMod.activate(STATE.activeModule);
-    }
+
+    // Activate target module via registry
+    window.JaterMod.activate(STATE.activeModule);
+
     // Save current module on initial load so refreshes remember it
     saveActiveModule(STATE.activeModule);
   }
@@ -205,6 +215,15 @@
   /* ==========================================================
      Module Navigation — delegates to JaterMod registry
      ========================================================== */
+  function scrollToActiveCard() {
+    // Only on mobile where cards are in horizontal scroll
+    if (window.innerWidth > 639) return;
+    var activeCard = cards[STATE.activeIndex];
+    if (activeCard && discRing) {
+      activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }
+
   function goToModule(moduleId) {
     if (moduleId === STATE.activeModule) return;
     var idx = STATE.modules.findIndex(function (m) { return m.id === moduleId; });
@@ -214,6 +233,7 @@
     render();
     window.JaterMod.activate(moduleId);
     saveActiveModule(moduleId);
+    scrollToActiveCard();
   }
 
   function goTo(index) {
@@ -329,12 +349,32 @@
      ========================================================== */
   async function init() {
     await loadModuleConfig();
+
+    // Scroll to active card on initial load (mobile)
+    scrollToActiveCard();
+
     bindEvents();
-    // Delegate hash check to registry (after all modules registered)
-    if (window.JaterMod) {
-      window.JaterMod.checkInitialHash();
-    }
   }
+
+  /* ==========================================================
+     bfcache / pageshow — re-sync after back/forward navigation
+     ========================================================== */
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted) {
+      // Page restored from bfcache, re-sync card state and content
+      var savedId = loadSavedModule(STATE.modules);
+      if (savedId && savedId !== STATE.activeModule && window.JaterMod && window.JaterMod.isRegistered(savedId)) {
+        var idx = STATE.modules.findIndex(function (m) { return m.id === savedId; });
+        if (idx >= 0) {
+          STATE.activeModule = savedId;
+          STATE.activeIndex = idx;
+          render();
+          window.JaterMod.activate(savedId);
+          scrollToActiveCard();
+        }
+      }
+    }
+  });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
