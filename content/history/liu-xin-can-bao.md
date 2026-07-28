@@ -1,7 +1,7 @@
 ---
 id: liu-xin-can-bao
 title: 刘信：残暴无能的宗室
-type: passage
+type: reflection
 date: 2026-07-28
 tags: [五代十国, 后汉, 刘信, 刘知远, 宗室, 忠武镇]
 ---
