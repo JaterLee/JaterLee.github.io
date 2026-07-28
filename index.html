@@ -375,7 +375,6 @@
         </div>
         <div class="marketing-empty hidden" id="marketing-empty">
           <div class="marketing-placeholder">
-            <!-- Decorative header -->
             <div class="marketing-placeholder-icon">
               <svg viewBox="0 0 80 80" width="80" height="80" aria-hidden="true">
                 <rect x="10" y="8" width="48" height="64" rx="3" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
@@ -392,28 +391,32 @@
             <h3 class="marketing-placeholder-title">读书笔记 · 即将上线</h3>
             <p class="marketing-placeholder-desc">阅读《营销管理》，记录思考与洞见</p>
 
-            <!-- Preview card ghost -->
-            <div class="marketing-preview-card" aria-hidden="true">
-              <div class="marketing-preview-badge">📝 笔记</div>
-              <div class="marketing-preview-title">什么是市场营销？</div>
-              <div class="marketing-preview-chapter">📂 第 1 章 · 定义营销新现实</div>
-              <div class="marketing-preview-excerpt">
-                市场营销是通过为顾客创造价值来获取价值回报的过程...
+            <!-- Skeleton masonry cards -->
+            <div class="marketing-skeleton-masonry" aria-hidden="true">
+              <div class="marketing-skeleton-card">
+                <div class="marketing-skeleton-badge"></div>
+                <div class="marketing-skeleton-line w-70"></div>
+                <div class="marketing-skeleton-line w-40 short"></div>
+                <div class="marketing-skeleton-line w-90"></div>
+                <div class="marketing-skeleton-line w-85"></div>
+                <div class="marketing-skeleton-line w-50"></div>
               </div>
-              <div class="marketing-preview-tags">
-                <span class="marketing-preview-tag">#核心概念</span>
-                <span class="marketing-preview-tag">#第1章</span>
+              <div class="marketing-skeleton-card">
+                <div class="marketing-skeleton-badge"></div>
+                <div class="marketing-skeleton-line w-60"></div>
+                <div class="marketing-skeleton-line w-45 short"></div>
+                <div class="marketing-skeleton-line w-95"></div>
+                <div class="marketing-skeleton-line w-80"></div>
+                <div class="marketing-skeleton-line w-65"></div>
+                <div class="marketing-skeleton-line w-40"></div>
               </div>
-              <div class="marketing-preview-footer">
-                <span>2026-07-26</span>
-                <span class="marketing-preview-detail">阅读全文 →</span>
+              <div class="marketing-skeleton-card">
+                <div class="marketing-skeleton-badge"></div>
+                <div class="marketing-skeleton-line w-55"></div>
+                <div class="marketing-skeleton-line w-90"></div>
+                <div class="marketing-skeleton-line w-75"></div>
+                <div class="marketing-skeleton-line w-50"></div>
               </div>
-            </div>
-
-            <!-- Setup hint -->
-            <div class="marketing-placeholder-hint">
-              <p>在 <code>content/marketing/</code> 中添加 <code>.md</code> 文件</p>
-              <p>运行 <code>node scripts/sync-marketing.js</code> 生成数据</p>
             </div>
           </div>
         </div>

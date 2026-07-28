@@ -209,75 +209,62 @@
   line-height: 1.6;
 }
 
-/* Preview Ghost Card — shows what a note looks like */
-.marketing-preview-card {
+/* Skeleton Masonry — realistic ghost cards in waterfall layout */
+.marketing-skeleton-masonry {
+  column-count: 3;
+  column-gap: var(--space-6);
+  max-width: 56rem;
+  margin: var(--space-6) auto 0;
   text-align: left;
-  background: linear-gradient(135deg, #1e1e1e 0%, #262626 100%);
-  border: 1px solid rgba(138, 138, 138, 0.12);
-  border-left: 3px solid #6b6b6b;
-  border-radius: var(--radius-md);
-  padding: var(--space-5);
-  margin-bottom: var(--space-6);
-  opacity: 0.55;
-  filter: grayscale(0.3);
   pointer-events: none;
   user-select: none;
 }
-.marketing-preview-badge {
+.marketing-skeleton-card {
+  break-inside: avoid;
+  margin-bottom: var(--space-6);
+  background: rgba(138, 138, 138, 0.04);
+  border: 1px solid rgba(138, 138, 138, 0.08);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+}
+/* Natural angle variation */
+.marketing-skeleton-card:nth-child(1) { transform: rotate(-0.5deg); }
+.marketing-skeleton-card:nth-child(2) { transform: rotate(0.3deg); }
+.marketing-skeleton-card:nth-child(3) { transform: rotate(-0.2deg); }
+.marketing-skeleton-badge {
   display: inline-block;
-  font-size: 0.65rem;
-  font-weight: 600;
-  padding: 2px 10px;
-  border-radius: var(--radius-full);
-  margin-bottom: var(--space-2);
-  background: rgba(138, 138, 138, 0.15);
-  color: #b0b0b0;
-}
-.marketing-preview-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--dw-text);
-  margin: 0 0 var(--space-2);
-  opacity: 0.8;
-}
-.marketing-preview-chapter {
-  font-size: 0.75rem;
-  color: #9a9a9a;
-  margin-bottom: var(--space-2);
-  font-style: italic;
-}
-.marketing-preview-excerpt {
-  font-size: 0.85rem;
-  color: var(--dw-text-muted);
-  line-height: 1.7;
-  margin-bottom: var(--space-4);
-}
-.marketing-preview-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1);
-  margin-bottom: var(--space-3);
-}
-.marketing-preview-tag {
-  font-size: 0.65rem;
-  padding: 1px 8px;
+  width: 52px;
+  height: 18px;
   border-radius: var(--radius-full);
   background: rgba(138, 138, 138, 0.08);
-  border: 1px solid rgba(138, 138, 138, 0.1);
-  color: #b0b0b0;
+  margin-bottom: var(--space-3);
 }
-.marketing-preview-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.7rem;
-  color: var(--dw-text-muted);
-  padding-top: var(--space-3);
-  border-top: 1px solid rgba(138, 138, 138, 0.08);
+.marketing-skeleton-line {
+  height: 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(138, 138, 138, 0.06);
+  margin-bottom: var(--space-2);
+  animation: skeleton-shimmer 3s ease-in-out infinite;
 }
-.marketing-preview-detail {
-  color: #b0b0b0;
-  font-size: 0.75rem;
+.marketing-skeleton-line.short {
+  margin-bottom: var(--space-4);
+}
+.marketing-skeleton-line.w-40 { width: 40%; }
+.marketing-skeleton-line.w-45 { width: 45%; }
+.marketing-skeleton-line.w-50 { width: 50%; }
+.marketing-skeleton-line.w-55 { width: 55%; }
+.marketing-skeleton-line.w-60 { width: 60%; }
+.marketing-skeleton-line.w-65 { width: 65%; }
+.marketing-skeleton-line.w-70 { width: 70%; }
+.marketing-skeleton-line.w-75 { width: 75%; }
+.marketing-skeleton-line.w-80 { width: 80%; }
+.marketing-skeleton-line.w-85 { width: 85%; }
+.marketing-skeleton-line.w-90 { width: 90%; }
+.marketing-skeleton-line.w-95 { width: 95%; }
+
+@keyframes skeleton-shimmer {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
 }
 
 /* Setup hint card */
@@ -302,6 +289,13 @@
   background: rgba(138, 138, 138, 0.12);
   border-radius: var(--radius-sm);
   color: #b0b0b0;
+}
+
+@media (max-width: 640px) {
+  .marketing-skeleton-masonry {
+    column-count: 1;
+    column-gap: 0;
+  }
 }
 
 /* ============================================================
