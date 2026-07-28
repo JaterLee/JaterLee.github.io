@@ -156,7 +156,42 @@
 /* ============================================================
    Entry Detail Panel (right)
    ============================================================ */
-.life-entry-panel {
+
+/* ── Entry Navigation (prev/next arrows) ── */
+.life-entry-nav {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+.life-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(217, 119, 6, 0.08);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  color: #d97706;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 0;
+  line-height: 0;
+}
+.life-nav-btn:hover {
+  background: rgba(217, 119, 6, 0.18);
+  border-color: rgba(217, 119, 6, 0.4);
+  color: #fbbf24;
+  transform: scale(1.1);
+}
+.life-nav-btn:active {
+  transform: scale(0.95);
+}
+.life-nav-spacer {
+  flex: 1;
+}
+
+/* ── Entry Detail Panel ── */
   flex: 1;
   min-width: 0;
   background: var(--dw-bg-card);

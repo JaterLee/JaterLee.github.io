@@ -323,6 +323,16 @@
 
     if (dom.entryPanel) dom.entryPanel.classList.remove('hidden');
 
+    // Update prev/next button states
+    var sortedDates = STATE.entries.map(function (e) { return e.date; }).filter(Boolean).sort();
+    var idx = sortedDates.indexOf(dateStr);
+    if (dom.entryPrev) {
+      dom.entryPrev.style.visibility = (idx > 0) ? '' : 'hidden';
+    }
+    if (dom.entryNext) {
+      dom.entryNext.style.visibility = (idx >= 0 && idx < sortedDates.length - 1) ? '' : 'hidden';
+    }
+
     // Date
     if (dom.entryDate) dom.entryDate.textContent = '📅 ' + formatDate(entry.date);
 
@@ -379,12 +389,35 @@
   }
 
   /* ==========================================================
+     Entry Navigation
+     ========================================================== */
+  function getSortedDates() {
+    return STATE.entries.map(function (e) { return e.date; }).filter(Boolean).sort();
+  }
+
+  function goPrevEntry() {
+    if (!STATE.selectedDate) return;
+    var dates = getSortedDates();
+    var idx = dates.indexOf(STATE.selectedDate);
+    if (idx > 0) selectDate(dates[idx - 1]);
+  }
+
+  function goNextEntry() {
+    if (!STATE.selectedDate) return;
+    var dates = getSortedDates();
+    var idx = dates.indexOf(STATE.selectedDate);
+    if (idx >= 0 && idx < dates.length - 1) selectDate(dates[idx + 1]);
+  }
+
+  /* ==========================================================
      Event Bindings
      ========================================================== */
   function bindEvents() {
     if (dom.btnPrev) dom.btnPrev.addEventListener('click', goPrevMonth);
     if (dom.btnNext) dom.btnNext.addEventListener('click', goNextMonth);
     if (dom.btnToday) dom.btnToday.addEventListener('click', goToday);
+    if (dom.entryPrev) dom.entryPrev.addEventListener('click', goPrevEntry);
+    if (dom.entryNext) dom.entryNext.addEventListener('click', goNextEntry);
   }
 
   /* ==========================================================
@@ -407,6 +440,8 @@
       entryTitle: $('#life-entry-title'),
       entryTags: $('#life-entry-tags'),
       entryBody: $('#life-entry-body'),
+      entryPrev: $('#life-entry-prev'),
+      entryNext: $('#life-entry-next'),
     };
 
     STATE.loaded = true;
