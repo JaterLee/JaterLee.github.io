@@ -283,6 +283,22 @@
      Detail Modal
      ========================================================== */
 
+  function getNoteIndex(noteId) {
+    return STATE.notes.findIndex(function (n) { return n.id === noteId; });
+  }
+
+  function navigatePrev() {
+    if (!STATE.activeNoteId) return;
+    var idx = getNoteIndex(STATE.activeNoteId);
+    if (idx > 0) openModal(STATE.notes[idx - 1].id);
+  }
+
+  function navigateNext() {
+    if (!STATE.activeNoteId) return;
+    var idx = getNoteIndex(STATE.activeNoteId);
+    if (idx >= 0 && idx < STATE.notes.length - 1) openModal(STATE.notes[idx + 1].id);
+  }
+
   function openModal(noteId) {
     var note = STATE.notes.find(function (n) { return n.id === noteId; });
     if (!note) return;
@@ -393,6 +409,14 @@
       dom.modalCloseBottom.addEventListener('click', closeModal);
     }
 
+    // Modal prev/next buttons
+    if (dom.modalPrev) {
+      dom.modalPrev.addEventListener('click', navigatePrev);
+    }
+    if (dom.modalNext) {
+      dom.modalNext.addEventListener('click', navigateNext);
+    }
+
     // Overlay click to close
     if (dom.modalOverlay) {
       dom.modalOverlay.addEventListener('click', function (e) {
@@ -487,6 +511,8 @@
       modalBody: $('#history-modal-body'),
       modalClose: $('#history-modal-close'),
       modalCloseBottom: $('#history-modal-close-bottom'),
+      modalPrev: $('#history-modal-prev'),
+      modalNext: $('#history-modal-next'),
     };
 
     STATE.loaded = true;
