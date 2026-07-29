@@ -36,7 +36,7 @@
      ========================================================== */
   var STATE = {
     modules: [],
-    activeModule: 'grounded',
+    activeModule: 'history',
     activeIndex: 0,
   };
 
@@ -82,13 +82,13 @@
       targetId = initialHash;
     } else {
       var savedId = loadSavedModule(STATE.modules);
-      targetId = (savedId && window.JaterMod.isRegistered(savedId)) ? savedId : 'grounded';
+      targetId = (savedId && window.JaterMod.isRegistered(savedId)) ? savedId : 'history';
     }
 
     // Resolve active index
     var idx = STATE.modules.findIndex(function (m) { return m.id === targetId; });
     STATE.activeIndex = idx >= 0 ? idx : 0;
-    STATE.activeModule = STATE.modules[STATE.activeIndex] ? STATE.modules[STATE.activeIndex].id : 'grounded';
+    STATE.activeModule = STATE.modules[STATE.activeIndex] ? STATE.modules[STATE.activeIndex].id : 'history';
 
     renderAll();
     render();

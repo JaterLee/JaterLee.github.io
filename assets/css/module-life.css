@@ -184,6 +184,9 @@
   color: #fbbf24;
   transform: scale(1.1);
 }
+.life-nav-btn svg {
+  pointer-events: none;
+}
 .life-nav-btn:active {
   transform: scale(0.95);
 }
@@ -192,6 +195,7 @@
 }
 
 /* ── Entry Detail Panel ── */
+.life-entry-panel {
   flex: 1;
   min-width: 0;
   background: var(--dw-bg-card);

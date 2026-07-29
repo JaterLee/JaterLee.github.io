@@ -1,7 +1,7 @@
 ---
 id: shizhen-ziliao-xiaofei-jilu
 title: 湿疹自疗消费记录：炉甘石 vs 复方樟脑乳膏
-type: reflection
+type: diary
 date: 2026-07-29
 tags: [消费记录, OTC药品, 京东健康]
 ---

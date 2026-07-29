@@ -48,12 +48,16 @@
 }
 
 /* ============================================================
-   Masonry Waterfall Grid (CSS Columns)
+   Masonry Waterfall Grid (Flexbox Wrap — left-to-right flow)
    Desktop: 3 cols | Tablet: 2 cols | Mobile: 1 col
+   Cards flow left-to-right (→) then wrap to next row,
+   matching the data's newest-first sort order.
    ============================================================ */
 .history-masonry {
-  column-count: 3;
-  column-gap: var(--space-6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-6);
   padding: var(--space-6) var(--space-8);
   max-width: 72rem;
   margin: 0 auto;
@@ -62,7 +66,7 @@
 /* ── Base Card ── */
 .history-card {
   break-inside: avoid;
-  margin-bottom: var(--space-6);
+  flex: 0 0 calc((100% - var(--space-6) * 2) / 3);
   background: linear-gradient(135deg, #1e1a10 0%, #282218 100%);
   border: 1px solid rgba(219, 180, 44, 0.12);
   border-radius: var(--radius-md);
@@ -518,8 +522,11 @@
 /* Tablet: 2 columns */
 @media (max-width: 1024px) {
   .history-masonry {
-    column-count: 2;
+    gap: var(--space-4);
     padding: var(--space-4) var(--space-6);
+  }
+  .history-card {
+    flex: 0 0 calc((100% - var(--space-4)) / 2);
   }
   .history-filters {
     padding: var(--space-3) var(--space-6);
@@ -532,9 +539,11 @@
 /* Mobile: 1 column */
 @media (max-width: 640px) {
   .history-masonry {
-    column-count: 1;
+    gap: var(--space-3);
     padding: var(--space-3) var(--space-4);
-    column-gap: 0;
+  }
+  .history-card {
+    flex: 0 0 100%;
   }
   .history-filters {
     display: block;
