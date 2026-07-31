@@ -179,7 +179,8 @@
 /* ── Rainbow Border (like count >= 3) ── */
 .marketing-card-rainbow {
   position: relative;
-  border: 1px solid transparent;
+  z-index: 0;
+  border: 2px solid transparent;
   background-clip: padding-box;
 }
 .marketing-card-rainbow::before {
@@ -195,6 +196,14 @@
   animation: marketing-rainbow-spin 4s linear infinite;
   opacity: 0;
   transition: opacity 0.4s ease;
+}
+.marketing-card-rainbow::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  z-index: -1;
+  border-radius: inherit;
+  background: #262626;
 }
 .marketing-card-rainbow:hover::before {
   opacity: 0.75;
