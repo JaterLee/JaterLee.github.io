@@ -17,6 +17,8 @@
     activeFilter: 'all',
     activeNoteId: null,
     loaded: false,
+    perPage: 12,
+    renderedCount: 0,
   };
 
   var dom = {};
@@ -132,14 +134,10 @@
     return STATE.notes.filter(function (n) { return n.type === STATE.activeFilter; });
   }
 
-  function renderMasonry() {
-    if (!dom.masonry) return;
-    var filtered = getFilteredNotes();
-    if (!filtered.length) {
-      dom.masonry.innerHTML = '<div class="marketing-empty-filter"><p>没有符合条件的笔记</p></div>';
-      return;
-    }
-    dom.masonry.innerHTML = filtered.map(function (note) {
+  function renderCards(container, notes, startIdx) {
+    if (!container) return;
+
+    var html = notes.map(function (note) {
       var excerpt = note.excerpt || '';
       excerpt = excerpt.replace(/[#*>`\[\]\(\)]/g, '').trim();
       if (!excerpt && note.body) {
@@ -168,12 +166,68 @@
         '</div>' +
       '</article>';
     }).join('');
-    dom.masonry.querySelectorAll('.marketing-card').forEach(function (card) {
+
+    if (startIdx === 0) {
+      container.innerHTML = html;
+    } else {
+      var existingBtn = container.querySelector('.marketing-load-more');
+      if (existingBtn) existingBtn.remove();
+      container.insertAdjacentHTML('beforeend', html);
+    }
+
+    container.querySelectorAll('.marketing-card').forEach(function (card) {
+      if (card.dataset.bound === '1') return;
+      card.dataset.bound = '1';
       card.addEventListener('click', function () { var id = card.dataset.noteId; if (id) openModal(id); });
       card.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); var id = card.dataset.noteId; if (id) openModal(id); }
       });
     });
+  }
+
+  function renderLoadMoreButton(container, remaining) {
+    if (!container || remaining <= 0) return;
+    var existingBtn = container.querySelector('.marketing-load-more');
+    if (existingBtn) existingBtn.remove();
+    container.insertAdjacentHTML('beforeend',
+      '<div class="marketing-load-more-wrap"><button class="marketing-load-more" id="marketing-load-more">' +
+      '加载更多 <span class="marketing-load-more-count">（还有 ' + remaining + ' 篇）</span></button></div>'
+    );
+    var btn = $('#marketing-load-more');
+    if (btn) btn.addEventListener('click', loadMore);
+  }
+
+  function loadMore() {
+    var filtered = getFilteredNotes();
+    var start = STATE.renderedCount;
+    var end = Math.min(start + STATE.perPage, filtered.length);
+    var batch = filtered.slice(start, end);
+    if (!batch.length) return;
+    renderCards(dom.masonry, batch, start);
+    STATE.renderedCount = end;
+    var remaining = filtered.length - STATE.renderedCount;
+    renderLoadMoreButton(dom.masonry, remaining);
+  }
+
+  function renderMasonry() {
+    if (!dom.masonry) return;
+
+    var filtered = getFilteredNotes();
+
+    if (!filtered.length) {
+      dom.masonry.innerHTML = '<div class="marketing-empty-filter"><p>没有符合条件的笔记</p></div>';
+      STATE.renderedCount = 0;
+      return;
+    }
+
+    // First batch
+    var firstBatch = filtered.slice(0, STATE.perPage);
+    renderCards(dom.masonry, firstBatch, 0);
+    STATE.renderedCount = firstBatch.length;
+
+    // Load more button if needed
+    var remaining = filtered.length - STATE.renderedCount;
+    renderLoadMoreButton(dom.masonry, remaining);
   }
 
   function showModal() {

@@ -20,6 +20,8 @@
     activeFilter: 'all',
     activeNoteId: null,
     loaded: false,
+    perPage: 12,
+    renderedCount: 0,
   };
 
   /* ==========================================================
@@ -208,26 +210,17 @@
     return STATE.notes.filter(function (n) { return n.type === STATE.activeFilter; });
   }
 
-  function renderMasonry() {
-    if (!dom.masonry) return;
+  function renderCards(container, notes, startIdx) {
+    if (!container) return;
 
-    var filtered = getFilteredNotes();
-
-    if (!filtered.length) {
-      dom.masonry.innerHTML = '<div class="history-empty-filter"><p>没有符合条件的笔记</p></div>';
-      return;
-    }
-
-    dom.masonry.innerHTML = filtered.map(function (note) {
+    var html = notes.map(function (note) {
       var isPassage = note.type === 'passage';
       var typeLabel = isPassage ? '摘录' : '感悟';
       var typeClass = isPassage ? 'history-card-passage' : 'history-card-reflection';
 
-      // Clean excerpt for card display (strip remaining markdown chars)
       var excerpt = note.excerpt || '';
       excerpt = excerpt.replace(/[#*>`\[\]\(\)]/g, '').trim();
       if (!excerpt && note.body) {
-        // Fallback: generate from body
         excerpt = note.body.replace(/[#*>`\[\]\(\)]/g, '').replace(/\n+/g, ' ').trim().slice(0, 150);
         if (excerpt.length >= 150) excerpt += '...';
       }
@@ -262,13 +255,24 @@
       '</article>';
     }).join('');
 
-    // Bind card click → open modal
-    dom.masonry.querySelectorAll('.history-card').forEach(function (card) {
+    if (startIdx === 0) {
+      container.innerHTML = html;
+    } else {
+      // Remove the load-more button before appending
+      var existingBtn = container.querySelector('.history-load-more');
+      if (existingBtn) existingBtn.remove();
+      container.insertAdjacentHTML('beforeend', html);
+    }
+
+    // Bind click on all cards (re-bind for existing too to catch newly appended)
+    container.querySelectorAll('.history-card').forEach(function (card) {
+      // Skip already-bound cards
+      if (card.dataset.bound === '1') return;
+      card.dataset.bound = '1';
       card.addEventListener('click', function () {
         var id = card.dataset.noteId;
         if (id) openModal(id);
       });
-      // Keyboard: Enter/Space to open
       card.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
@@ -277,6 +281,58 @@
         }
       });
     });
+  }
+
+  function renderLoadMoreButton(container, remaining) {
+    if (!container || remaining <= 0) return;
+    // Remove any existing button
+    var existingBtn = container.querySelector('.history-load-more');
+    if (existingBtn) existingBtn.remove();
+    container.insertAdjacentHTML('beforeend',
+      '<div class="history-load-more-wrap"><button class="history-load-more" id="history-load-more">' +
+      '加载更多 <span class="history-load-more-count">（还有 ' + remaining + ' 篇）</span></button></div>'
+    );
+    var btn = $('#history-load-more');
+    if (btn) {
+      btn.addEventListener('click', loadMore);
+    }
+  }
+
+  function loadMore() {
+    var filtered = getFilteredNotes();
+    var start = STATE.renderedCount;
+    var end = Math.min(start + STATE.perPage, filtered.length);
+    var batch = filtered.slice(start, end);
+
+    if (!batch.length) return;
+
+    renderCards(dom.masonry, batch, start);
+    STATE.renderedCount = end;
+
+    // Show load-more again if there's still more
+    var remaining = filtered.length - STATE.renderedCount;
+    renderLoadMoreButton(dom.masonry, remaining);
+  }
+
+  function renderMasonry() {
+    if (!dom.masonry) return;
+
+    var filtered = getFilteredNotes();
+
+    if (!filtered.length) {
+      dom.masonry.innerHTML = '<div class="history-empty-filter"><p>没有符合条件的笔记</p></div>';
+      STATE.renderedCount = 0;
+      return;
+    }
+
+    // First batch
+    var firstBatch = filtered.slice(0, STATE.perPage);
+    renderCards(dom.masonry, firstBatch, 0);
+    STATE.renderedCount = firstBatch.length;
+
+    // Load more button if needed
+    var remaining = filtered.length - STATE.renderedCount;
+    renderLoadMoreButton(dom.masonry, remaining);
   }
 
   /* ==========================================================
