@@ -22,6 +22,8 @@
     loaded: false,
     perPage: 12,
     renderedCount: 0,
+    likes: {},
+    likeThreshold: 3,
   };
 
   /* ==========================================================
@@ -143,9 +145,59 @@
   }
 
   /* ==========================================================
+     Likes (localStorage)
+     ========================================================== */
+  var LIKES_KEY = 'history-likes';
+
+  function loadLikes() {
+    try {
+      var raw = localStorage.getItem(LIKES_KEY);
+      STATE.likes = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      STATE.likes = {};
+    }
+  }
+
+  function saveLikes() {
+    try {
+      localStorage.setItem(LIKES_KEY, JSON.stringify(STATE.likes));
+    } catch (e) { /* quota exceeded */ }
+  }
+
+  function getLikeCount(noteId) {
+    return STATE.likes[noteId] || 0;
+  }
+
+  function toggleLike(noteId) {
+    var current = STATE.likes[noteId] || 0;
+    STATE.likes[noteId] = current + 1;
+    saveLikes();
+    return STATE.likes[noteId];
+  }
+
+  function onLikeClick(e, card) {
+    e.stopPropagation();
+    var noteId = card.dataset.noteId;
+    if (!noteId) return;
+    var newCount = toggleLike(noteId);
+    updateLikeDisplay(card, newCount);
+  }
+
+  function updateLikeDisplay(card, count) {
+    var btn = card.querySelector('.history-like-btn');
+    if (btn) {
+      btn.innerHTML = count > 0
+        ? '<span class="history-like-heart liked">❤️</span><span class="history-like-count">' + count + '</span>'
+        : '<span class="history-like-heart">🤍</span>';
+    }
+    card.classList.toggle('history-card-rainbow', count >= STATE.likeThreshold);
+  }
+
+  /* ==========================================================
      Data Loading
      ========================================================== */
   async function loadNotes() {
+    loadLikes();
     try {
       var resp = await fetch('data/history-notes.json');
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
@@ -248,6 +300,9 @@
         '<p class="history-card-excerpt">' + escapeHtml(excerpt) + '</p>' +
         tagsHTML +
         '<div class="history-card-footer">' +
+          '<button class="history-like-btn" data-note-id="' + escapeHtml(note.id) + '">' +
+            '<span class="history-like-heart">🤍</span>' +
+          '</button>' +
           '<span class="history-card-date">' + formatDate(note.date) + '</span>' +
           footerSource +
           '<span class="history-card-detail-btn">阅读全文 →</span>' +
