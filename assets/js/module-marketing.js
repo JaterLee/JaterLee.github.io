@@ -19,6 +19,8 @@
     loaded: false,
     perPage: 12,
     renderedCount: 0,
+    likes: {},
+    likeThreshold: 3,
   };
 
   var dom = {};
@@ -81,7 +83,57 @@
       .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
   }
 
+  /* ==========================================================
+     Likes (localStorage)
+     ========================================================== */
+  var LIKES_KEY = 'marketing-likes';
+
+  function loadLikes() {
+    try {
+      var raw = localStorage.getItem(LIKES_KEY);
+      STATE.likes = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      STATE.likes = {};
+    }
+  }
+
+  function saveLikes() {
+    try {
+      localStorage.setItem(LIKES_KEY, JSON.stringify(STATE.likes));
+    } catch (e) { /* quota exceeded */ }
+  }
+
+  function getLikeCount(noteId) {
+    return STATE.likes[noteId] || 0;
+  }
+
+  function toggleLike(noteId) {
+    var current = STATE.likes[noteId] || 0;
+    STATE.likes[noteId] = current + 1;
+    saveLikes();
+    return STATE.likes[noteId];
+  }
+
+  function onLikeClick(e, card) {
+    e.stopPropagation();
+    var noteId = card.dataset.noteId;
+    if (!noteId) return;
+    var newCount = toggleLike(noteId);
+    updateLikeDisplay(card, newCount);
+  }
+
+  function updateLikeDisplay(card, count) {
+    var btn = card.querySelector('.marketing-like-btn');
+    if (btn) {
+      btn.innerHTML = count > 0
+        ? '<span class="marketing-like-heart liked">❤️</span><span class="marketing-like-count">' + count + '</span>'
+        : '<span class="marketing-like-heart">🤍</span>';
+    }
+    card.classList.toggle('marketing-card-rainbow', count >= STATE.likeThreshold);
+  }
+
   async function loadNotes() {
+    loadLikes();
     try {
       var resp = await fetch('data/marketing-notes.json');
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
@@ -161,6 +213,9 @@
         '<p class="marketing-card-excerpt">' + escapeHtml(excerpt) + '</p>' +
         tagsHTML +
         '<div class="marketing-card-footer">' +
+          '<button class="marketing-like-btn" data-note-id="' + escapeHtml(note.id) + '">' +
+            '<span class="marketing-like-heart">🤍</span>' +
+          '</button>' +
           '<span class="marketing-card-date">' + formatDate(note.date) + '</span>' +
           '<span class="marketing-card-detail-btn">阅读全文 →</span>' +
         '</div>' +
@@ -182,6 +237,21 @@
       card.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); var id = card.dataset.noteId; if (id) openModal(id); }
       });
+
+      // Like button
+      var likeBtn = card.querySelector('.marketing-like-btn');
+      if (likeBtn) {
+        likeBtn.addEventListener('click', function (e) {
+          onLikeClick(e, card);
+        });
+      }
+
+      // Restore like count from storage
+      var noteId = card.dataset.noteId;
+      if (noteId) {
+        var count = getLikeCount(noteId);
+        if (count > 0) updateLikeDisplay(card, count);
+      }
     });
   }
 

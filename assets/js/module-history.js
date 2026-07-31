@@ -335,6 +335,21 @@
           if (id) openModal(id);
         }
       });
+
+      // Like button
+      var likeBtn = card.querySelector('.history-like-btn');
+      if (likeBtn) {
+        likeBtn.addEventListener('click', function (e) {
+          onLikeClick(e, card);
+        });
+      }
+
+      // Restore like count from storage
+      var noteId = card.dataset.noteId;
+      if (noteId) {
+        var count = getLikeCount(noteId);
+        if (count > 0) updateLikeDisplay(card, count);
+      }
     });
   }
 
