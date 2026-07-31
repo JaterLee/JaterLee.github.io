@@ -3,6 +3,7 @@ id: fo-jiao-yu-ru-dao-hu-bu
 title: 佛教、道教与儒家的互补结构
 type: passage
 date: 2026-07-31
+source: 中国宗教史概述
 tags: [佛教, 道教, 儒学, 意识形态, 宗教]
 ---
 
