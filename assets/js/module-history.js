@@ -198,13 +198,18 @@
      ========================================================== */
   async function loadNotes() {
     loadLikes();
+    var FETCH_TIMEOUT = 15000; // 15s timeout for slow networks
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function () { controller.abort(); }, FETCH_TIMEOUT);
     try {
-      var resp = await fetch('data/history-notes.json');
+      var resp = await fetch('data/history-notes.json', { signal: controller.signal });
+      clearTimeout(timeoutId);
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       var data = await resp.json();
       STATE.notes = data.notes || [];
       renderAll();
     } catch (err) {
+      clearTimeout(timeoutId);
       console.warn('History module: failed to load history-notes.json', err.message);
       STATE.notes = [];
       renderAll();

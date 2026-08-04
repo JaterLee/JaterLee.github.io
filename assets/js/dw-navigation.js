@@ -93,6 +93,14 @@
     renderAll();
     render();
 
+    // Defer activation to ensure all remaining deferred scripts
+    // (module-history.js, module-life.js, etc.) have registered
+    // their modules. The fetch for modules.json may resolve while
+    // later scripts are still executing, causing activate() to be
+    // called before the target module is registered — leading to
+    // a permanent loading spinner.
+    await new Promise(function (resolve) { setTimeout(resolve, 0); });
+
     // Activate target module via registry
     window.JaterMod.activate(STATE.activeModule);
 

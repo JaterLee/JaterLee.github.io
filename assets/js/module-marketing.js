@@ -134,13 +134,18 @@
 
   async function loadNotes() {
     loadLikes();
+    var FETCH_TIMEOUT = 15000;
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function () { controller.abort(); }, FETCH_TIMEOUT);
     try {
-      var resp = await fetch('data/marketing-notes.json');
+      var resp = await fetch('data/marketing-notes.json', { signal: controller.signal });
+      clearTimeout(timeoutId);
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       var data = await resp.json();
       STATE.notes = data.notes || [];
       renderAll();
     } catch (err) {
+      clearTimeout(timeoutId);
       console.warn('Marketing module: failed to load', err.message);
       STATE.notes = [];
       renderAll();
