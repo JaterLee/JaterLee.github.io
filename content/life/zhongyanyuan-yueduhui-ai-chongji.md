@@ -1,7 +1,6 @@
 ---
 id: zhongyanyuan-yueduhui-ai-chongji
 title: 中研院悦读会：当每个人都感受到AI的冲击
-type: reflection
 date: 2026-08-12
 tags: [AI, 读书会, 社交, 行业冲击]
 ---
