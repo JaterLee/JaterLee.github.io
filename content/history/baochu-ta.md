@@ -3,6 +3,7 @@ id: baochu-ta
 title: 保俶塔：一座塔里的牵挂
 type: passage
 date: 2026-08-14
+source: 《十国春秋·吴越世家》
 tags: [吴越国, 钱俶, 保俶塔, 杭州]
 ---
 
