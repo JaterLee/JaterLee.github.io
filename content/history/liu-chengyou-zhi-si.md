@@ -3,7 +3,7 @@ id: liu-chengyou-zhi-si
 title: 刘承祐之死
 type: reflection
 date: 2026-07-28
-tags: [五代十国, 后汉, 刘承祐, 隐帝, 郭威]
+tags: [刘承祐, 后汉, 郭威]
 ---
 
 承祐死了。这位少年天子在发动政变诛杀重臣九天之后，就成功地做掉了自己的性命。

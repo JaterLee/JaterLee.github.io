@@ -3,7 +3,7 @@ id: wang-jun-jue-qi-yu-duo-luo
 title: 王峻：从伶人到权臣的自我毁灭
 type: reflection
 date: 2026-07-31
-tags: [后汉, 后周, 王峻, 刘知远, 郭威]
+tags: [刘知远, 后周, 后汉, 王峻, 郭威]
 ---
 
 王峻这一生，像一部跌宕起伏的励志剧——可惜高潮太短，坠落太快。

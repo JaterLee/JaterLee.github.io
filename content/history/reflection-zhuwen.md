@@ -3,7 +3,7 @@ id: reflection-zhuwen
 title: 读朱温有感
 type: reflection
 date: 2026-07-16
-tags: [读后感, 朱温, 忠诚]
+tags: [后梁, 朱温]
 ---
 
 读五代史，最令人感慨的是朱温这个人物。

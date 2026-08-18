@@ -3,7 +3,7 @@ id: guo-wei-jian-hou-zhou
 title: 郭威建立后周
 type: reflection
 date: 2026-07-28
-tags: [五代十国, 后周, 郭威, 广顺, 后汉]
+tags: [后周, 后汉, 广顺, 郭威]
 ---
 
 转过年的正月五日，李太后正式将后汉的国玺转交给郭威，郭威遂在崇元殿正式登基称帝。

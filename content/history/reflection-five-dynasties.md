@@ -3,7 +3,7 @@ id: reflection-five-dynasties
 title: 五代为何如此短命
 type: reflection
 date: 2026-07-18
-tags: [五代, 思考, 历史规律]
+tags: [制度]
 ---
 
 五代（907年—960年）五十三年间，更替了五个朝代、十四个皇帝。平均每个朝代仅存续十年左右，这在中国历史上绝无仅有。

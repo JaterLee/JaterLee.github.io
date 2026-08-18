@@ -3,7 +3,7 @@ id: eleven
 title: 十一
 type: reflection
 date: 2026-07-23
-tags: [后梁, 年代, 感悟]
+tags: [后梁]
 ---
 
 十一，一个简单的数字，落在五代十国的坐标上，便是公元九一一年。

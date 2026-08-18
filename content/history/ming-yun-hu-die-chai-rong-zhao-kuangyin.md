@@ -3,7 +3,7 @@ id: ming-yun-hu-die-chai-rong-zhao-kuangyin
 title: 蝴蝶效应：柴荣留下赵匡胤的那一天
 type: reflection
 date: 2026-07-31
-tags: [后周, 柴荣, 赵匡胤, 命运]
+tags: [后周, 柴荣, 赵匡胤]
 ---
 
 就在柴荣调入京城的同时，护卫皇城的禁卫亲军中有个小军官因功升职，即将调往滑州任副指挥使。
