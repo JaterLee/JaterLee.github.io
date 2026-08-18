@@ -18,6 +18,7 @@
   var STATE = {
     notes: [],
     activeFilter: 'all',
+    activeView: 'masonry',
     activeNoteId: null,
     loaded: false,
     perPage: 12,
@@ -251,15 +252,26 @@
     if (!STATE.notes.length) {
       if (dom.empty) dom.empty.classList.remove('hidden');
       if (dom.masonry) dom.masonry.innerHTML = '';
+      if (dom.timeline) dom.timeline.innerHTML = '';
       renderStats();
       return;
     }
 
     if (dom.empty) dom.empty.classList.add('hidden');
-    if (dom.masonry) dom.masonry.classList.remove('hidden');
 
     renderStats();
-    renderMasonry();
+    renderActiveView();
+  }
+
+  function renderActiveView() {
+    var isTimeline = STATE.activeView === 'timeline';
+    if (dom.masonry) dom.masonry.classList.toggle('hidden', isTimeline);
+    if (dom.timeline) dom.timeline.classList.toggle('hidden', !isTimeline);
+    if (isTimeline) {
+      renderTimeline();
+    } else {
+      renderMasonry();
+    }
   }
 
   function getFilteredNotes() {
@@ -411,6 +423,169 @@
   }
 
   /* ==========================================================
+     Timeline (时间轴)
+     ========================================================== */
+
+  // 政权 → 年代区间（按历史顺序排列）
+  var ERA = {
+    '唐末': { label: '唐末', range: '875–907' },
+    '后梁': { label: '后梁', range: '907–923' },
+    '后唐': { label: '后唐', range: '923–936' },
+    '后晋': { label: '后晋', range: '936–947' },
+    '后汉': { label: '后汉', range: '947–951' },
+    '后周': { label: '后周', range: '951–960' },
+    '北宋': { label: '北宋 · 统一', range: '960–979' },
+    '吴': { label: '吴（杨吴）', range: '902–937' },
+    '南唐': { label: '南唐', range: '937–975' },
+    '吴越': { label: '吴越', range: '907–978' },
+    '前蜀': { label: '前蜀', range: '907–925' },
+    '后蜀': { label: '后蜀', range: '934–965' },
+    '闽': { label: '闽', range: '909–945' },
+    '楚': { label: '楚（马楚）', range: '907–951' },
+    '南汉': { label: '南汉', range: '917–971' },
+    '南平': { label: '南平（荆南）', range: '924–963' },
+    '北汉': { label: '北汉', range: '951–979' },
+    '辽': { label: '辽（契丹）', range: '916–1125' },
+    '朝鲜半岛': { label: '朝鲜半岛', range: '892–936' },
+    '安南': { label: '安南', range: '939–968' },
+  };
+
+  var ERA_GROUPS = [
+    { id: 'main', name: '五代主线', eras: ['唐末', '后梁', '后唐', '后晋', '后汉', '后周', '北宋'] },
+    { id: 'shiguo', name: '十国', eras: ['吴', '南唐', '吴越', '前蜀', '后蜀', '闽', '楚', '南汉', '南平', '北汉'] },
+    { id: 'foreign', name: '辽与域外', eras: ['辽', '朝鲜半岛', '安南'] },
+    { id: 'other', name: '综合', eras: [] },
+  ];
+
+  function getDynastyTags(note) {
+    var out = [];
+    (note.tags || []).forEach(function (t) {
+      if (ERA[t]) out.push(t);
+    });
+    return out;
+  }
+
+  function primaryEra(note) {
+    var dyns = getDynastyTags(note);
+    return dyns.length ? dyns[0] : null;
+  }
+
+  function shortDate(dateStr) {
+    return dateStr && dateStr.length >= 10 ? dateStr.slice(5) : (dateStr || '');
+  }
+
+  function renderTimelineNote(note, primaryKey) {
+    var isPassage = note.type === 'passage';
+    var typeLabel = isPassage ? '摘录' : '感悟';
+    var typeClass = isPassage ? 'badge-passage' : 'badge-reflection';
+
+    var dynTags = getDynastyTags(note).filter(function (t) { return t !== primaryKey; });
+    var extraChips = '';
+    if (dynTags.length) {
+      extraChips = '<span class="history-timeline-note-eras">' +
+        dynTags.map(function (t) {
+          return '<span class="history-timeline-note-era-chip">' + t + '</span>';
+        }).join('') +
+      '</span>';
+    }
+
+    return '<button class="history-timeline-note" data-note-id="' + escapeHtml(note.id) + '">' +
+      '<span class="history-timeline-note-date">' + shortDate(note.date) + '</span>' +
+      '<span class="history-timeline-note-title">' + escapeHtml(note.title) + '</span>' +
+      extraChips +
+      '<span class="history-timeline-note-badge ' + typeClass + '">' + typeLabel + '</span>' +
+    '</button>';
+  }
+
+  function renderTimeline() {
+    if (!dom.timeline) return;
+
+    var filtered = getFilteredNotes();
+    if (!filtered.length) {
+      dom.timeline.innerHTML = '<div class="history-timeline-empty">没有符合条件的笔记</div>';
+      return;
+    }
+
+    // 按 primary era 分桶
+    var buckets = {};
+    filtered.forEach(function (n) {
+      var era = primaryEra(n);
+      var key = era || '__other__';
+      (buckets[key] = buckets[key] || []).push(n);
+    });
+
+    var html = '';
+
+    ERA_GROUPS.forEach(function (group) {
+      var eraSections = [];
+      group.eras.forEach(function (eraKey) {
+        var notes = buckets[eraKey] || [];
+        if (notes.length) {
+          notes.sort(function (a, b) { return (a.date || '').localeCompare(b.date || ''); });
+          eraSections.push({ eraKey: eraKey, notes: notes });
+        }
+      });
+
+      var otherNotes = [];
+      if (group.id === 'other') {
+        otherNotes = (buckets['__other__'] || []).sort(function (a, b) {
+          return (a.date || '').localeCompare(b.date || '');
+        });
+      }
+
+      if (!eraSections.length && !otherNotes.length) return;
+
+      html += '<section class="history-timeline-group" data-group="' + group.id + '">';
+      html += '<h3 class="history-timeline-group-title">' + group.name + '</h3>';
+      html += '<div class="history-timeline-track">';
+
+      eraSections.forEach(function (sec) {
+        var era = ERA[sec.eraKey];
+        html += '<div class="history-timeline-era">';
+        html += '<span class="history-timeline-era-dot"></span>';
+        html += '<div class="history-timeline-era-header">';
+        html += '<span class="history-timeline-era-name">' + era.label + '</span>';
+        html += '<span class="history-timeline-era-range">' + era.range + '</span>';
+        html += '<span class="history-timeline-era-count">' + sec.notes.length + ' 篇</span>';
+        html += '</div>';
+        html += '<div class="history-timeline-notes">';
+        sec.notes.forEach(function (n) {
+          html += renderTimelineNote(n, sec.eraKey);
+        });
+        html += '</div>';
+        html += '</div>';
+      });
+
+      if (otherNotes.length) {
+        html += '<div class="history-timeline-era">';
+        html += '<span class="history-timeline-era-dot"></span>';
+        html += '<div class="history-timeline-era-header">';
+        html += '<span class="history-timeline-era-name">跨代 · 通论</span>';
+        html += '<span class="history-timeline-era-count">' + otherNotes.length + ' 篇</span>';
+        html += '</div>';
+        html += '<div class="history-timeline-notes">';
+        otherNotes.forEach(function (n) {
+          html += renderTimelineNote(n, null);
+        });
+        html += '</div>';
+        html += '</div>';
+      }
+
+      html += '</div>';
+      html += '</section>';
+    });
+
+    dom.timeline.innerHTML = html;
+
+    dom.timeline.querySelectorAll('.history-timeline-note').forEach(function (row) {
+      row.addEventListener('click', function () {
+        var id = row.dataset.noteId;
+        if (id) openModal(id);
+      });
+    });
+  }
+
+  /* ==========================================================
      Detail Modal
      ========================================================== */
 
@@ -525,7 +700,23 @@
           btn.classList.add('active');
           btn.setAttribute('aria-selected', 'true');
           STATE.activeFilter = btn.dataset.filter;
-          renderMasonry();
+          renderActiveView();
+        });
+      });
+    }
+
+    // View toggle (卡片 / 时间轴)
+    if (dom.viewBtns && dom.viewBtns.length) {
+      dom.viewBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          dom.viewBtns.forEach(function (b) {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          STATE.activeView = btn.dataset.view;
+          renderActiveView();
         });
       });
     }
@@ -633,7 +824,9 @@
       loading: $('#history-loading'),
       empty: $('#history-empty'),
       masonry: $('#history-masonry'),
+      timeline: $('#history-timeline'),
       filterBtns: document.querySelectorAll('.history-filter-btn'),
+      viewBtns: document.querySelectorAll('.history-view-btn'),
       modalOverlay: $('#history-modal-overlay'),
       modal: document.querySelector('.history-modal'),
       modalTitle: $('#history-modal-title'),
