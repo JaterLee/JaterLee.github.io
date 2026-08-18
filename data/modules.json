@@ -42,7 +42,8 @@
       "subtitle": "Five Dynasties",
       "icon": "📜",
       "primary_color": "#dbb42c",
-      "theme": "chinese"
+      "theme": "chinese",
+      "status": "finished"
     },
     {
       "id": "wow",

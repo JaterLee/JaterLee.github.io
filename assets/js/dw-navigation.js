@@ -142,6 +142,9 @@
           '<div class="dw-stack-card-text">' +
             '<span class="dw-stack-card-name">' + mod.name + '</span>' +
             '<span class="dw-stack-card-subtitle">' + mod.subtitle + '</span>' +
+            (mod.status === 'finished'
+              ? '<span class="dw-stack-card-badge">✓ 已完结</span>'
+              : '') +
           '</div>' +
         '</div>';
 

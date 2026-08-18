@@ -204,6 +204,24 @@
   transition: color 0.4s ease;
 }
 
+/* ── 已完结 角标 ── */
+.dw-stack-card-badge {
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: 3px;
+  padding: 1px 7px;
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  color: #fff;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  box-shadow: 0 1px 5px rgba(192, 57, 43, 0.6);
+  white-space: nowrap;
+}
+
 /* ── Active Card (front of stack, full opacity) ── */
 .dw-stack-card.dw-card-front {
   z-index: 10;
