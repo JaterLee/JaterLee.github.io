@@ -63,6 +63,13 @@
   margin: 0 auto;
 }
 
+/* 视图切换时真正隐藏容器：style.css 的 .hidden 加载在前，会被这里的
+   display:flex 覆盖，需用更高的（双类）优先级强制 display:none */
+.history-masonry.hidden,
+.history-timeline.hidden {
+  display: none;
+}
+
 /* ── Base Card ── */
 .history-card {
   break-inside: avoid;
