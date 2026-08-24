@@ -294,6 +294,14 @@
     0 0 30px rgba(138, 138, 138, 0.25),
     0 8px 25px rgba(0, 0, 0, 0.4);
 }
+.dw-stack-card[data-module="pokong"].dw-card-front .dw-stack-card-inner {
+  background: #2a1f4d;
+  border-color: #7c5cf6;
+  box-shadow:
+    0 0 0 8px rgba(124, 92, 246, 0.14),
+    0 0 30px rgba(124, 92, 246, 0.32),
+    0 8px 25px rgba(0, 0, 0, 0.4);
+}
 
 /* ── Side Cards (behind, smaller, reduced opacity) ── */
 .dw-stack-card.dw-card-side {

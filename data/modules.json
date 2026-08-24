@@ -83,6 +83,14 @@
       "icon": "📖",
       "primary_color": "#8a8a8a",
       "theme": "marketing"
+    },
+    {
+      "id": "pokong",
+      "name": "破空",
+      "subtitle": "春秋异客传",
+      "icon": "⚡",
+      "primary_color": "#7c5cf6",
+      "theme": "pokong"
     }
   ]
 }
