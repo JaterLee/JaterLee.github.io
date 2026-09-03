@@ -92,6 +92,14 @@
       "primary_color": "#7c5cf6",
       "theme": "pokong",
       "status": "finished"
+    },
+    {
+      "id": "qin-ershi",
+      "name": "秦二世必须死",
+      "subtitle": "大秦",
+      "icon": "👑",
+      "primary_color": "#b87333",
+      "theme": "qin-ershi"
     }
   ]
 }

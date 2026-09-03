@@ -1,0 +1,729 @@
+/* ============================================================
+   Module: 秦二世必须死
+   历史架空 · 大秦青铜风：肃杀、苍劲、古典质感
+   章节卡片瀑布流 + 详情弹窗 + markdown 正文排版
+   ============================================================ */
+
+/* ── Module Header Accent ── */
+.module-header.qin-ershi-header {
+  background: linear-gradient(135deg, rgba(184, 115, 51, 0.15) 0%, rgba(184, 115, 51, 0.03) 100%);
+}
+.module-header.qin-ershi-header .module-header-title {
+  color: #e0a86e;
+}
+.module-header.qin-ershi-header .module-stat-number {
+  color: #e8bd90;
+}
+
+/* ── Type Filter Buttons ── */
+.qin-ershi-filters {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-8);
+  border-bottom: 1px solid rgba(184, 115, 51, 0.14);
+  flex-wrap: wrap;
+}
+.qin-ershi-filter-btn {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: inherit;
+  background: var(--dw-bg-card);
+  color: var(--dw-text-muted);
+  border: 1px solid rgba(184, 115, 51, 0.2);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+.qin-ershi-filter-btn:hover {
+  border-color: #b87333;
+  background: var(--dw-bg-card-hover);
+  color: var(--dw-text);
+}
+.qin-ershi-filter-btn.active {
+  background: #8f5a2a;
+  color: #f0ecff;
+  border-color: #b87333;
+  font-weight: 600;
+}
+
+/* ============================================================
+   Masonry Waterfall Grid (CSS Columns)
+   ============================================================ */
+.qin-ershi-masonry {
+  column-count: 3;
+  column-gap: var(--space-6);
+  padding: var(--space-6) var(--space-8);
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+/* ── Base Card ── */
+.qin-ershi-card {
+  break-inside: avoid;
+  margin-bottom: var(--space-6);
+  background: linear-gradient(135deg, #1a1410 0%, #201812 100%);
+  border: 1px solid rgba(184, 115, 51, 0.16);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+.qin-ershi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  border-color: rgba(184, 115, 51, 0.4);
+}
+.qin-ershi-card:focus-visible {
+  outline: 2px solid #b87333;
+  outline-offset: 2px;
+}
+
+/* ── Card Type Badge ── */
+.qin-ershi-type-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-2);
+}
+.qin-ershi-type-main {
+  background: rgba(184, 115, 51, 0.16);
+  color: #e8bd90;
+}
+.qin-ershi-type-side {
+  background: rgba(236, 72, 153, 0.16);
+  color: #f9a8d4;
+}
+.qin-ershi-type-setting {
+  background: rgba(52, 211, 153, 0.14);
+  color: #6ee7b7;
+}
+
+/* ── Card Title ── */
+.qin-ershi-card-title {
+  font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--dw-text);
+  margin: 0 0 var(--space-2);
+  line-height: 1.4;
+}
+
+/* ── Card Chapter ── */
+.qin-ershi-card-chapter {
+  font-size: 0.75rem;
+  color: #c9a06b;
+  margin-bottom: var(--space-2);
+  font-style: italic;
+}
+
+/* ── Card Excerpt ── */
+.qin-ershi-card-excerpt {
+  font-size: 0.85rem;
+  color: var(--dw-text-muted);
+  line-height: 1.7;
+  margin-bottom: var(--space-4);
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Card Tags ── */
+.qin-ershi-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+.qin-ershi-card-tag {
+  font-size: 0.65rem;
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(184, 115, 51, 0.1);
+  border: 1px solid rgba(184, 115, 51, 0.14);
+  color: #e8bd90;
+}
+
+/* ── Card Footer ── */
+.qin-ershi-card-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 0.7rem;
+  color: var(--dw-text-muted);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(184, 115, 51, 0.12);
+}
+.qin-ershi-card-date {
+  flex-shrink: 0;
+}
+.qin-ershi-card-detail-btn {
+  margin-left: auto;
+  font-size: 0.75rem;
+  font-family: inherit;
+  color: #e8bd90;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+  flex-shrink: 0;
+}
+.qin-ershi-card-detail-btn:hover {
+  background: rgba(184, 115, 51, 0.14);
+}
+
+/* ── Rainbow Border (like count >= 3) ── */
+.qin-ershi-card-rainbow {
+  position: relative;
+  z-index: 0;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.qin-ershi-card-rainbow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    #e0a86e, #60a5fa, #34d399, #fbbf24, #f472b6, #e0a86e
+  );
+  animation: qin-ershi-rainbow-spin 4s linear infinite;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.qin-ershi-card-rainbow::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  z-index: -1;
+  border-radius: inherit;
+  background: #201812;
+}
+.qin-ershi-card-rainbow:hover::before {
+  opacity: 0.75;
+}
+@keyframes qin-ershi-rainbow-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Like Button ── */
+.qin-ershi-like-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px 2px 4px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-family: inherit;
+  background: rgba(184, 115, 51, 0.08);
+  border: 1px solid rgba(184, 115, 51, 0.16);
+  color: var(--dw-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+  line-height: 1;
+  margin-right: auto;
+}
+.qin-ershi-like-btn:hover {
+  background: rgba(184, 115, 51, 0.2);
+  border-color: rgba(184, 115, 51, 0.42);
+  transform: scale(1.08);
+}
+.qin-ershi-like-btn:active {
+  transform: scale(0.9);
+}
+.qin-ershi-like-heart {
+  font-size: 0.9rem;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+.qin-ershi-like-heart.liked {
+  animation: qin-ershi-like-pop 0.3s ease;
+}
+@keyframes qin-ershi-like-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+.qin-ershi-like-count {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #e8bd90;
+  min-width: 12px;
+  text-align: center;
+}
+
+.qin-ershi-empty-filter {
+  text-align: center;
+  padding: var(--space-12) var(--space-4);
+  color: var(--dw-text-muted);
+}
+
+/* ── Load More Button ── */
+.qin-ershi-load-more-wrap {
+  width: 100%;
+  text-align: center;
+  padding: var(--space-6) 0 var(--space-2);
+  column-span: all;
+}
+.qin-ershi-load-more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-8);
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: inherit;
+  background: rgba(184, 115, 51, 0.1);
+  color: #e8bd90;
+  border: 1px solid rgba(184, 115, 51, 0.28);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+.qin-ershi-load-more:hover {
+  background: rgba(184, 115, 51, 0.2);
+  border-color: rgba(184, 115, 51, 0.5);
+  color: #f0cfa8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+.qin-ershi-load-more:active {
+  transform: translateY(0) scale(0.97);
+}
+.qin-ershi-load-more-count {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+/* ============================================================
+   Placeholder State (empty content)
+   ============================================================ */
+.qin-ershi-placeholder {
+  text-align: center;
+  padding: var(--space-8) var(--space-6);
+  max-width: 36rem;
+  margin: 0 auto;
+}
+.qin-ershi-placeholder-icon {
+  color: #b87333;
+  margin-bottom: var(--space-5);
+  opacity: 0.7;
+}
+.qin-ershi-placeholder-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #f0cfa8;
+  margin: 0 0 var(--space-2);
+}
+.qin-ershi-placeholder-desc {
+  font-size: 0.9rem;
+  color: var(--dw-text-muted);
+  margin: 0 0 var(--space-8);
+  line-height: 1.6;
+}
+
+/* Skeleton Masonry — realistic ghost cards in waterfall layout */
+.qin-ershi-skeleton-masonry {
+  column-count: 3;
+  column-gap: var(--space-6);
+  max-width: 56rem;
+  margin: var(--space-6) auto 0;
+  text-align: left;
+  pointer-events: none;
+  user-select: none;
+}
+.qin-ershi-skeleton-card {
+  break-inside: avoid;
+  margin-bottom: var(--space-6);
+  background: rgba(184, 115, 51, 0.05);
+  border: 1px solid rgba(184, 115, 51, 0.1);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+}
+.qin-ershi-skeleton-card:nth-child(1) { transform: rotate(-0.5deg); }
+.qin-ershi-skeleton-card:nth-child(2) { transform: rotate(0.3deg); }
+.qin-ershi-skeleton-card:nth-child(3) { transform: rotate(-0.2deg); }
+.qin-ershi-skeleton-badge {
+  display: inline-block;
+  width: 52px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: rgba(184, 115, 51, 0.1);
+  margin-bottom: var(--space-3);
+}
+.qin-ershi-skeleton-line {
+  height: 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(184, 115, 51, 0.07);
+  margin-bottom: var(--space-2);
+  animation: qin-ershi-skeleton-shimmer 3s ease-in-out infinite;
+}
+.qin-ershi-skeleton-line.short {
+  margin-bottom: var(--space-4);
+}
+.qin-ershi-skeleton-line.w-40 { width: 40%; }
+.qin-ershi-skeleton-line.w-45 { width: 45%; }
+.qin-ershi-skeleton-line.w-50 { width: 50%; }
+.qin-ershi-skeleton-line.w-55 { width: 55%; }
+.qin-ershi-skeleton-line.w-60 { width: 60%; }
+.qin-ershi-skeleton-line.w-65 { width: 65%; }
+.qin-ershi-skeleton-line.w-70 { width: 70%; }
+.qin-ershi-skeleton-line.w-75 { width: 75%; }
+.qin-ershi-skeleton-line.w-80 { width: 80%; }
+.qin-ershi-skeleton-line.w-85 { width: 85%; }
+.qin-ershi-skeleton-line.w-90 { width: 90%; }
+.qin-ershi-skeleton-line.w-95 { width: 95%; }
+
+@keyframes qin-ershi-skeleton-shimmer {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+/* Setup hint card */
+.qin-ershi-placeholder-hint {
+  display: inline-block;
+  text-align: left;
+  font-size: 0.78rem;
+  color: var(--dw-text-muted);
+  background: rgba(184, 115, 51, 0.05);
+  border: 1px dashed rgba(184, 115, 51, 0.18);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+  line-height: 1.8;
+}
+.qin-ershi-placeholder-hint p {
+  margin: 0;
+}
+.qin-ershi-placeholder-hint code {
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.82em;
+  padding: 1px 6px;
+  background: rgba(184, 115, 51, 0.14);
+  border-radius: var(--radius-sm);
+  color: #e8bd90;
+}
+
+@media (max-width: 640px) {
+  .qin-ershi-skeleton-masonry {
+    column-count: 1;
+    column-gap: 0;
+  }
+}
+
+/* ============================================================
+   Detail Modal
+   ============================================================ */
+.qin-ershi-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+.qin-ershi-modal-overlay.hidden {
+  pointer-events: none;
+}
+.qin-ershi-modal-overlay:not(.hidden) {
+  opacity: 1;
+}
+
+.qin-ershi-modal {
+  background: linear-gradient(180deg, #1a1410 0%, #201812 100%);
+  border: 1px solid rgba(184, 115, 51, 0.24);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+  width: 100%;
+  max-width: 42rem;
+  max-height: 85vh;
+  overflow-y: auto;
+  transform: scale(0.95) translateY(10px);
+  transition: transform var(--transition-base);
+}
+.qin-ershi-modal-overlay:not(.hidden) .qin-ershi-modal {
+  transform: scale(1) translateY(0);
+}
+
+.qin-ershi-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: var(--space-6) var(--space-6) var(--space-4);
+  border-bottom: 1px solid rgba(184, 115, 51, 0.16);
+  gap: var(--space-4);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: linear-gradient(180deg, #1a1410 0%, #1a1410 85%, transparent 100%);
+}
+.qin-ershi-modal-header::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.qin-ershi-modal.scrolled .qin-ershi-modal-header::after {
+  opacity: 1;
+}
+.qin-ershi-modal-header-info {
+  flex: 1;
+  min-width: 0;
+}
+.qin-ershi-modal-type-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 12px;
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-2);
+}
+.qin-ershi-modal-type-badge.qin-ershi-type-main { background: rgba(184, 115, 51, 0.16); color: #e8bd90; }
+.qin-ershi-modal-type-badge.qin-ershi-type-side { background: rgba(236, 72, 153, 0.16); color: #f9a8d4; }
+.qin-ershi-modal-type-badge.qin-ershi-type-setting { background: rgba(52, 211, 153, 0.14); color: #6ee7b7; }
+.qin-ershi-modal-title {
+  font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--dw-text);
+  margin: 0;
+  line-height: 1.3;
+}
+.qin-ershi-modal-close {
+  flex-shrink: 0;
+  color: var(--dw-text-muted);
+  padding: var(--space-2);
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+  background: rgba(184, 115, 51, 0.1);
+  border: 1px solid rgba(184, 115, 51, 0.18);
+  cursor: pointer;
+  line-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qin-ershi-modal-close:hover {
+  color: var(--dw-text);
+  background: rgba(184, 115, 51, 0.22);
+  border-color: rgba(184, 115, 51, 0.42);
+  transform: scale(1.08);
+}
+.qin-ershi-modal-close:active {
+  transform: scale(0.95);
+}
+
+.qin-ershi-modal-meta {
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 0.8rem;
+  color: var(--dw-text-muted);
+  border-bottom: 1px solid rgba(184, 115, 51, 0.1);
+}
+.qin-ershi-modal-chapter,
+.qin-ershi-modal-date {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.qin-ershi-modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-left: auto;
+}
+.qin-ershi-modal-tag {
+  font-size: 0.7rem;
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(184, 115, 51, 0.1);
+  border: 1px solid rgba(184, 115, 51, 0.14);
+  color: #e8bd90;
+}
+
+.qin-ershi-modal-body {
+  padding: var(--space-6);
+  color: var(--dw-text);
+  line-height: 1.9;
+  font-size: 0.95rem;
+}
+
+.qin-ershi-modal-footer {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  border-top: 1px solid rgba(184, 115, 51, 0.12);
+}
+.qin-ershi-modal-close-bottom {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-8);
+  font-size: 0.9rem;
+  font-family: inherit;
+  font-weight: 600;
+  color: #e8bd90;
+  background: rgba(184, 115, 51, 0.1);
+  border: 1px solid rgba(184, 115, 51, 0.24);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.qin-ershi-modal-close-bottom:hover {
+  background: rgba(184, 115, 51, 0.22);
+  border-color: rgba(184, 115, 51, 0.46);
+  color: #f0cfa8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+.qin-ershi-modal-close-bottom:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* ============================================================
+   Markdown Body Typography
+   ============================================================ */
+.qin-ershi-md-body p {
+  margin: 0 0 var(--space-4);
+  text-indent: 2em;
+}
+.qin-ershi-md-body p:last-child {
+  margin-bottom: 0;
+}
+.qin-ershi-md-body h2 {
+  font-family: 'Noto Serif SC', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #f0cfa8;
+  margin: var(--space-6) 0 var(--space-3);
+  padding-bottom: var(--space-1);
+  border-bottom: 1px solid rgba(184, 115, 51, 0.14);
+  text-indent: 0;
+}
+.qin-ershi-md-body h3 {
+  font-family: 'Noto Serif SC', Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f0cfa8;
+  margin: var(--space-5) 0 var(--space-2);
+  text-indent: 0;
+}
+.qin-ershi-md-body h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--dw-text);
+  margin: var(--space-4) 0 var(--space-2);
+  text-indent: 0;
+}
+.qin-ershi-md-body strong {
+  color: #f0cfa8;
+  font-weight: 700;
+}
+.qin-ershi-md-body em {
+  font-style: italic;
+  color: var(--dw-text-muted);
+}
+.qin-ershi-md-body blockquote {
+  margin: var(--space-4) 0;
+  padding: var(--space-3) var(--space-5);
+  border-left: 3px solid #8f5a2a;
+  background: rgba(184, 115, 51, 0.06);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: #e8bd90;
+  font-style: italic;
+  text-indent: 0;
+}
+.qin-ershi-md-body blockquote p {
+  text-indent: 0;
+}
+.qin-ershi-md-body code {
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.85em;
+  padding: 1px 6px;
+  background: rgba(184, 115, 51, 0.12);
+  border-radius: var(--radius-sm);
+  color: #e8bd90;
+}
+.qin-ershi-md-body a {
+  color: #e8bd90;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.qin-ershi-md-body a:hover {
+  color: #f0cfa8;
+}
+.qin-ershi-md-body ul,
+.qin-ershi-md-body ol {
+  margin: var(--space-3) 0;
+  padding-left: var(--space-6);
+  text-indent: 0;
+}
+.qin-ershi-md-body ul { list-style: disc; }
+.qin-ershi-md-body ol { list-style: decimal; }
+.qin-ershi-md-body li {
+  margin-bottom: var(--space-1);
+  color: var(--dw-text);
+  line-height: 1.8;
+}
+.qin-ershi-md-body hr {
+  border: none;
+  border-top: 1px solid rgba(184, 115, 51, 0.2);
+  margin: var(--space-5) 0;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 1024px) {
+  .qin-ershi-masonry { column-count: 2; padding: var(--space-4) var(--space-6); }
+  .qin-ershi-filters { padding: var(--space-3) var(--space-6); }
+  .qin-ershi-modal { max-width: 36rem; }
+}
+@media (max-width: 640px) {
+  .qin-ershi-masonry { column-count: 1; padding: var(--space-3) var(--space-4); column-gap: 0; }
+  .qin-ershi-filters {
+    display: block;
+    white-space: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: var(--space-3) var(--space-4);
+    scrollbar-width: none;
+    touch-action: pan-x;
+  }
+  .qin-ershi-filters::-webkit-scrollbar { display: none; }
+  .qin-ershi-filter-btn { display: inline-block; vertical-align: middle; font-size: 0.8rem; padding: var(--space-1) var(--space-3); white-space: nowrap; }
+  .qin-ershi-card { padding: var(--space-3); }
+  .qin-ershi-card-title { font-size: 1rem; }
+  .qin-ershi-modal-overlay { padding: 0; align-items: stretch; }
+  .qin-ershi-modal { max-width: 100%; max-height: 100vh; border-radius: 0; border: none; }
+  .qin-ershi-modal-header { padding: var(--space-4); }
+  .qin-ershi-modal-title { font-size: 1.2rem; }
+  .qin-ershi-modal-meta { padding: var(--space-3) var(--space-4); }
+  .qin-ershi-modal-body { padding: var(--space-4); font-size: 0.9rem; }
+  .qin-ershi-placeholder { padding: var(--space-5) var(--space-4); }
+  .qin-ershi-placeholder-title { font-size: 1.1rem; }
+}
